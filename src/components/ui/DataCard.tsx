@@ -19,6 +19,8 @@ interface DataCardProps {
   className?: string;
   index?: number;
   icon?: ReactElement;
+  lastUpdated?: string;
+  source?: string;
 }
 
 export const DataCard = ({ 
@@ -29,7 +31,9 @@ export const DataCard = ({
   description,
   className,
   index = 0,
-  icon
+  icon,
+  lastUpdated,
+  source
 }: DataCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -94,6 +98,13 @@ export const DataCard = ({
               >
                 {change}
               </p>
+            </div>
+          )}
+          
+          {(lastUpdated || source) && (
+            <div className="mt-2 pt-2 border-t border-gray-100 dark:border-gray-800 text-xs text-gray-400">
+              {lastUpdated && <p>Last updated: {lastUpdated}</p>}
+              {source && <p className="mt-0.5">Source: {source}</p>}
             </div>
           )}
         </div>
