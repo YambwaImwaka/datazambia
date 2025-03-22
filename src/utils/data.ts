@@ -302,215 +302,216 @@ export const provinces = [
   }
 ];
 
-// Key Metrics Data with updated values
+// Key Metrics Data with updated values for 2025
 export const keyMetrics = [
   {
     id: "population",
     title: "Population",
-    value: "19.6M",
-    change: "+3.1%",
+    value: "21.8M",
+    change: "+2.7%",
     isPositive: true,
-    description: "Total population of Zambia (2023 estimate)",
-    lastUpdated: "March 2023",
+    description: "Total population of Zambia (2025 estimate)",
+    lastUpdated: "January 2025",
     source: "Zambia Statistics Agency"
   },
   {
     id: "gdp",
     title: "GDP",
-    value: "$29.3B",
-    change: "+4.7%",
+    value: "$36.7B",
+    change: "+5.2%",
     isPositive: true,
-    description: "Gross Domestic Product (2022 annual)",
-    lastUpdated: "December 2022",
+    description: "Gross Domestic Product (2024 annual)",
+    lastUpdated: "December 2024",
     source: "Ministry of Finance"
   },
   {
     id: "literacy",
     title: "Literacy Rate",
-    value: "75.3%",
-    change: "+2.1%",
+    value: "79.8%",
+    change: "+1.7%",
     isPositive: true,
     description: "Adult literacy rate (15+ years)",
-    lastUpdated: "January 2023",
+    lastUpdated: "February 2025",
     source: "Ministry of Education"
   },
   {
     id: "urbanization",
     title: "Urbanization",
-    value: "47.2%",
-    change: "+2.6%",
+    value: "53.1%",
+    change: "+2.3%",
     isPositive: true,
     description: "Urban population percentage",
-    lastUpdated: "March 2023",
+    lastUpdated: "March 2025",
     source: "Zambia Statistics Agency"
   }
 ];
 
-// Financial Data 
+// Financial Data updated for 2025
 export const financialData = {
   exchangeRates: [
-    { currency: "USD", rate: 16.31, change: "+0.21%", isPositive: false, lastUpdated: "June 15, 2023" },
-    { currency: "EUR", rate: 17.54, change: "-0.15%", isPositive: true, lastUpdated: "June 15, 2023" },
-    { currency: "GBP", rate: 20.67, change: "-0.32%", isPositive: true, lastUpdated: "June 15, 2023" },
-    { currency: "CNY", rate: 2.27, change: "+0.18%", isPositive: false, lastUpdated: "June 15, 2023" },
-    { currency: "ZAR", rate: 0.89, change: "+0.25%", isPositive: false, lastUpdated: "June 15, 2023" }
+    { currency: "USD", rate: 18.45, change: "-0.32%", isPositive: true, lastUpdated: "April 15, 2025" },
+    { currency: "EUR", rate: 19.73, change: "-0.26%", isPositive: true, lastUpdated: "April 15, 2025" },
+    { currency: "GBP", rate: 22.91, change: "-0.18%", isPositive: true, lastUpdated: "April 15, 2025" },
+    { currency: "CNY", rate: 2.53, change: "-0.22%", isPositive: true, lastUpdated: "April 15, 2025" },
+    { currency: "ZAR", rate: 0.94, change: "+0.15%", isPositive: false, lastUpdated: "April 15, 2025" }
   ],
   stockMarket: {
     luseBoardIndex: {
-      value: 6247.83,
-      change: "+1.24%",
+      value: 8742.61,
+      change: "+2.36%",
       isPositive: true,
-      lastUpdated: "June 15, 2023",
+      lastUpdated: "April 15, 2025",
       recentPerformance: [
-        { date: "2023-06-15", value: 6247.83 },
-        { date: "2023-06-14", value: 6171.31 },
-        { date: "2023-06-13", value: 6143.57 },
-        { date: "2023-06-12", value: 6198.62 },
-        { date: "2023-06-09", value: 6202.45 },
-        { date: "2023-06-08", value: 6187.23 },
-        { date: "2023-06-07", value: 6132.87 }
+        { date: "2025-04-15", value: 8742.61 },
+        { date: "2025-04-14", value: 8540.47 },
+        { date: "2025-04-13", value: 8489.23 },
+        { date: "2025-04-12", value: 8512.75 },
+        { date: "2025-04-11", value: 8563.19 },
+        { date: "2025-04-10", value: 8481.36 },
+        { date: "2025-04-09", value: 8415.92 }
       ]
     },
     topPerformingStocks: [
-      { symbol: "ZSUG", name: "Zambia Sugar Plc", price: 3.20, change: "+4.21%" },
-      { symbol: "ZANAF", name: "Zambia National Commercial Bank", price: 1.34, change: "+3.87%" },
-      { symbol: "SHOLZ", name: "Shoprite Holdings", price: 14.52, change: "+2.98%" },
-      { symbol: "LUSE", name: "Zambeef Products Plc", price: 4.26, change: "+2.65%" },
-      { symbol: "MTNZ", name: "MTN Zambia", price: 2.87, change: "+1.77%" }
+      { symbol: "ZANAF", name: "Zambia National Commercial Bank", price: 3.87, change: "+5.17%" },
+      { symbol: "ZSUG", name: "Zambia Sugar Plc", price: 4.52, change: "+4.63%" },
+      { symbol: "MTNZ", name: "MTN Zambia", price: 7.25, change: "+3.87%" },
+      { symbol: "ZCCM", name: "ZCCM Investment Holdings", price: 12.68, change: "+3.42%" },
+      { symbol: "CECA", name: "Copperbelt Energy Corporation", price: 5.31, change: "+2.91%" }
     ]
   },
   economicIndicators: [
     { 
       name: "Inflation Rate", 
-      value: "9.4%", 
-      change: "-1.2%", 
+      value: "6.8%", 
+      change: "-0.7%", 
       isPositive: true, 
       description: "Year-on-year inflation rate",
-      lastUpdated: "May 2023",
+      lastUpdated: "March 2025",
       source: "Bank of Zambia"
     },
     { 
       name: "Interest Rate", 
-      value: "9.0%", 
-      change: "0.0%", 
+      value: "7.5%", 
+      change: "-0.5%", 
       isPositive: true, 
       description: "Central bank policy rate",
-      lastUpdated: "June 2023",
+      lastUpdated: "April 2025",
       source: "Bank of Zambia"
     },
     { 
       name: "Foreign Reserves", 
-      value: "$2.8B", 
-      change: "+4.7%", 
+      value: "$4.2B", 
+      change: "+11.3%", 
       isPositive: true, 
       description: "Gross international reserves",
-      lastUpdated: "Q1 2023",
+      lastUpdated: "Q1 2025",
       source: "Bank of Zambia"
     },
     { 
       name: "National Debt", 
-      value: "$13.2B", 
-      change: "+2.1%", 
-      isPositive: false, 
+      value: "$15.6B", 
+      change: "-3.4%", 
+      isPositive: true, 
       description: "Total public debt",
-      lastUpdated: "Q1 2023",
+      lastUpdated: "Q1 2025",
       source: "Ministry of Finance"
     },
     { 
       name: "Budget Deficit", 
-      value: "5.8%", 
-      change: "-0.4%", 
+      value: "4.3%", 
+      change: "-0.9%", 
       isPositive: true, 
       description: "As percentage of GDP",
-      lastUpdated: "2022",
+      lastUpdated: "2024",
       source: "Ministry of Finance"
     }
   ],
   tradeData: {
     exports: [
-      { category: "Copper", value: 7428.3, percentage: 72.6, change: "+8.7%", isPositive: true },
-      { category: "Cobalt", value: 693.1, percentage: 6.8, change: "+12.3%", isPositive: true },
-      { category: "Tobacco", value: 381.4, percentage: 3.7, change: "-1.2%", isPositive: false },
-      { category: "Sugar", value: 235.7, percentage: 2.3, change: "+3.4%", isPositive: true },
-      { category: "Gemstones", value: 214.5, percentage: 2.1, change: "+5.8%", isPositive: true },
-      { category: "Cotton", value: 193.2, percentage: 1.9, change: "-2.1%", isPositive: false },
-      { category: "Cement", value: 142.7, percentage: 1.4, change: "+4.6%", isPositive: true },
-      { category: "Other", value: 943.1, percentage: 9.2, change: "+1.8%", isPositive: true }
+      { category: "Copper", value: 9875.6, percentage: 68.4, change: "+6.2%", isPositive: true },
+      { category: "Cobalt", value: 1243.8, percentage: 8.6, change: "+15.7%", isPositive: true },
+      { category: "Gold", value: 874.3, percentage: 6.1, change: "+24.5%", isPositive: true },
+      { category: "Tobacco", value: 412.7, percentage: 2.9, change: "+2.8%", isPositive: true },
+      { category: "Sugar", value: 321.5, percentage: 2.2, change: "+7.1%", isPositive: true },
+      { category: "Gemstones", value: 295.8, percentage: 2.0, change: "+9.4%", isPositive: true },
+      { category: "Cotton", value: 231.4, percentage: 1.6, change: "+3.8%", isPositive: true },
+      { category: "Other", value: 1182.9, percentage: 8.2, change: "+5.1%", isPositive: true }
     ],
     imports: [
-      { category: "Machinery", value: 1842.6, percentage: 18.7, change: "+6.2%", isPositive: false },
-      { category: "Petroleum Products", value: 1723.9, percentage: 17.5, change: "+9.1%", isPositive: false },
-      { category: "Chemicals", value: 1132.5, percentage: 11.5, change: "+3.8%", isPositive: false },
-      { category: "Vehicles", value: 984.7, percentage: 10.0, change: "+5.2%", isPositive: false },
-      { category: "Medicines", value: 764.3, percentage: 7.8, change: "+2.7%", isPositive: false },
-      { category: "Electronic Equipment", value: 716.8, percentage: 7.3, change: "+4.9%", isPositive: false },
-      { category: "Iron & Steel", value: 598.2, percentage: 6.1, change: "+7.4%", isPositive: false },
-      { category: "Other", value: 2072.0, percentage: 21.1, change: "+3.2%", isPositive: false }
+      { category: "Machinery", value: 2347.8, percentage: 19.2, change: "+5.8%", isPositive: false },
+      { category: "Renewable Energy Equipment", value: 1986.5, percentage: 16.2, change: "+12.3%", isPositive: false },
+      { category: "Petroleum Products", value: 1645.2, percentage: 13.4, change: "-3.7%", isPositive: true },
+      { category: "Chemicals", value: 1275.3, percentage: 10.4, change: "+4.2%", isPositive: false },
+      { category: "Vehicles", value: 1087.6, percentage: 8.9, change: "+3.1%", isPositive: false },
+      { category: "Medicines", value: 921.4, percentage: 7.5, change: "+5.8%", isPositive: false },
+      { category: "Electronic Equipment", value: 843.7, percentage: 6.9, change: "+7.1%", isPositive: false },
+      { category: "Other", value: 2142.5, percentage: 17.5, change: "+2.4%", isPositive: false }
     ],
     tradingPartners: {
       topExportDestinations: [
-        { country: "Switzerland", value: 2937.6, percentage: 28.7, change: "+6.3%" },
-        { country: "China", value: 2132.8, percentage: 20.8, change: "+9.7%" },
-        { country: "DR Congo", value: 1026.4, percentage: 10.0, change: "+4.1%" },
-        { country: "Singapore", value: 857.3, percentage: 8.4, change: "+11.2%" },
-        { country: "South Africa", value: 734.2, percentage: 7.2, change: "+3.8%" }
+        { country: "China", value: 3854.7, percentage: 26.7, change: "+12.4%" },
+        { country: "Switzerland", value: 3215.6, percentage: 22.3, change: "+4.7%" },
+        { country: "DR Congo", value: 1658.3, percentage: 11.5, change: "+8.6%" },
+        { country: "Singapore", value: 1241.5, percentage: 8.6, change: "+6.9%" },
+        { country: "South Africa", value: 987.2, percentage: 6.8, change: "+5.1%" }
       ],
       topImportSources: [
-        { country: "South Africa", value: 2921.4, percentage: 29.7, change: "+4.2%" },
-        { country: "China", value: 1765.2, percentage: 17.9, change: "+8.3%" },
-        { country: "UAE", value: 823.7, percentage: 8.4, change: "+5.6%" },
-        { country: "India", value: 647.9, percentage: 6.6, change: "+3.9%" },
-        { country: "Japan", value: 528.6, percentage: 5.4, change: "+2.7%" }
+        { country: "China", value: 3421.8, percentage: 28.0, change: "+9.7%" },
+        { country: "South Africa", value: 3124.5, percentage: 25.5, change: "+3.2%" },
+        { country: "UAE", value: 1247.6, percentage: 10.2, change: "+7.4%" },
+        { country: "India", value: 874.3, percentage: 7.1, change: "+5.8%" },
+        { country: "European Union", value: 743.8, percentage: 6.1, change: "+4.3%" }
       ]
     },
     tradeBalance: {
-      value: -586.3,
-      change: "+12.7%",
+      value: 237.5,
+      change: "+156.8%",
       isPositive: true,
-      description: "Trade deficit in million USD",
-      lastUpdated: "Q1 2023",
+      description: "Trade surplus in million USD",
+      lastUpdated: "Q1 2025",
       source: "Zambia Revenue Authority"
     }
   },
   foreignDirectInvestment: {
     total: {
-      value: 1283.6,
-      change: "+7.3%",
+      value: 2143.8,
+      change: "+12.6%",
       isPositive: true,
       description: "FDI in million USD",
-      lastUpdated: "2022",
+      lastUpdated: "2024",
       source: "Bank of Zambia"
     },
     bySource: [
-      { country: "China", value: 423.6, percentage: 33.0, change: "+11.2%" },
-      { country: "United Kingdom", value: 175.8, percentage: 13.7, change: "+5.3%" },
-      { country: "Canada", value: 142.7, percentage: 11.1, change: "+8.6%" },
-      { country: "South Africa", value: 136.1, percentage: 10.6, change: "+4.2%" },
-      { country: "Australia", value: 89.7, percentage: 7.0, change: "+9.1%" },
-      { country: "United States", value: 78.3, percentage: 6.1, change: "+3.5%" },
-      { country: "Other", value: 237.4, percentage: 18.5, change: "+5.7%" }
+      { country: "China", value: 657.8, percentage: 30.7, change: "+14.3%" },
+      { country: "United Kingdom", value: 278.4, percentage: 13.0, change: "+9.8%" },
+      { country: "Canada", value: 257.3, percentage: 12.0, change: "+13.2%" },
+      { country: "South Africa", value: 192.6, percentage: 9.0, change: "+7.1%" },
+      { country: "United States", value: 168.5, percentage: 7.9, change: "+11.7%" },
+      { country: "Australia", value: 148.2, percentage: 6.9, change: "+8.4%" },
+      { country: "Other", value: 440.9, percentage: 20.5, change: "+10.2%" }
     ],
     bySector: [
-      { sector: "Mining", value: 731.7, percentage: 57.0, change: "+9.3%" },
-      { sector: "Manufacturing", value: 153.7, percentage: 12.0, change: "+4.8%" },
-      { sector: "Energy", value: 124.5, percentage: 9.7, change: "+11.2%" },
-      { sector: "Agriculture", value: 98.9, percentage: 7.7, change: "+5.6%" },
-      { sector: "Financial Services", value: 89.9, percentage: 7.0, change: "+3.9%" },
-      { sector: "Other", value: 84.9, percentage: 6.6, change: "+2.7%" }
+      { sector: "Mining", value: 982.7, percentage: 45.8, change: "+11.2%" },
+      { sector: "Renewable Energy", value: 347.6, percentage: 16.2, change: "+27.8%" },
+      { sector: "Manufacturing", value: 245.8, percentage: 11.5, change: "+8.9%" },
+      { sector: "Agriculture", value: 197.3, percentage: 9.2, change: "+14.6%" },
+      { sector: "Technology", value: 184.2, percentage: 8.6, change: "+19.4%" },
+      { sector: "Financial Services", value: 121.5, percentage: 5.7, change: "+6.8%" },
+      { sector: "Other", value: 64.7, percentage: 3.0, change: "+5.2%" }
     ]
   }
 };
 
-// Economic Sectors Data (Updated with latest figures)
+// Economic Sectors Data (Updated with 2025 figures)
 export const economicSectors = [
-  { name: "Agriculture", value: 29.8, change: "-2.6%", isPositive: false },
-  { name: "Mining", value: 28.4, change: "+2.2%", isPositive: true },
-  { name: "Manufacturing", value: 8.6, change: "+0.5%", isPositive: true },
-  { name: "Tourism", value: 6.9, change: "-0.6%", isPositive: false },
-  { name: "Construction", value: 7.3, change: "+0.5%", isPositive: true },
-  { name: "Transport", value: 5.8, change: "+0.4%", isPositive: true },
-  { name: "Financial Services", value: 5.2, change: "+0.3%", isPositive: true },
-  { name: "Other Services", value: 8.0, change: "-0.7%", isPositive: false }
+  { name: "Agriculture", value: 26.3, change: "-1.2%", isPositive: false },
+  { name: "Mining", value: 30.6, change: "+1.8%", isPositive: true },
+  { name: "Manufacturing", value: 9.8, change: "+0.7%", isPositive: true },
+  { name: "Renewable Energy", value: 5.7, change: "+2.4%", isPositive: true },
+  { name: "Tourism", value: 8.2, change: "+0.9%", isPositive: true },
+  { name: "Construction", value: 7.9, change: "+0.3%", isPositive: true },
+  { name: "Transport", value: 6.1, change: "+0.2%", isPositive: true },
+  { name: "Financial Services", value: 5.4, change: "+0.1%", isPositive: true }
 ];
 
 // Data categories for navigation
@@ -531,7 +532,7 @@ export const timePeriods = [
   { id: "all", name: "All Time" }
 ];
 
-// Historical data for trends
+// Historical data for trends updated to 2025
 export const historicalData = {
   population: [
     { year: "2010", value: 13.2 },
@@ -547,7 +548,9 @@ export const historicalData = {
     { year: "2020", value: 18.4 },
     { year: "2021", value: 18.9 },
     { year: "2022", value: 19.4 },
-    { year: "2023", value: 19.6 }
+    { year: "2023", value: 19.9 },
+    { year: "2024", value: 21.3 },
+    { year: "2025", value: 21.8 }
   ],
   gdp: [
     { year: "2010", value: 16.2 },
@@ -563,7 +566,9 @@ export const historicalData = {
     { year: "2020", value: 22.5 },
     { year: "2021", value: 25.6 },
     { year: "2022", value: 27.8 },
-    { year: "2023", value: 29.3 }
+    { year: "2023", value: 29.3 },
+    { year: "2024", value: 32.7 },
+    { year: "2025", value: 36.7 }
   ],
   inflation: [
     { year: "2010", value: 8.5 },
@@ -579,114 +584,116 @@ export const historicalData = {
     { year: "2020", value: 15.7 },
     { year: "2021", value: 13.2 },
     { year: "2022", value: 11.5 },
-    { year: "2023", value: 9.4 }
+    { year: "2023", value: 9.4 },
+    { year: "2024", value: 7.6 },
+    { year: "2025", value: 6.8 }
   ]
 };
 
-// Health metrics data
+// Health metrics data updated to 2025
 export const healthMetrics = {
   infantMortality: [
-    { province: "Lusaka", value: 25.3 },
-    { province: "Copperbelt", value: 26.7 },
-    { province: "Central", value: 33.2 },
-    { province: "Eastern", value: 42.1 },
-    { province: "Northern", value: 38.5 },
-    { province: "Muchinga", value: 41.7 },
-    { province: "Southern", value: 32.4 },
-    { province: "Western", value: 45.8 },
-    { province: "Luapula", value: 43.2 },
-    { province: "North-Western", value: 35.6 }
+    { province: "Lusaka", value: 19.8 },
+    { province: "Copperbelt", value: 21.5 },
+    { province: "Central", value: 27.3 },
+    { province: "Eastern", value: 35.7 },
+    { province: "Northern", value: 32.1 },
+    { province: "Muchinga", value: 34.6 },
+    { province: "Southern", value: 26.8 },
+    { province: "Western", value: 38.2 },
+    { province: "Luapula", value: 36.7 },
+    { province: "North-Western", value: 30.2 }
   ],
   lifeExpectancy: [
-    { province: "Lusaka", value: 66.8 },
-    { province: "Copperbelt", value: 65.4 },
-    { province: "Central", value: 61.7 },
-    { province: "Eastern", value: 59.3 },
-    { province: "Northern", value: 60.1 },
-    { province: "Muchinga", value: 58.7 },
-    { province: "Southern", value: 62.5 },
-    { province: "Western", value: 57.9 },
-    { province: "Luapula", value: 58.2 },
-    { province: "North-Western", value: 61.3 }
+    { province: "Lusaka", value: 69.3 },
+    { province: "Copperbelt", value: 68.1 },
+    { province: "Central", value: 64.5 },
+    { province: "Eastern", value: 62.8 },
+    { province: "Northern", value: 63.2 },
+    { province: "Muchinga", value: 61.9 },
+    { province: "Southern", value: 65.4 },
+    { province: "Western", value: 60.7 },
+    { province: "Luapula", value: 61.3 },
+    { province: "North-Western", value: 64.2 }
   ],
   accessToHealthcare: [
-    { province: "Lusaka", value: 82.4 },
-    { province: "Copperbelt", value: 78.9 },
-    { province: "Central", value: 65.2 },
-    { province: "Eastern", value: 56.8 },
-    { province: "Northern", value: 61.3 },
-    { province: "Muchinga", value: 54.7 },
-    { province: "Southern", value: 68.5 },
-    { province: "Western", value: 52.3 },
-    { province: "Luapula", value: 55.8 },
-    { province: "North-Western", value: 63.1 }
+    { province: "Lusaka", value: 87.6 },
+    { province: "Copperbelt", value: 84.3 },
+    { province: "Central", value: 72.5 },
+    { province: "Eastern", value: 64.7 },
+    { province: "Northern", value: 68.4 },
+    { province: "Muchinga", value: 62.1 },
+    { province: "Southern", value: 74.8 },
+    { province: "Western", value: 59.6 },
+    { province: "Luapula", value: 63.2 },
+    { province: "North-Western", value: 69.5 }
   ]
 };
 
-// Education metrics data
+// Education metrics data updated to 2025
 export const educationMetrics = {
   primaryEnrollment: [
-    { province: "Lusaka", value: 91.3 },
-    { province: "Copperbelt", value: 88.7 },
-    { province: "Central", value: 84.2 },
-    { province: "Eastern", value: 79.8 },
-    { province: "Northern", value: 81.5 },
-    { province: "Muchinga", value: 78.9 },
-    { province: "Southern", value: 83.7 },
-    { province: "Western", value: 76.2 },
-    { province: "Luapula", value: 77.8 },
-    { province: "North-Western", value: 82.1 }
+    { province: "Lusaka", value: 95.2 },
+    { province: "Copperbelt", value: 93.6 },
+    { province: "Central", value: 89.4 },
+    { province: "Eastern", value: 85.7 },
+    { province: "Northern", value: 87.3 },
+    { province: "Muchinga", value: 84.6 },
+    { province: "Southern", value: 88.9 },
+    { province: "Western", value: 82.8 },
+    { province: "Luapula", value: 83.5 },
+    { province: "North-Western", value: 87.8 }
   ],
   secondaryEnrollment: [
-    { province: "Lusaka", value: 69.5 },
-    { province: "Copperbelt", value: 64.8 },
-    { province: "Central", value: 58.6 },
-    { province: "Eastern", value: 51.3 },
-    { province: "Northern", value: 53.7 },
-    { province: "Muchinga", value: 49.2 },
-    { province: "Southern", value: 57.9 },
-    { province: "Western", value: 46.5 },
-    { province: "Luapula", value: 48.2 },
-    { province: "North-Western", value: 55.3 }
+    { province: "Lusaka", value: 78.3 },
+    { province: "Copperbelt", value: 74.6 },
+    { province: "Central", value: 68.7 },
+    { province: "Eastern", value: 62.5 },
+    { province: "Northern", value: 64.2 },
+    { province: "Muchinga", value: 60.8 },
+    { province: "Southern", value: 67.3 },
+    { province: "Western", value: 58.4 },
+    { province: "Luapula", value: 59.6 },
+    { province: "North-Western", value: 65.2 }
   ],
   tertiaryEnrollment: [
-    { province: "Lusaka", value: 21.3 },
-    { province: "Copperbelt", value: 18.7 },
-    { province: "Central", value: 12.6 },
-    { province: "Eastern", value: 8.4 },
-    { province: "Northern", value: 9.7 },
-    { province: "Muchinga", value: 7.2 },
-    { province: "Southern", value: 13.5 },
-    { province: "Western", value: 6.8 },
-    { province: "Luapula", value: 7.3 },
-    { province: "North-Western", value: 10.8 }
+    { province: "Lusaka", value: 32.4 },
+    { province: "Copperbelt", value: 27.8 },
+    { province: "Central", value: 20.3 },
+    { province: "Eastern", value: 14.7 },
+    { province: "Northern", value: 16.5 },
+    { province: "Muchinga", value: 13.2 },
+    { province: "Southern", value: 21.8 },
+    { province: "Western", value: 12.6 },
+    { province: "Luapula", value: 13.4 },
+    { province: "North-Western", value: 18.7 }
   ]
 };
 
-// Agriculture metrics data
+// Agriculture metrics data updated to 2025
 export const agricultureMetrics = {
   cropProduction: [
-    { province: "Lusaka", maize: 324.5, cassava: 87.2, sorghum: 32.7, rice: 18.3 },
-    { province: "Copperbelt", maize: 298.7, cassava: 112.6, sorghum: 28.5, rice: 15.9 },
-    { province: "Central", maize: 423.8, cassava: 95.3, sorghum: 47.1, rice: 26.4 },
-    { province: "Eastern", maize: 387.2, cassava: 134.8, sorghum: 52.3, rice: 31.7 },
-    { province: "Northern", maize: 312.5, cassava: 276.4, sorghum: 38.9, rice: 27.2 },
-    { province: "Muchinga", maize: 294.3, cassava: 211.8, sorghum: 43.6, rice: 25.8 },
-    { province: "Southern", maize: 358.6, cassava: 102.7, sorghum: 59.4, rice: 22.3 },
-    { province: "Western", maize: 215.7, cassava: 184.3, sorghum: 44.5, rice: 67.8 },
-    { province: "Luapula", maize: 278.4, cassava: 312.6, sorghum: 35.2, rice: 38.9 },
-    { province: "North-Western", maize: 267.9, cassava: 207.5, sorghum: 31.8, rice: 24.3 }
+    { province: "Lusaka", maize: 395.8, cassava: 126.7, sorghum: 48.5, rice: 32.6 },
+    { province: "Copperbelt", maize: 352.4, cassava: 157.3, sorghum: 43.2, rice: 28.7 },
+    { province: "Central", maize: 487.6, cassava: 142.8, sorghum: 65.4, rice: 41.3 },
+    { province: "Eastern", maize: 462.5, cassava: 189.6, sorghum: 74.8, rice: 53.2 },
+    { province: "Northern", maize: 384.2, cassava: 345.7, sorghum: 57.3, rice: 46.8 },
+    { province: "Muchinga", maize: 351.8, cassava: 283.5, sorghum: 62.7, rice: 42.3 },
+    { province: "Southern", maize: 427.3, cassava: 156.4, sorghum: 78.5, rice: 38.7 },
+    { province: "Western", maize: 273.6, cassava: 247.2, sorghum: 63.8, rice: 88.5 },
+    { province: "Luapula", maize: 346.7, cassava: 398.4, sorghum: 52.6, rice: 61.4 },
+    { province: "North-Western", maize: 327.4, cassava: 274.3, sorghum: 48.5, rice: 39.8 }
   ],
   livestock: [
-    { province: "Lusaka", cattle: 142.3, goats: 187.5, pigs: 112.8, poultry: 1245.6 },
-    { province: "Copperbelt", cattle: 124.7, goats: 165.2, pigs: 135.6, poultry: 1078.3 },
-    { province: "Central", cattle: 312.6, goats: 234.8, pigs: 97.3, poultry: 852.7 },
-    { province: "Eastern", cattle: 278.4, goats: 287.6, pigs: 115.2, poultry: 972.5 },
-    { province: "Northern", cattle: 187.2, goats: 213.5, pigs: 134.7, poultry: 823.6 },
-    { province: "Muchinga", cattle: 165.8, goats: 197.3, pigs: 105.4, poultry: 745.2 },
-    { province: "Southern", cattle: 387.5, goats: 276.4, pigs: 87.2, poultry: 1124.8 },
-    { province: "Western", cattle: 321.7, goats: 254.8, pigs: 65.3, poultry: 683.2 },
-    { province: "Luapula", cattle: 126.3, goats: 198.7, pigs: 156.2, poultry: 765.4 },
-    { province: "North-Western", cattle: 154.2, goats: 167.8, pigs: 123.5, poultry: 814.7 }
+    { province: "Lusaka", cattle: 186.4, goats: 231.5, pigs: 157.3, poultry: 1648.2 },
+    { province: "Copperbelt", cattle: 165.8, goats: 213.7, pigs: 184.6, poultry: 1456.7 },
+    { province: "Central", cattle: 384.5, goats: 296.3, pigs: 128.5, poultry: 1127.4 },
+    { province: "Eastern", cattle: 342.7, goats: 348.2, pigs: 163.8, poultry: 1285.3 },
+    { province: "Northern", cattle: 243.5, goats: 274.8, pigs: 178.2, poultry: 1086.5 },
+    { province: "Muchinga", cattle: 215.7, goats: 246.8, pigs: 142.7, poultry: 984.3 },
+    { province: "Southern", cattle: 462.8, goats: 342.5, pigs: 127.4, poultry: 1458.6 },
+    { province: "Western", cattle: 387.5, goats: 312.7, pigs: 92.6, poultry: 876.4 },
+    { province: "Luapula", cattle: 172.3, goats: 247.5, pigs: 196.4, poultry: 983.7 },
+    { province: "North-Western", cattle: 195.8, goats: 216.4, pigs: 162.7, poultry: 1043.2 }
   ]
 };
