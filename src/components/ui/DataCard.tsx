@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, ReactElement } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronUp, ChevronDown, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,7 @@ interface DataCardProps {
   description?: string;
   className?: string;
   index?: number;
+  icon?: ReactElement;
 }
 
 export const DataCard = ({ 
@@ -27,7 +28,8 @@ export const DataCard = ({
   isPositive = true, 
   description,
   className,
-  index = 0
+  index = 0,
+  icon
 }: DataCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -70,9 +72,12 @@ export const DataCard = ({
       
       <CardContent>
         <div className="flex flex-col">
-          <p className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-            {value}
-          </p>
+          <div className="flex items-center">
+            {icon && <div className="mr-2 text-gray-500 dark:text-gray-400">{icon}</div>}
+            <p className="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+              {value}
+            </p>
+          </div>
           
           {change && (
             <div className="flex items-center mt-1">
