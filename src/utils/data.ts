@@ -346,7 +346,7 @@ export const keyMetrics = [
   }
 ];
 
-// Financial Data - NEW SECTION
+// Financial Data 
 export const financialData = {
   exchangeRates: [
     { currency: "USD", rate: 16.31, change: "+0.21%", isPositive: false, lastUpdated: "June 15, 2023" },
@@ -513,5 +513,180 @@ export const economicSectors = [
   { name: "Other Services", value: 8.0, change: "-0.7%", isPositive: false }
 ];
 
-// Keep the rest of your existing data
-// ... keep existing code
+// Data categories for navigation
+export const dataCategories = [
+  { id: "overview", name: "Overview" },
+  { id: "health", name: "Health" },
+  { id: "education", name: "Education" },
+  { id: "agriculture", name: "Agriculture" },
+  { id: "economy", name: "Economy" },
+  { id: "finance", name: "Finance" }
+];
+
+// Time periods for filtering
+export const timePeriods = [
+  { id: "1yr", name: "1 Year" },
+  { id: "5yr", name: "5 Years" },
+  { id: "10yr", name: "10 Years" },
+  { id: "all", name: "All Time" }
+];
+
+// Historical data for trends
+export const historicalData = {
+  population: [
+    { year: "2010", value: 13.2 },
+    { year: "2011", value: 13.6 },
+    { year: "2012", value: 14.1 },
+    { year: "2013", value: 14.5 },
+    { year: "2014", value: 15.0 },
+    { year: "2015", value: 15.5 },
+    { year: "2016", value: 16.1 },
+    { year: "2017", value: 16.6 },
+    { year: "2018", value: 17.2 },
+    { year: "2019", value: 17.9 },
+    { year: "2020", value: 18.4 },
+    { year: "2021", value: 18.9 },
+    { year: "2022", value: 19.4 },
+    { year: "2023", value: 19.6 }
+  ],
+  gdp: [
+    { year: "2010", value: 16.2 },
+    { year: "2011", value: 17.5 },
+    { year: "2012", value: 18.7 },
+    { year: "2013", value: 20.1 },
+    { year: "2014", value: 21.5 },
+    { year: "2015", value: 19.8 },
+    { year: "2016", value: 18.5 },
+    { year: "2017", value: 21.2 },
+    { year: "2018", value: 23.8 },
+    { year: "2019", value: 24.7 },
+    { year: "2020", value: 22.5 },
+    { year: "2021", value: 25.6 },
+    { year: "2022", value: 27.8 },
+    { year: "2023", value: 29.3 }
+  ],
+  inflation: [
+    { year: "2010", value: 8.5 },
+    { year: "2011", value: 6.4 },
+    { year: "2012", value: 7.3 },
+    { year: "2013", value: 7.1 },
+    { year: "2014", value: 7.9 },
+    { year: "2015", value: 10.1 },
+    { year: "2016", value: 17.9 },
+    { year: "2017", value: 6.6 },
+    { year: "2018", value: 7.5 },
+    { year: "2019", value: 9.2 },
+    { year: "2020", value: 15.7 },
+    { year: "2021", value: 13.2 },
+    { year: "2022", value: 11.5 },
+    { year: "2023", value: 9.4 }
+  ]
+};
+
+// Health metrics data
+export const healthMetrics = {
+  infantMortality: [
+    { province: "Lusaka", value: 25.3 },
+    { province: "Copperbelt", value: 26.7 },
+    { province: "Central", value: 33.2 },
+    { province: "Eastern", value: 42.1 },
+    { province: "Northern", value: 38.5 },
+    { province: "Muchinga", value: 41.7 },
+    { province: "Southern", value: 32.4 },
+    { province: "Western", value: 45.8 },
+    { province: "Luapula", value: 43.2 },
+    { province: "North-Western", value: 35.6 }
+  ],
+  lifeExpectancy: [
+    { province: "Lusaka", value: 66.8 },
+    { province: "Copperbelt", value: 65.4 },
+    { province: "Central", value: 61.7 },
+    { province: "Eastern", value: 59.3 },
+    { province: "Northern", value: 60.1 },
+    { province: "Muchinga", value: 58.7 },
+    { province: "Southern", value: 62.5 },
+    { province: "Western", value: 57.9 },
+    { province: "Luapula", value: 58.2 },
+    { province: "North-Western", value: 61.3 }
+  ],
+  accessToHealthcare: [
+    { province: "Lusaka", value: 82.4 },
+    { province: "Copperbelt", value: 78.9 },
+    { province: "Central", value: 65.2 },
+    { province: "Eastern", value: 56.8 },
+    { province: "Northern", value: 61.3 },
+    { province: "Muchinga", value: 54.7 },
+    { province: "Southern", value: 68.5 },
+    { province: "Western", value: 52.3 },
+    { province: "Luapula", value: 55.8 },
+    { province: "North-Western", value: 63.1 }
+  ]
+};
+
+// Education metrics data
+export const educationMetrics = {
+  primaryEnrollment: [
+    { province: "Lusaka", value: 91.3 },
+    { province: "Copperbelt", value: 88.7 },
+    { province: "Central", value: 84.2 },
+    { province: "Eastern", value: 79.8 },
+    { province: "Northern", value: 81.5 },
+    { province: "Muchinga", value: 78.9 },
+    { province: "Southern", value: 83.7 },
+    { province: "Western", value: 76.2 },
+    { province: "Luapula", value: 77.8 },
+    { province: "North-Western", value: 82.1 }
+  ],
+  secondaryEnrollment: [
+    { province: "Lusaka", value: 69.5 },
+    { province: "Copperbelt", value: 64.8 },
+    { province: "Central", value: 58.6 },
+    { province: "Eastern", value: 51.3 },
+    { province: "Northern", value: 53.7 },
+    { province: "Muchinga", value: 49.2 },
+    { province: "Southern", value: 57.9 },
+    { province: "Western", value: 46.5 },
+    { province: "Luapula", value: 48.2 },
+    { province: "North-Western", value: 55.3 }
+  ],
+  tertiaryEnrollment: [
+    { province: "Lusaka", value: 21.3 },
+    { province: "Copperbelt", value: 18.7 },
+    { province: "Central", value: 12.6 },
+    { province: "Eastern", value: 8.4 },
+    { province: "Northern", value: 9.7 },
+    { province: "Muchinga", value: 7.2 },
+    { province: "Southern", value: 13.5 },
+    { province: "Western", value: 6.8 },
+    { province: "Luapula", value: 7.3 },
+    { province: "North-Western", value: 10.8 }
+  ]
+};
+
+// Agriculture metrics data
+export const agricultureMetrics = {
+  cropProduction: [
+    { province: "Lusaka", maize: 324.5, cassava: 87.2, sorghum: 32.7, rice: 18.3 },
+    { province: "Copperbelt", maize: 298.7, cassava: 112.6, sorghum: 28.5, rice: 15.9 },
+    { province: "Central", maize: 423.8, cassava: 95.3, sorghum: 47.1, rice: 26.4 },
+    { province: "Eastern", maize: 387.2, cassava: 134.8, sorghum: 52.3, rice: 31.7 },
+    { province: "Northern", maize: 312.5, cassava: 276.4, sorghum: 38.9, rice: 27.2 },
+    { province: "Muchinga", maize: 294.3, cassava: 211.8, sorghum: 43.6, rice: 25.8 },
+    { province: "Southern", maize: 358.6, cassava: 102.7, sorghum: 59.4, rice: 22.3 },
+    { province: "Western", maize: 215.7, cassava: 184.3, sorghum: 44.5, rice: 67.8 },
+    { province: "Luapula", maize: 278.4, cassava: 312.6, sorghum: 35.2, rice: 38.9 },
+    { province: "North-Western", maize: 267.9, cassava: 207.5, sorghum: 31.8, rice: 24.3 }
+  ],
+  livestock: [
+    { province: "Lusaka", cattle: 142.3, goats: 187.5, pigs: 112.8, poultry: 1245.6 },
+    { province: "Copperbelt", cattle: 124.7, goats: 165.2, pigs: 135.6, poultry: 1078.3 },
+    { province: "Central", cattle: 312.6, goats: 234.8, pigs: 97.3, poultry: 852.7 },
+    { province: "Eastern", cattle: 278.4, goats: 287.6, pigs: 115.2, poultry: 972.5 },
+    { province: "Northern", cattle: 187.2, goats: 213.5, pigs: 134.7, poultry: 823.6 },
+    { province: "Muchinga", cattle: 165.8, goats: 197.3, pigs: 105.4, poultry: 745.2 },
+    { province: "Southern", cattle: 387.5, goats: 276.4, pigs: 87.2, poultry: 1124.8 },
+    { province: "Western", cattle: 321.7, goats: 254.8, pigs: 65.3, poultry: 683.2 },
+    { province: "Luapula", cattle: 126.3, goats: 198.7, pigs: 156.2, poultry: 765.4 },
+    { province: "North-Western", cattle: 154.2, goats: 167.8, pigs: 123.5, poultry: 814.7 }
+  ]
+};
