@@ -6,6 +6,7 @@ import Hero from "@/components/home/Hero";
 import KeyMetrics from "@/components/home/KeyMetrics";
 import FeaturedProvinces from "@/components/home/FeaturedProvinces";
 import LineChart from "@/components/charts/LineChart";
+import WeatherSection from "@/components/home/WeatherSection";
 import { historicalData } from "@/utils/data";
 
 const Index = () => {
@@ -21,6 +22,9 @@ const Index = () => {
       <main className="flex-grow">
         {/* Hero Section */}
         <Hero />
+        
+        {/* Real-time Weather Section */}
+        <WeatherSection />
         
         {/* Key Metrics Section */}
         <KeyMetrics />
