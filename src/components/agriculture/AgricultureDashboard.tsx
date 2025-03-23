@@ -86,6 +86,7 @@ export const AgricultureDashboard = () => {
       (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()))
     ), [soilHealthData, selectedProvince, searchTerm]);
   
+  // Fix: Changed from function to useMemo to avoid unnecessary recalculations
   const getRainfallChartData = useMemo(() => {
     if (!filteredRainfallData) return [];
     

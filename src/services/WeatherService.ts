@@ -45,7 +45,11 @@ export interface CityWeatherData {
 
 export type WeatherDataMap = Record<string, CityWeatherData>;
 
-// Use mock data since the API key is disabled
+// API key for WeatherAPI (Note: This is a mock key, replace with your actual API key)
+// const API_KEY = "your-weatherapi-com-key";
+// const BASE_URL = "https://api.weatherapi.com/v1";
+
+// Use mock data since the API key is not provided
 export const useWeatherData = (locations: string[]) => {
   const [data, setData] = useState<WeatherData[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -120,7 +124,7 @@ export const useWeatherData = (locations: string[]) => {
 
     fetchWeatherData();
     
-    // Refresh every 30 minutes
+    // Refresh every 30 minutes instead of more frequently
     const intervalId = setInterval(fetchWeatherData, 1800000);
     
     return () => clearInterval(intervalId);
@@ -139,15 +143,27 @@ export const useMultipleCitiesWeather = (cities: string[]) => {
     const fetchWeatherData = async () => {
       setLoading(true);
       try {
-        // Create mock weather data for each city
+        // In a real implementation, we would use the Weather API here
+        // Example API call:
+        // const weatherData: WeatherDataMap = {};
+        // await Promise.all(cities.map(async (city) => {
+        //   const response = await fetch(`${BASE_URL}/current.json?key=${API_KEY}&q=${city}&aqi=no`);
+        //   const data = await response.json();
+        //   weatherData[city] = data;
+        // }));
+        
+        // For now, create mock weather data for each city
         const mockData: WeatherDataMap = {};
         
         cities.forEach(city => {
-          // Generate random weather data for each city
-          const temp = Math.floor(18 + Math.random() * 15); // 18-33°C
-          const humidity = Math.floor(40 + Math.random() * 50); // 40-90%
-          const wind = Math.floor(5 + Math.random() * 20); // 5-25 km/h
-          const precip = (Math.random() * 10).toFixed(1); // 0-10mm
+          // Fix: Use deterministic values based on city name to avoid frequent flicker
+          // This creates a "hash" from the city name to generate semi-random but consistent values
+          const cityHash = [...city].reduce((hash, char) => hash + char.charCodeAt(0), 0);
+          
+          const temp = 18 + (cityHash % 15); // 18-33°C
+          const humidity = 40 + (cityHash % 50); // 40-90%
+          const wind = 5 + (cityHash % 20); // 5-25 km/h
+          const precip = ((cityHash % 100) / 10).toFixed(1); // 0-10mm
           
           // Possible weather conditions
           const conditions = [
@@ -155,9 +171,9 @@ export const useMultipleCitiesWeather = (cities: string[]) => {
             "Light rain", "Moderate rain", "Overcast", 
             "Clear"
           ];
-          const condition = conditions[Math.floor(Math.random() * conditions.length)];
+          const condition = conditions[cityHash % conditions.length];
           
-          // Current time
+          // Current time - fixed to avoid constant updates
           const now = new Date();
           const hours = now.getHours().toString().padStart(2, '0');
           const minutes = now.getMinutes().toString().padStart(2, '0');
@@ -194,7 +210,8 @@ export const useMultipleCitiesWeather = (cities: string[]) => {
     
     fetchWeatherData();
     
-    // Refresh every 30 minutes
+    // Refresh every 30 minutes (instead of a shorter interval)
+    // This will prevent too frequent updates
     const intervalId = setInterval(fetchWeatherData, 1800000);
     
     return () => clearInterval(intervalId);

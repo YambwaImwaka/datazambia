@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useMultipleCitiesWeather } from "@/services/WeatherService";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -9,9 +9,17 @@ export const WeatherSection = () => {
   const cities = ["Lusaka", "Ndola", "Livingstone", "Kitwe", "Chipata"];
   const { weatherDataMap, loading, error } = useMultipleCitiesWeather(cities);
   const [isVisible, setIsVisible] = useState(false);
+  const hasRenderedRef = useRef(false);
   
   useEffect(() => {
-    setIsVisible(true);
+    if (!hasRenderedRef.current) {
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+        hasRenderedRef.current = true;
+      }, 300);
+      
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   // Function to get appropriate weather icon
@@ -34,8 +42,8 @@ export const WeatherSection = () => {
     <section 
       className="py-16 bg-gradient-to-b from-sky-50 to-white dark:from-gray-900 dark:to-gray-950"
       style={{ 
-        opacity: 0,
-        animation: isVisible ? "fade-in 0.8s ease-out forwards" : "none"
+        opacity: isVisible ? 1 : 0,
+        transition: "opacity 0.8s ease-out"
       }}
     >
       <div className="container mx-auto px-4">

@@ -1,16 +1,115 @@
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { MapChart } from '@/components/maps/MapChart';
-import { provinces } from '@/utils/data';
+import { provinces, dataCategories } from '@/utils/data';
+import AgricultureDashboard from '@/components/agriculture/AgricultureDashboard';
+import FinanceOverview from '@/components/finance/FinanceOverview';
 
 const Explore = () => {
-  // Transform the data for the MapChart component
-  const provinceMapData = provinces.map(province => ({
-    name: province.name,
-    value: province.population, // Using population as the value
-    coordinates: province.coordinates as [number, number],
-    color: getRandomColor(province.name) // Generate a color based on province name
-  }));
+  const { categoryId } = useParams<{ categoryId?: string }>();
+  const [currentCategory, setCurrentCategory] = useState<string | undefined>(categoryId);
+  
+  useEffect(() => {
+    setCurrentCategory(categoryId);
+  }, [categoryId]);
+
+  // Determine which dashboard to show based on the category
+  const renderDashboard = () => {
+    if (currentCategory === "agriculture") {
+      return <AgricultureDashboard />;
+    } else if (currentCategory === "finance") {
+      return <FinanceOverview />;
+    } else {
+      // Default case - show the province map
+      // Transform the data for the MapChart component
+      const provinceMapData = provinces.map(province => ({
+        name: province.name,
+        value: province.population, // Using population as the value
+        coordinates: province.coordinates as [number, number],
+        color: getRandomColor(province.name) // Generate a color based on province name
+      }));
+
+      return (
+        <div className="container mx-auto py-8 px-4">
+          <h1 className="text-3xl font-bold mb-6">Explore Zambia</h1>
+          
+          <div className="mb-8">
+            <MapChart 
+              data={provinceMapData}
+              title="Population Distribution by Province"
+              description="Visualization of population density across Zambia's provinces (millions)"
+            />
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {provinces.map(province => (
+              <div key={province.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+                <div className="relative h-48 overflow-hidden">
+                  <img 
+                    src={province.image} 
+                    alt={province.name} 
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end">
+                    <div className="p-4 text-white">
+                      <h2 className="text-2xl font-bold">{province.name} Province</h2>
+                      <p className="flex items-center">
+                        <span className="mr-2">Population: {province.population}M</span>
+                        <span className="mr-2">|</span>
+                        <span>Capital: {province.capital}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="p-4">
+                  <p className="text-gray-700 dark:text-gray-300 mb-4">{province.description}</p>
+                  
+                  <div className="mb-4">
+                    <h3 className="font-semibold mb-2">Key Industries</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {province.keyIndustries.map((industry, index) => (
+                        <span 
+                          key={index} 
+                          className="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 text-xs px-2 py-1 rounded"
+                        >
+                          {industry}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="mb-4">
+                    <h3 className="font-semibold mb-2">Major Exports</h3>
+                    <div className="flex flex-wrap gap-2">
+                      {province.majorExports.map((export_, index) => (
+                        <span 
+                          key={index} 
+                          className="inline-block bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 text-xs px-2 py-1 rounded"
+                        >
+                          {export_}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h3 className="font-semibold mb-2">Tourist Attractions</h3>
+                    <ul className="list-disc list-inside text-gray-700 dark:text-gray-300">
+                      {province.touristAttractions.map((attraction, index) => (
+                        <li key={index}>{attraction}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+  };
 
   // Generate a deterministic color based on province name
   function getRandomColor(name: string) {
@@ -29,80 +128,39 @@ const Explore = () => {
   }
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <h1 className="text-3xl font-bold mb-6">Explore Zambia</h1>
-      
-      <div className="mb-8">
-        <MapChart 
-          data={provinceMapData}
-          title="Population Distribution by Province"
-          description="Visualization of population density across Zambia's provinces (millions)"
-        />
-      </div>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {provinces.map(province => (
-          <div key={province.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
-            <div className="relative h-48 overflow-hidden">
-              <img 
-                src={province.image} 
-                alt={province.name} 
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end">
-                <div className="p-4 text-white">
-                  <h2 className="text-2xl font-bold">{province.name} Province</h2>
-                  <p className="flex items-center">
-                    <span className="mr-2">Population: {province.population}M</span>
-                    <span className="mr-2">|</span>
-                    <span>Capital: {province.capital}</span>
-                  </p>
-                </div>
-              </div>
-            </div>
-            
-            <div className="p-4">
-              <p className="text-gray-700 dark:text-gray-300 mb-4">{province.description}</p>
-              
-              <div className="mb-4">
-                <h3 className="font-semibold mb-2">Key Industries</h3>
-                <div className="flex flex-wrap gap-2">
-                  {province.keyIndustries.map((industry, index) => (
-                    <span 
-                      key={index} 
-                      className="inline-block bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-100 text-xs px-2 py-1 rounded"
-                    >
-                      {industry}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              
-              <div className="mb-4">
-                <h3 className="font-semibold mb-2">Major Exports</h3>
-                <div className="flex flex-wrap gap-2">
-                  {province.majorExports.map((export_, index) => (
-                    <span 
-                      key={index} 
-                      className="inline-block bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 text-xs px-2 py-1 rounded"
-                    >
-                      {export_}
-                    </span>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="font-semibold mb-2">Tourist Attractions</h3>
-                <ul className="list-disc list-inside text-gray-700 dark:text-gray-300">
-                  {province.touristAttractions.map((attraction, index) => (
-                    <li key={index}>{attraction}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-          </div>
-        ))}
+    <div className="min-h-screen bg-white dark:bg-gray-950 pt-20">
+      <div className="container mx-auto px-4">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+            {currentCategory 
+              ? dataCategories.find(cat => cat.id === currentCategory)?.name || "Explore Data" 
+              : "Explore Zambia"}
+          </h1>
+          <p className="text-gray-600 dark:text-gray-300 mt-2">
+            {currentCategory 
+              ? dataCategories.find(cat => cat.id === currentCategory)?.description || "Explore detailed insights" 
+              : "Discover insights across Zambia's provinces and sectors"}
+          </p>
+        </div>
+        
+        {/* Category selection */}
+        <div className="flex flex-wrap gap-3 mb-8">
+          {dataCategories.map(category => (
+            <a 
+              key={category.id}
+              href={`/explore/${category.id}`}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                currentCategory === category.id 
+                  ? 'bg-zambia-600 text-white' 
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+              }`}
+            >
+              {category.name}
+            </a>
+          ))}
+        </div>
+        
+        {renderDashboard()}
       </div>
     </div>
   );

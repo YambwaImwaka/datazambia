@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Search, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -16,7 +16,9 @@ import { cn } from "@/lib/utils";
 export const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,6 +33,13 @@ export const Header = () => {
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      navigate(`/explore?search=${encodeURIComponent(searchTerm)}`);
+    }
+  };
 
   return (
     <header
@@ -132,17 +141,19 @@ export const Header = () => {
 
         {/* Search and Mobile Menu Button */}
         <div className="flex items-center space-x-4">
-          <div className="hidden md:block relative">
+          <form onSubmit={handleSearch} className="hidden md:block relative">
             <Input
               type="search"
               placeholder="Search data..."
               className="w-60 pl-9 bg-gray-50 border-gray-200 focus:border-zambia-400 rounded-full"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
             />
             <Search
               size={16}
               className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400"
             />
-          </div>
+          </form>
           
           <Button
             variant="outline"
@@ -179,17 +190,20 @@ export const Header = () => {
               </Button>
             </div>
             
-            <div className="relative mt-8">
+            <form onSubmit={handleSearch} className="relative mt-8">
               <Input
                 type="search"
                 placeholder="Search data..."
                 className="w-full pl-9 bg-gray-50 border-gray-200"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
               <Search
                 size={16}
                 className="absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400"
               />
-            </div>
+              <Button type="submit" className="sr-only">Search</Button>
+            </form>
             
             <nav className="flex flex-col space-y-6 mt-8">
               <Link
