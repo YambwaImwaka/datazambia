@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from "react";
 import { 
   useCropProductionData, 
@@ -370,7 +369,7 @@ export const AgricultureDashboard = () => {
                 </h3>
                 <div className="h-80">
                   <LineChart
-                    data={getRainfallChartData()}
+                    data={getRainfallChartData}
                     lines={[
                       { dataKey: "current", name: "Current Season", color: "#0ea5e9" },
                       { dataKey: "previous", name: "Previous Season", color: "#8b5cf6" },

@@ -23,6 +23,28 @@ export interface WeatherForecast {
   chanceOfRain: number;
 }
 
+// Add city weather data type for the useMultipleCitiesWeather hook
+export interface CityWeatherData {
+  current: {
+    temp_c: number;
+    condition: {
+      text: string;
+      icon: string;
+    };
+    wind_kph: number;
+    humidity: number;
+    precip_mm: number;
+    last_updated: string;
+  };
+  location: {
+    name: string;
+    region: string;
+    country: string;
+  };
+}
+
+export type WeatherDataMap = Record<string, CityWeatherData>;
+
 // Use mock data since the API key is disabled
 export const useWeatherData = (locations: string[]) => {
   const [data, setData] = useState<WeatherData[] | null>(null);
@@ -105,4 +127,78 @@ export const useWeatherData = (locations: string[]) => {
   }, [locations]);
 
   return { data, loading, error };
+};
+
+// Implementation of useMultipleCitiesWeather hook for WeatherSection
+export const useMultipleCitiesWeather = (cities: string[]) => {
+  const [weatherDataMap, setWeatherDataMap] = useState<WeatherDataMap>({});
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchWeatherData = async () => {
+      setLoading(true);
+      try {
+        // Create mock weather data for each city
+        const mockData: WeatherDataMap = {};
+        
+        cities.forEach(city => {
+          // Generate random weather data for each city
+          const temp = Math.floor(18 + Math.random() * 15); // 18-33°C
+          const humidity = Math.floor(40 + Math.random() * 50); // 40-90%
+          const wind = Math.floor(5 + Math.random() * 20); // 5-25 km/h
+          const precip = (Math.random() * 10).toFixed(1); // 0-10mm
+          
+          // Possible weather conditions
+          const conditions = [
+            "Sunny", "Partly cloudy", "Cloudy", 
+            "Light rain", "Moderate rain", "Overcast", 
+            "Clear"
+          ];
+          const condition = conditions[Math.floor(Math.random() * conditions.length)];
+          
+          // Current time
+          const now = new Date();
+          const hours = now.getHours().toString().padStart(2, '0');
+          const minutes = now.getMinutes().toString().padStart(2, '0');
+          const timeStr = `${hours}:${minutes}`;
+          
+          mockData[city] = {
+            current: {
+              temp_c: temp,
+              condition: {
+                text: condition,
+                icon: `//cdn.weatherapi.com/weather/64x64/day/116.png` // Placeholder icon
+              },
+              wind_kph: wind,
+              humidity: humidity,
+              precip_mm: parseFloat(precip),
+              last_updated: `2024-05-07 ${timeStr}`
+            },
+            location: {
+              name: city,
+              region: "Central Province",
+              country: "Zambia"
+            }
+          };
+        });
+        
+        setWeatherDataMap(mockData);
+      } catch (err) {
+        console.error("Error fetching weather data:", err);
+        setError(err instanceof Error ? err.message : "Unknown error occurred");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchWeatherData();
+    
+    // Refresh every 30 minutes
+    const intervalId = setInterval(fetchWeatherData, 1800000);
+    
+    return () => clearInterval(intervalId);
+  }, [cities]);
+
+  return { weatherDataMap, loading, error };
 };
