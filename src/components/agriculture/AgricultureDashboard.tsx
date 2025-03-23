@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { 
   useCropProductionData, 
@@ -11,7 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
   Wheat, 
-  Cow, 
+  Beef, 
   CloudRain, 
   Mountain, 
   TrendingUp, 
@@ -54,7 +53,6 @@ export const AgricultureDashboard = () => {
     setIsVisible(true);
   }, []);
 
-  // Filter data based on selected province and search term
   const filteredCropData = cropData?.filter(item => 
     (selectedProvince === "all" || item.province === selectedProvince) &&
     (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -77,7 +75,6 @@ export const AgricultureDashboard = () => {
     (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()))
   );
   
-  // Prepare chart data
   const getRainfallChartData = () => {
     if (!filteredRainfallData) return [];
     
@@ -93,7 +90,6 @@ export const AgricultureDashboard = () => {
   const getCropProductionChartData = () => {
     if (!filteredCropData) return [];
     
-    // Create data for major crops across provinces
     const majorCrops = ["Maize", "Cassava", "Rice", "Wheat"];
     
     return filteredCropData.map(item => {
@@ -162,7 +158,7 @@ export const AgricultureDashboard = () => {
             <span>Crop Production</span>
           </TabsTrigger>
           <TabsTrigger value="livestock" className="flex items-center space-x-2">
-            <Cow className="h-4 w-4" />
+            <Beef className="h-4 w-4" />
             <span>Livestock</span>
           </TabsTrigger>
           <TabsTrigger value="rainfall" className="flex items-center space-x-2">
