@@ -1,116 +1,108 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 // Weather data types
 export interface WeatherData {
   location: string;
-  current: {
-    temp_c: number;
-    condition: {
-      text: string;
-      icon: string;
-    };
-    wind_kph: number;
-    humidity: number;
-    precip_mm: number;
-    last_updated: string;
-  };
-  forecast?: {
-    forecastday: Array<{
-      date: string;
-      day: {
-        maxtemp_c: number;
-        mintemp_c: number;
-        condition: {
-          text: string;
-          icon: string;
-        };
-      };
-    }>;
-  };
+  temperature: number;
+  condition: string;
+  icon: string;
+  humidity: number;
+  windSpeed: number;
+  windDirection: string;
+  precipitation: number;
+  forecast: WeatherForecast[];
 }
 
-export const useWeatherData = (city: string) => {
-  const [data, setData] = useState<WeatherData | null>(null);
+export interface WeatherForecast {
+  date: string;
+  maxTemp: number;
+  minTemp: number;
+  condition: string;
+  icon: string;
+  chanceOfRain: number;
+}
+
+// Use mock data since the API key is disabled
+export const useWeatherData = (locations: string[]) => {
+  const [data, setData] = useState<WeatherData[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchWeather = async () => {
+    const fetchWeatherData = async () => {
       setLoading(true);
       try {
-        // Using WeatherAPI.com - free tier has 1,000,000 calls per month
-        const response = await fetch(
-          `https://api.weatherapi.com/v1/forecast.json?key=c73c8e4b5f464b5286b160339241505&q=${city},zambia&days=3&aqi=no&alerts=no`
-        );
+        console.log("Fetching weather data with mock service");
         
-        if (!response.ok) {
-          throw new Error('Weather data not available');
-        }
-        
-        const weatherData = await response.json();
-        setData(weatherData);
-      } catch (err) {
-        console.error('Failed to fetch weather data:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error occurred');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (city) {
-      fetchWeather();
-    }
-  }, [city]);
-
-  return { data, loading, error };
-};
-
-// Get weather for multiple cities in Zambia
-export const useMultipleCitiesWeather = (cities: string[]) => {
-  const [weatherDataMap, setWeatherDataMap] = useState<{[city: string]: WeatherData | null}>({});
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const fetchAllWeather = async () => {
-      setLoading(true);
-      try {
-        const promises = cities.map(city => 
-          fetch(`https://api.weatherapi.com/v1/forecast.json?key=c73c8e4b5f464b5286b160339241505&q=${city},zambia&days=3&aqi=no&alerts=no`)
-            .then(response => {
-              if (!response.ok) {
-                throw new Error(`Failed to fetch weather for ${city}`);
-              }
-              return response.json();
-            })
-            .then(data => ({ city, data }))
-            .catch(err => {
-              console.error(`Error fetching weather for ${city}:`, err);
-              return { city, data: null };
-            })
-        );
-
-        const results = await Promise.all(promises);
-        const dataMap: {[city: string]: WeatherData | null} = {};
-        
-        results.forEach(result => {
-          dataMap[result.city] = result.data;
+        // Generate weather data based on the provided locations
+        const mockWeatherData = locations.map(location => {
+          // Generate some randomness for realistic mock data
+          const baseTemp = 22 + (Math.random() * 10 - 5);
+          const humidity = Math.floor(50 + Math.random() * 40);
+          const windSpeed = Math.floor(5 + Math.random() * 15);
+          const precipitation = Math.floor(Math.random() * 100);
+          
+          // List of possible weather conditions
+          const conditions = ["Sunny", "Partly cloudy", "Cloudy", "Light rain", "Overcast"];
+          const condition = conditions[Math.floor(Math.random() * conditions.length)];
+          
+          // Generate icon based on condition
+          let icon = "sunny";
+          if (condition.includes("cloud")) icon = "cloudy";
+          if (condition.includes("rain")) icon = "rainy";
+          if (condition.includes("Overcast")) icon = "overcast";
+          
+          // Generate 3-day forecast
+          const forecast = Array.from({ length: 3 }, (_, i) => {
+            const forecastDate = new Date();
+            forecastDate.setDate(forecastDate.getDate() + i + 1);
+            
+            const forecastCondition = conditions[Math.floor(Math.random() * conditions.length)];
+            let forecastIcon = "sunny";
+            if (forecastCondition.includes("cloud")) forecastIcon = "cloudy";
+            if (forecastCondition.includes("rain")) forecastIcon = "rainy";
+            if (forecastCondition.includes("Overcast")) forecastIcon = "overcast";
+            
+            return {
+              date: forecastDate.toISOString().split('T')[0],
+              maxTemp: Math.floor(baseTemp + 3 + (Math.random() * 4 - 2)),
+              minTemp: Math.floor(baseTemp - 5 + (Math.random() * 4 - 2)),
+              condition: forecastCondition,
+              icon: forecastIcon,
+              chanceOfRain: Math.floor(Math.random() * 100)
+            };
+          });
+          
+          return {
+            location,
+            temperature: Math.floor(baseTemp),
+            condition,
+            icon,
+            humidity,
+            windSpeed,
+            windDirection: ["N", "NE", "E", "SE", "S", "SW", "W", "NW"][Math.floor(Math.random() * 8)],
+            precipitation,
+            forecast
+          };
         });
         
-        setWeatherDataMap(dataMap);
+        setData(mockWeatherData);
       } catch (err) {
-        console.error('Failed to fetch weather data:', err);
-        setError(err instanceof Error ? err.message : 'Unknown error occurred');
+        console.error("Error in weather service:", err);
+        setError(err instanceof Error ? err.message : "Unknown error occurred");
       } finally {
         setLoading(false);
       }
     };
 
-    if (cities.length > 0) {
-      fetchAllWeather();
-    }
-  }, [cities]);
+    fetchWeatherData();
+    
+    // Refresh every 30 minutes
+    const intervalId = setInterval(fetchWeatherData, 1800000);
+    
+    return () => clearInterval(intervalId);
+  }, [locations]);
 
-  return { weatherDataMap, loading, error };
+  return { data, loading, error };
 };

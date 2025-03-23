@@ -7,7 +7,7 @@ import ExchangeRatesSection from "./ExchangeRatesSection";
 import StockMarketSection from "./StockMarketSection";
 import EconomicIndicatorsSection from "./EconomicIndicatorsSection";
 import CommoditiesSection from "./CommoditiesSection";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export const FinanceOverview = () => {
   const { data: exchangeRates, loading: loadingExchangeRates } = useExchangeRateData();
@@ -16,22 +16,27 @@ export const FinanceOverview = () => {
   const { data: commodityPrices, loading: loadingCommodities } = useCommodityPrices();
   const [activeTab, setActiveTab] = useState("exchange-rates");
   const [isVisible, setIsVisible] = useState(false);
-  const isMobile = useIsMobile();
+  const isMobile = useMediaQuery("(max-width: 768px)");
   
   useEffect(() => {
-    setIsVisible(true);
+    // Delay visibility for smoother rendering
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   return (
     <div 
       className="w-full py-8"
       style={{ 
-        opacity: 0,
-        animation: isVisible ? "fade-in 0.8s ease-out forwards" : "none"
+        opacity: isVisible ? 1 : 0,
+        transition: "opacity 0.8s ease-out"
       }}
     >
       <Tabs defaultValue="exchange-rates" onValueChange={setActiveTab}>
-        <TabsList className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-4'} mb-8`}>
+        <TabsList className={`grid ${isMobile ? 'grid-cols-2 gap-2 mb-4' : 'grid-cols-4 mb-8'}`}>
           <TabsTrigger value="exchange-rates" className="flex items-center space-x-2">
             <DollarSign className="h-4 w-4" />
             <span className={isMobile ? 'text-xs' : ''}>Exchange Rates</span>

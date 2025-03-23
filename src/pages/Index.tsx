@@ -1,5 +1,6 @@
 
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import Hero from "@/components/home/Hero";
@@ -86,18 +87,18 @@ const Index = () => {
               Dive into comprehensive datasets, interactive visualizations, and insightful analyses
             </p>
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <a 
-                href="/explore"
+              <Link 
+                to="/explore"
                 className="inline-flex items-center justify-center h-12 px-8 bg-white text-zambia-600 font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 Start Exploring
-              </a>
-              <a 
-                href="/about"
+              </Link>
+              <Link 
+                to="/about"
                 className="inline-flex items-center justify-center h-12 px-8 bg-transparent border-2 border-white text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 Learn More
-              </a>
+              </Link>
             </div>
           </div>
         </section>

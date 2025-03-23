@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowRight, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -122,21 +122,23 @@ export const Hero = () => {
             className="opacity-0 flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4 animation-delay-500"
             style={{ animation: animationComplete ? "slide-up 0.7s ease-out forwards" : "none" }}
           >
-            <Button 
-              className="h-12 px-6 bg-zambia-600 hover:bg-zambia-700 text-white rounded-full shadow-subtle hover:shadow-elevated transform transition-all duration-300 hover:-translate-y-1"
-              onClick={() => navigate("/explore")}
-            >
-              Explore Data
-              <ArrowRight size={16} className="ml-2" />
-            </Button>
+            <Link to="/explore">
+              <Button 
+                className="h-12 px-6 bg-zambia-600 hover:bg-zambia-700 text-white rounded-full shadow-subtle hover:shadow-elevated transform transition-all duration-300 hover:-translate-y-1"
+              >
+                Explore Data
+                <ArrowRight size={16} className="ml-2" />
+              </Button>
+            </Link>
             
-            <Button 
-              variant="outline" 
-              className="h-12 px-6 border-2 border-gray-300 hover:border-zambia-400 text-gray-700 dark:text-gray-200 rounded-full shadow-subtle hover:shadow-elevated transform transition-all duration-300 hover:-translate-y-1"
-              onClick={() => navigate("/about")}
-            >
-              Learn More
-            </Button>
+            <Link to="/about">
+              <Button 
+                variant="outline" 
+                className="h-12 px-6 border-2 border-gray-300 hover:border-zambia-400 text-gray-700 dark:text-gray-200 rounded-full shadow-subtle hover:shadow-elevated transform transition-all duration-300 hover:-translate-y-1"
+              >
+                Learn More
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

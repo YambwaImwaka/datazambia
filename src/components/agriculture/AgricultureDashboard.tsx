@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { 
   useCropProductionData, 
   useLivestockData, 
@@ -38,7 +38,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tooltip } from "@/components/ui/tooltip";
-import { useIsMobile } from "@/hooks/use-mobile";
+import { useMediaQuery } from "@/hooks/use-media-query";
 
 export const AgricultureDashboard = () => {
   const { data: cropData, loading: loadingCrops } = useCropProductionData();
@@ -49,35 +49,45 @@ export const AgricultureDashboard = () => {
   const [selectedProvince, setSelectedProvince] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [isVisible, setIsVisible] = useState(false);
-  const isMobile = useIsMobile();
+  const isMobile = useMediaQuery("(max-width: 768px)");
   
   useEffect(() => {
-    setIsVisible(true);
+    // Delay visibility for smoother rendering
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+    }, 100);
+    
+    return () => clearTimeout(timer);
   }, []);
 
-  const filteredCropData = cropData?.filter(item => 
-    (selectedProvince === "all" || item.province === selectedProvince) &&
-    (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     item.crops.some(crop => crop.name.toLowerCase().includes(searchTerm.toLowerCase())))
-  );
+  // Optimize filtering with useMemo
+  const filteredCropData = useMemo(() => 
+    cropData?.filter(item => 
+      (selectedProvince === "all" || item.province === selectedProvince) &&
+      (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       item.crops.some(crop => crop.name.toLowerCase().includes(searchTerm.toLowerCase())))
+    ), [cropData, selectedProvince, searchTerm]);
   
-  const filteredLivestockData = livestockData?.filter(item => 
-    (selectedProvince === "all" || item.province === selectedProvince) &&
-    (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()) ||
-     item.livestock.some(animal => animal.type.toLowerCase().includes(searchTerm.toLowerCase())))
-  );
+  const filteredLivestockData = useMemo(() => 
+    livestockData?.filter(item => 
+      (selectedProvince === "all" || item.province === selectedProvince) &&
+      (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()) ||
+       item.livestock.some(animal => animal.type.toLowerCase().includes(searchTerm.toLowerCase())))
+    ), [livestockData, selectedProvince, searchTerm]);
   
-  const filteredRainfallData = rainfallData?.filter(item => 
-    (selectedProvince === "all" || item.province === selectedProvince) &&
-    (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredRainfallData = useMemo(() => 
+    rainfallData?.filter(item => 
+      (selectedProvince === "all" || item.province === selectedProvince) &&
+      (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()))
+    ), [rainfallData, selectedProvince, searchTerm]);
   
-  const filteredSoilData = soilHealthData?.filter(item => 
-    (selectedProvince === "all" || item.province === selectedProvince) &&
-    (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredSoilData = useMemo(() => 
+    soilHealthData?.filter(item => 
+      (selectedProvince === "all" || item.province === selectedProvince) &&
+      (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()))
+    ), [soilHealthData, selectedProvince, searchTerm]);
   
-  const getRainfallChartData = () => {
+  const getRainfallChartData = useMemo(() => {
     if (!filteredRainfallData) return [];
     
     return filteredRainfallData.map(item => ({
@@ -87,9 +97,9 @@ export const AgricultureDashboard = () => {
       average: item.tenYearAverage,
       forecast: item.forecastNextSeason
     }));
-  };
+  }, [filteredRainfallData]);
   
-  const getCropProductionChartData = () => {
+  const getCropProductionChartData = useMemo(() => {
     if (!filteredCropData) return [];
     
     const majorCrops = ["Maize", "Cassava", "Rice", "Wheat"];
@@ -105,17 +115,17 @@ export const AgricultureDashboard = () => {
       
       return result;
     });
-  };
+  }, [filteredCropData]);
 
   return (
     <div 
       className="w-full py-8"
       style={{ 
-        opacity: 0,
-        animation: isVisible ? "fade-in 0.8s ease-out forwards" : "none"
+        opacity: isVisible ? 1 : 0,
+        transition: "opacity 0.8s ease-out"
       }}
     >
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             Agricultural Data Dashboard
@@ -189,14 +199,14 @@ export const AgricultureDashboard = () => {
               </Card>
             </div>
           ) : filteredCropData?.length ? (
-            <div className="space-y-8" style={{ opacity: 0, animation: isVisible ? "fade-in 0.6s ease-out forwards" : "none" }}>
+            <div className="space-y-8" style={{ opacity: isVisible ? 1 : 0, transition: "opacity 0.6s ease-out" }}>
               <Card className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
                   Major Crop Production by Province (thousand tonnes)
                 </h3>
                 <div className="h-80">
                   <LineChart
-                    data={getCropProductionChartData()}
+                    data={getCropProductionChartData}
                     lines={[
                       { dataKey: "maize", name: "Maize", color: "#eab308" },
                       { dataKey: "cassava", name: "Cassava", color: "#10b981" },
@@ -228,7 +238,7 @@ export const AgricultureDashboard = () => {
                       </TableRow>
                     </TableHeader>
                     <TableBody>
-                      {filteredCropData.flatMap(province => 
+                      {filteredCropData?.flatMap(province => 
                         province.crops.map(crop => (
                           <TableRow key={`${province.province}-${crop.name}`}>
                             <TableCell className="font-medium">{province.province}</TableCell>
