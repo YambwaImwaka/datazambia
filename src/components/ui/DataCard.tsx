@@ -1,14 +1,8 @@
-
 import { useState, ReactElement } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronUp, ChevronDown, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Tooltip } from "@/components/ui/tooltip";
 
 interface DataCardProps {
   title: string;
@@ -58,18 +52,11 @@ export const DataCard = ({
             {title}
           </CardTitle>
           {description && (
-            <TooltipProvider>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
-                    <HelpCircle size={16} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs p-2 text-xs" side="bottom">
-                  {description}
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip content={description}>
+              <button className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300">
+                <HelpCircle size={16} />
+              </button>
+            </Tooltip>
           )}
         </div>
       </CardHeader>

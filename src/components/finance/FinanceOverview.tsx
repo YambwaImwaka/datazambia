@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useExchangeRateData, useStockMarketData, useEconomicIndicators, useCommodityPrices } from "@/services/FinanceService";
 import { Card } from "@/components/ui/card";
@@ -28,8 +27,8 @@ export const FinanceOverview = () => {
   
   // Transform stock market performance data for chart
   const getChartData = () => {
-    if (!stockMarket) return [];
-    return stockMarket.index.recentPerformance?.map(item => ({
+    if (!stockMarket || !stockMarket.chartData) return [];
+    return stockMarket.chartData.map(item => ({
       date: item.date.slice(5), // Remove year for cleaner display
       value: item.value
     })) || [];

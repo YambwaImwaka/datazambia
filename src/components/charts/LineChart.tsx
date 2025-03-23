@@ -12,13 +12,16 @@ import {
 } from "recharts";
 import { cn } from "@/lib/utils";
 
+interface LineProps {
+  dataKey: string;
+  name: string;
+  color: string;
+  strokeDasharray?: string;
+}
+
 interface LineChartProps {
   data: any[];
-  lines: Array<{
-    dataKey: string;
-    name: string;
-    color: string;
-  }>;
+  lines: LineProps[];
   xAxisKey: string;
   xAxisLabel?: string;
   yAxisLabel?: string;
@@ -162,6 +165,7 @@ export const LineChart = ({
               name={line.name}
               stroke={line.color}
               strokeWidth={2}
+              strokeDasharray={line.strokeDasharray}
               dot={{ r: 4, strokeWidth: 2 }}
               activeDot={{ r: 6, strokeWidth: 0, fill: line.color }}
               isAnimationActive={isVisible && showAnimation}

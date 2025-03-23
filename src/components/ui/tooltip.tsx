@@ -38,7 +38,7 @@ const Tooltip = ({
     <TooltipRoot {...props}>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
       <TooltipContent>
-        <p>{content}</p>
+        {typeof content === 'string' ? <p>{content}</p> : content}
       </TooltipContent>
     </TooltipRoot>
   </TooltipProvider>
