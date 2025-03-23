@@ -1,6 +1,7 @@
 
 import * as React from "react";
 import * as TooltipPrimitive from "@radix-ui/react-tooltip";
+
 import { cn } from "@/lib/utils";
 
 const TooltipProvider = TooltipPrimitive.Provider;
@@ -17,7 +18,7 @@ const TooltipContent = React.forwardRef<
     ref={ref}
     sideOffset={sideOffset}
     className={cn(
-      "z-50 overflow-hidden rounded-md border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-950 shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-50",
+      "z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
       className
     )}
     {...props}
@@ -25,21 +26,16 @@ const TooltipContent = React.forwardRef<
 ));
 TooltipContent.displayName = TooltipPrimitive.Content.displayName;
 
-// Export a Tooltip component that wraps all the parts
-const Tooltip = ({
-  children,
-  content,
-  ...props
-}: {
+interface TooltipProps extends React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Root> {
   children: React.ReactNode;
   content: React.ReactNode;
-} & React.ComponentPropsWithoutRef<typeof TooltipRoot>) => (
+}
+
+const Tooltip = ({ children, content, ...props }: TooltipProps) => (
   <TooltipProvider>
     <TooltipRoot {...props}>
       <TooltipTrigger asChild>{children}</TooltipTrigger>
-      <TooltipContent>
-        {typeof content === 'string' ? <p>{content}</p> : content}
-      </TooltipContent>
+      <TooltipContent>{content}</TooltipContent>
     </TooltipRoot>
   </TooltipProvider>
 );
