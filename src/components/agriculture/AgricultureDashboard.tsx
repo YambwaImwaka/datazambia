@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { 
   useCropProductionData, 
@@ -26,7 +27,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { LineChart } from "@/components/charts/LineChart";
 import { 
   Table,
@@ -38,6 +38,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Tooltip } from "@/components/ui/tooltip";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const AgricultureDashboard = () => {
   const { data: cropData, loading: loadingCrops } = useCropProductionData();
@@ -48,6 +49,7 @@ export const AgricultureDashboard = () => {
   const [selectedProvince, setSelectedProvince] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [isVisible, setIsVisible] = useState(false);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     setIsVisible(true);
@@ -123,7 +125,7 @@ export const AgricultureDashboard = () => {
           </p>
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0">
+        <div className="flex flex-col sm:flex-row gap-4 mt-4 md:mt-0 w-full md:w-auto">
           <div className="relative">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-500 dark:text-gray-400" />
             <Input
@@ -152,22 +154,22 @@ export const AgricultureDashboard = () => {
       </div>
       
       <Tabs defaultValue="crop-production" onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-2 md:grid-cols-4 mb-8">
+        <TabsList className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-4'} mb-8`}>
           <TabsTrigger value="crop-production" className="flex items-center space-x-2">
             <Wheat className="h-4 w-4" />
-            <span>Crop Production</span>
+            <span className={isMobile ? 'text-xs' : ''}>Crop Production</span>
           </TabsTrigger>
           <TabsTrigger value="livestock" className="flex items-center space-x-2">
             <Beef className="h-4 w-4" />
-            <span>Livestock</span>
+            <span className={isMobile ? 'text-xs' : ''}>Livestock</span>
           </TabsTrigger>
           <TabsTrigger value="rainfall" className="flex items-center space-x-2">
             <CloudRain className="h-4 w-4" />
-            <span>Rainfall Patterns</span>
+            <span className={isMobile ? 'text-xs' : ''}>Rainfall Patterns</span>
           </TabsTrigger>
           <TabsTrigger value="soil-health" className="flex items-center space-x-2">
             <Mountain className="h-4 w-4" />
-            <span>Soil Health</span>
+            <span className={isMobile ? 'text-xs' : ''}>Soil Health</span>
           </TabsTrigger>
         </TabsList>
         

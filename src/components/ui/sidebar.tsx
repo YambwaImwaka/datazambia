@@ -1,749 +1,607 @@
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
-import { VariantProps, cva } from "class-variance-authority"
-import { PanelLeft } from "lucide-react"
-
-import { useIsMobile } from "@/hooks/use-mobile"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
-import { Sheet, SheetContent } from "@/components/ui/sheet"
-import { Skeleton } from "@/components/ui/skeleton"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+  navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+import { provinces } from "@/utils/data"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Search } from "lucide-react"
+import { Separator } from "@/components/ui/separator"
+import { Switch } from "@/components/ui/switch"
+import { Tooltip } from "@/components/ui/tooltip"
+import { useTheme } from "@/components/theme-provider"
+import { useIsMobile } from "@/hooks/use-mobile"
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import { Calendar } from "@/components/ui/calendar"
+import { cn } from "@/lib/utils"
+import { CalendarIcon } from "lucide-react"
+import { format } from "date-fns"
+import { DateRange } from "react-day-picker"
+import { useMediaQuery } from "@/hooks/use-media-query"
 
-const SIDEBAR_COOKIE_NAME = "sidebar:state"
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
-const SIDEBAR_WIDTH = "16rem"
-const SIDEBAR_WIDTH_MOBILE = "18rem"
-const SIDEBAR_WIDTH_ICON = "3rem"
-const SIDEBAR_KEYBOARD_SHORTCUT = "b"
+const list = [
+  "Overview",
+  "Health",
+  "Education",
+  "Agriculture",
+  "Economy",
+  "Finance",
+]
 
-type SidebarContext = {
-  state: "expanded" | "collapsed"
-  open: boolean
-  setOpen: (open: boolean) => void
-  openMobile: boolean
-  setOpenMobile: (open: boolean) => void
-  isMobile: boolean
-  toggleSidebar: () => void
-}
-
-const SidebarContext = React.createContext<SidebarContext | null>(null)
-
-function useSidebar() {
-  const context = React.useContext(SidebarContext)
-  if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider.")
-  }
-
-  return context
-}
-
-const SidebarProvider = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div"> & {
-    defaultOpen?: boolean
-    open?: boolean
-    onOpenChange?: (open: boolean) => void
-  }
->(
-  (
-    {
-      defaultOpen = true,
-      open: openProp,
-      onOpenChange: setOpenProp,
-      className,
-      style,
-      children,
-      ...props
-    },
-    ref
-  ) => {
-    const isMobile = useIsMobile()
-    const [openMobile, setOpenMobile] = React.useState(false)
-
-    const [_open, _setOpen] = React.useState(defaultOpen)
-    const open = openProp ?? _open
-    const setOpen = React.useCallback(
-      (value: boolean | ((value: boolean) => boolean)) => {
-        const openState = typeof value === "function" ? value(open) : value
-        if (setOpenProp) {
-          setOpenProp(openState)
-        } else {
-          _setOpen(openState)
-        }
-
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
-      },
-      [setOpenProp, open]
-    )
-
-    const toggleSidebar = React.useCallback(() => {
-      return isMobile
-        ? setOpenMobile((open) => !open)
-        : setOpen((open) => !open)
-    }, [isMobile, setOpen, setOpenMobile])
-
-    React.useEffect(() => {
-      const handleKeyDown = (event: KeyboardEvent) => {
-        if (
-          event.key === SIDEBAR_KEYBOARD_SHORTCUT &&
-          (event.metaKey || event.ctrlKey)
-        ) {
-          event.preventDefault()
-          toggleSidebar()
-        }
-      }
-
-      window.addEventListener("keydown", handleKeyDown)
-      return () => window.removeEventListener("keydown", handleKeyDown)
-    }, [toggleSidebar])
-
-    const state = open ? "expanded" : "collapsed"
-
-    const contextValue = React.useMemo<SidebarContext>(
-      () => ({
-        state,
-        open,
-        setOpen,
-        isMobile,
-        openMobile,
-        setOpenMobile,
-        toggleSidebar,
-      }),
-      [state, open, setOpen, isMobile, openMobile, setOpenMobile, toggleSidebar]
-    )
-
-    return (
-      <SidebarContext.Provider value={contextValue}>
-        <TooltipProvider delayDuration={0}>
-          <div
-            style={
-              {
-                "--sidebar-width": SIDEBAR_WIDTH,
-                "--sidebar-width-icon": SIDEBAR_WIDTH_ICON,
-                ...style,
-              } as React.CSSProperties
-            }
-            className={cn(
-              "group/sidebar-wrapper flex min-h-svh w-full has-[[data-variant=inset]]:bg-sidebar",
-              className
-            )}
-            ref={ref}
-            {...props}
-          >
-            {children}
-          </div>
-        </TooltipProvider>
-      </SidebarContext.Provider>
-    )
-  }
-)
-SidebarProvider.displayName = "SidebarProvider"
-
-const Sidebar = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div"> & {
-    side?: "left" | "right"
-    variant?: "sidebar" | "floating" | "inset"
-    collapsible?: "offcanvas" | "icon" | "none"
-  }
->(
-  (
-    {
-      side = "left",
-      variant = "sidebar",
-      collapsible = "offcanvas",
-      className,
-      children,
-      ...props
-    },
-    ref
-  ) => {
-    const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
-
-    if (collapsible === "none") {
-      return (
-        <div
-          className={cn(
-            "flex h-full w-[--sidebar-width] flex-col bg-sidebar text-sidebar-foreground",
-            className
-          )}
+const ListItem = React.forwardRef<
+  React.ElementRef<"a">,
+  React.ComponentPropsWithoutRef<"a">
+>(({ className, title, children, ...props }, ref) => {
+  return (
+    <li>
+      <NavigationMenuLink asChild>
+        <a
           ref={ref}
-          {...props}
-        >
-          {children}
-        </div>
-      )
-    }
-
-    if (isMobile) {
-      return (
-        <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
-          <SheetContent
-            data-sidebar="sidebar"
-            data-mobile="true"
-            className="w-[--sidebar-width] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-            style={
-              {
-                "--sidebar-width": SIDEBAR_WIDTH_MOBILE,
-              } as React.CSSProperties
-            }
-            side={side}
-          >
-            <div className="flex h-full w-full flex-col">{children}</div>
-          </SheetContent>
-        </Sheet>
-      )
-    }
-
-    return (
-      <div
-        ref={ref}
-        className="group peer hidden md:block text-sidebar-foreground"
-        data-state={state}
-        data-collapsible={state === "collapsed" ? collapsible : ""}
-        data-variant={variant}
-        data-side={side}
-      >
-        <div
           className={cn(
-            "duration-200 relative h-svh w-[--sidebar-width] bg-transparent transition-[width] ease-linear",
-            "group-data-[collapsible=offcanvas]:w-0",
-            "group-data-[side=right]:rotate-180",
-            variant === "floating" || variant === "inset"
-              ? "group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4))]"
-              : "group-data-[collapsible=icon]:w-[--sidebar-width-icon]"
-          )}
-        />
-        <div
-          className={cn(
-            "duration-200 fixed inset-y-0 z-10 hidden h-svh w-[--sidebar-width] transition-[left,right,width] ease-linear md:flex",
-            side === "left"
-              ? "left-0 group-data-[collapsible=offcanvas]:left-[calc(var(--sidebar-width)*-1)]"
-              : "right-0 group-data-[collapsible=offcanvas]:right-[calc(var(--sidebar-width)*-1)]",
-            variant === "floating" || variant === "inset"
-              ? "p-2 group-data-[collapsible=icon]:w-[calc(var(--sidebar-width-icon)_+_theme(spacing.4)_+2px)]"
-              : "group-data-[collapsible=icon]:w-[--sidebar-width-icon] group-data-[side=left]:border-r group-data-[side=right]:border-l",
+            "block select-none space-y-1.5 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
             className
           )}
           {...props}
         >
-          <div
-            data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-sidebar-border group-data-[variant=floating]:shadow"
-          >
+          <div className="text-sm font-medium leading-none">{title}</div>
+          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
             {children}
+          </p>
+        </a>
+      </NavigationMenuLink>
+    </li>
+  )
+})
+ListItem.displayName = "ListItem"
+
+interface SidebarProps {
+  isSidebarOpen: boolean
+  setIsSidebarOpen: (isOpen: boolean) => void
+  isSearchOpen: boolean
+  setIsSearchOpen: (isOpen: boolean) => void
+}
+
+export function Sidebar({
+  isSidebarOpen,
+  setIsSidebarOpen,
+  isSearchOpen,
+  setIsSearchOpen,
+}: SidebarProps) {
+  const [isThemeMenuOpen, setIsThemeMenuOpen] = React.useState(false)
+  const [date, setDate] = React.useState<DateRange>({
+    from: new Date(2023, 0, 20),
+    to: new Date(2023, 0, 22),
+  })
+  const isMobile = useIsMobile()
+  const isLargeScreen = useMediaQuery("(min-width: 1024px)")
+  const { setTheme } = useTheme()
+  const [isManualOpen, setIsManualOpen] = React.useState(false)
+  const [isAutomaticOpen, setIsAutomaticOpen] = React.useState(false)
+  const [isTaskOpen, setIsTaskOpen] = React.useState(false)
+  const [isSettingsOpen, setIsSettingsOpen] = React.useState(false)
+  const [isProfileOpen, setIsProfileOpen] = React.useState(false)
+  const [isNotificationsOpen, setIsNotificationsOpen] = React.useState(false)
+  const [isDisplayOpen, setIsDisplayOpen] = React.useState(false)
+  const [isAccessibilityOpen, setIsAccessibilityOpen] = React.useState(false)
+  const [isLanguageOpen, setIsLanguageOpen] = React.useState(false)
+  const [isSecurityOpen, setIsSecurityOpen] = React.useState(false)
+  const [isBillingOpen, setIsBillingOpen] = React.useState(false)
+  const [isAppearanceOpen, setIsAppearanceOpen] = React.useState(false)
+  const [isAdvancedOpen, setIsAdvancedOpen] = React.useState(false)
+  const [isIntegrationsOpen, setIsIntegrationsOpen] = React.useState(false)
+  const [isKeyboardShortcutsOpen, setIsKeyboardShortcutsOpen] =
+    React.useState(false)
+  const [isHelpOpen, setIsHelpOpen] = React.useState(false)
+  const [isFeedbackOpen, setIsFeedbackOpen] = React.useState(false)
+  const [isAboutOpen, setIsAboutOpen] = React.useState(false)
+  const [isContactOpen, setIsContactOpen] = React.useState(false)
+  const [isTermsOpen, setIsTermsOpen] = React.useState(false)
+  const [isPrivacyOpen, setIsPrivacyOpen] = React.useState(false)
+  const [isLicenseOpen, setIsLicenseOpen] = React.useState(false)
+  const [isChangelogOpen, setIsChangelogOpen] = React.useState(false)
+  const [isStatusOpen, setIsStatusOpen] = React.useState(false)
+  const [isLogOutOpen, setIsLogOutOpen] = React.useState(false)
+  const [isDeleteAccountOpen, setIsDeleteAccountOpen] = React.useState(false)
+  const [isNewFeatureOpen, setIsNewFeatureOpen] = React.useState(false)
+  const [isBugReportOpen, setIsBugReportOpen] = React.useState(false)
+  const [isPerformanceOpen, setIsPerformanceOpen] = React.useState(false)
+  const [isExperimentalOpen, setIsExperimentalOpen] = React.useState(false)
+  const [isBetaOpen, setIsBetaOpen] = React.useState(false)
+  const [isDarkMode, setDarkMode] = React.useState(false)
+  const [isHighContrast, setHighContrast] = React.useState(false)
+  const [isReducedMotion, setReducedMotion] = React.useState(false)
+  const [isDyslexiaFriendly, setDyslexiaFriendly] = React.useState(false)
+  const [isKeyboardNavigation, setKeyboardNavigation] = React.useState(false)
+  const [isScreenReaderSupport, setScreenReaderSupport] = React.useState(false)
+  const [isSpeechRecognition, setSpeechRecognition] = React.useState(false)
+  const [isZoomEnabled, setZoomEnabled] = React.useState(false)
+  const [isCustomTheme, setCustomTheme] = React.useState(false)
+  const [isNotificationsEnabled, setNotificationsEnabled] =
+    React.useState(false)
+  const [isEmailNotificationsEnabled, setEmailNotificationsEnabled] =
+    React.useState(false)
+  const [isPushNotificationsEnabled, setPushNotificationsEnabled] =
+    React.useState(false)
+  const [isSoundNotificationsEnabled, setSoundNotificationsEnabled] =
+    React.useState(false)
+  const [isVibrationNotificationsEnabled, setVibrationNotificationsEnabled] =
+    React.useState(false)
+  const [isLedNotificationsEnabled, setLedNotificationsEnabled] =
+    React.useState(false)
+  const [isLocationServicesEnabled, setLocationServicesEnabled] =
+    React.useState(false)
+  const [isMicrophoneAccessEnabled, setMicrophoneAccessEnabled] =
+    React.useState(false)
+  const [isCameraAccessEnabled, setCameraAccessEnabled] = React.useState(false)
+  const [isContactsAccessEnabled, setContactsAccessEnabled] =
+    React.useState(false)
+  const [isCalendarAccessEnabled, setCalendarAccessEnabled] =
+    React.useState(false)
+  const [isPhotosAccessEnabled, setPhotosAccessEnabled] = React.useState(false)
+  const [isRemindersAccessEnabled, setRemindersAccessEnabled] =
+    React.useState(false)
+  const [isMotionAccessEnabled, setMotionAccessEnabled] = React.useState(false)
+  const [isBackgroundAppRefreshEnabled, setBackgroundAppRefreshEnabled] =
+    React.useState(false)
+  const [isCellularDataAccessEnabled, setCellularDataAccessEnabled] =
+    React.useState(false)
+  const [isBluetoothAccessEnabled, setBluetoothAccessEnabled] =
+    React.useState(false)
+  const [isAdvertisingTrackingEnabled, setAdvertisingTrackingEnabled] =
+    React.useState(false)
+  const [isAnalyticsEnabled, setAnalyticsEnabled] = React.useState(false)
+  const [isCrashReportingEnabled, setCrashReportingEnabled] =
+    React.useState(false)
+  const [isPersonalizedAdsEnabled, setPersonalizedAdsEnabled] =
+    React.useState(false)
+  const [isLocationBasedAdsEnabled, setLocationBasedAdsEnabled] =
+    React.useState(false)
+  const [isInterestBasedAdsEnabled, setInterestBasedAdsEnabled] =
+    React.useState(false)
+  const [isThirdPartyCookiesEnabled, setThirdPartyCookiesEnabled] =
+    React.useState(false)
+  const [isDoNotTrackEnabled, setDoNotTrackEnabled] = React.useState(false)
+  const [isAutomaticUpdatesEnabled, setAutomaticUpdatesEnabled] =
+    React.useState(false)
+  const [isBetaProgramEnabled, setBetaProgramEnabled] = React.useState(false)
+  const [isDeveloperModeEnabled, setDeveloperModeEnabled] =
+    React.useState(false)
+  const [isHardwareAccelerationEnabled, setHardwareAccelerationEnabled] =
+    React.useState(false)
+  const [isWebGLEnabled, setWebGLEnabled] = React.useState(false)
+  const [isExperimentalFeaturesEnabled, setExperimentalFeaturesEnabled] =
+    React.useState(false)
+  const [isAccessibilityFeaturesEnabled, setAccessibilityFeaturesEnabled] =
+    React.useState(false)
+  const [isAdvancedSettingsEnabled, setAdvancedSettingsEnabled] =
+    React.useState(false)
+  const [isDataCollectionEnabled, setDataCollectionEnabled] =
+    React.useState(false)
+  const [isCloudSyncEnabled, setCloudSyncEnabled] = React.useState(false)
+  const [isAutoSaveEnabled, setAutoSaveEnabled] = React.useState(false)
+  const [isSpellCheckEnabled, setSpellCheckEnabled] = React.useState(false)
+  const [isGrammarCheckEnabled, setGrammarCheckEnabled] =
+    React.useState(false)
+  const [isAutoCorrectEnabled, setAutoCorrectEnabled] = React.useState(false)
+  const [isTextPredictionEnabled, setTextPredictionEnabled] =
+    React.useState(false)
+  const [isSmartComposeEnabled, setSmartComposeEnabled] =
+    React.useState(false)
+  const [isOfflineAccessEnabled, setOfflineAccessEnabled] =
+    React.useState(false)
+  const [isLocationSharingEnabled, setLocationSharingEnabled] =
+    React.useState(false)
+  const [isMicrophoneSharingEnabled, setMicrophoneSharingEnabled] =
+    React.useState(false)
+  const [isCameraSharingEnabled, setCameraSharingEnabled] =
+    React.useState(false)
+  const [isContactsSharingEnabled, setContactsSharingEnabled] =
+    React.useState(false)
+  const [isCalendarSharingEnabled, setCalendarSharingEnabled] =
+    React.useState(false)
+  const [isPhotosSharingEnabled, setPhotosSharingEnabled] =
+    React.useState(false)
+  const [isRemindersSharingEnabled, setRemindersSharingEnabled] =
+    React.useState(false)
+  const [isMotionSharingEnabled, setMotionSharingEnabled] =
+    React.useState(false)
+  const [isBackgroundAppRefreshSharingEnabled, setBackgroundAppRefreshSharingEnabled] =
+    React.useState(false)
+  const [isCellularDataSharingEnabled, setCellularDataSharingEnabled] =
+    React.useState(false)
+  const [isBluetoothSharingEnabled, setBluetoothSharingEnabled] =
+    React.useState(false)
+  const [isAdvertisingTrackingSharingEnabled, setAdvertisingTrackingSharingEnabled] =
+    React.useState(false)
+  const [isAnalyticsSharingEnabled, setAnalyticsSharingEnabled] =
+    React.useState(false)
+  const [isCrashReportingSharingEnabled, setCrashReportingSharingEnabled] =
+    React.useState(false)
+  const [isPersonalizedAdsSharingEnabled, setPersonalizedAdsSharingEnabled] =
+    React.useState(false)
+  const [isLocationBasedAdsSharingEnabled, setLocationBasedAdsSharingEnabled] =
+    React.useState(false)
+  const [isInterestBasedAdsSharingEnabled, setInterestBasedAdsSharingEnabled] =
+    React.useState(false)
+  const [isThirdPartyCookiesSharingEnabled, setThirdPartyCookiesSharingEnabled] =
+    React.useState(false)
+  const [isDoNotTrackSharingEnabled, setDoNotTrackSharingEnabled] =
+    React.useState(false)
+  const [isAutomaticUpdatesSharingEnabled, setAutomaticUpdatesSharingEnabled] =
+    React.useState(false)
+  const [isBetaProgramSharingEnabled, setBetaProgramSharingEnabled] =
+    React.useState(false)
+  const [isDeveloperModeSharingEnabled, setDeveloperModeSharingEnabled] =
+    React.useState(false)
+  const [isHardwareAccelerationSharingEnabled, setHardwareAccelerationSharingEnabled] =
+    React.useState(false)
+  const [isWebGLEnabledSharingEnabled, setWebGLEnabledSharingEnabled] =
+    React.useState(false)
+  const [isExperimentalFeaturesSharingEnabled, setExperimentalFeaturesSharingEnabled] =
+    React.useState(false)
+  const [isAccessibilityFeaturesSharingEnabled, setAccessibilityFeaturesSharingEnabled] =
+    React.useState(false)
+  const [isAdvancedSettingsSharingEnabled, setAdvancedSettingsSharingEnabled] =
+    React.useState(false)
+  const [isDataCollectionSharingEnabled, setDataCollectionSharingEnabled] =
+    React.useState(false)
+  const [isCloudSyncSharingEnabled, setCloudSyncSharingEnabled] =
+    React.useState(false)
+  const [isAutoSaveSharingEnabled, setAutoSaveSharingEnabled] =
+    React.useState(false)
+  const [isSpellCheckSharingEnabled, setSpellCheckSharingEnabled] =
+    React.useState(false)
+  const [isGrammarCheckSharingEnabled, setGrammarCheckSharingEnabled] =
+    React.useState(false)
+  const [isAutoCorrectSharingEnabled, setAutoCorrectSharingEnabled] =
+    React.useState(false)
+  const [isTextPredictionSharingEnabled, setTextPredictionSharingEnabled] =
+    React.useState(false)
+  const [isSmartComposeSharingEnabled, setSmartComposeSharingEnabled] =
+    React.useState(false)
+  const [isOfflineAccessSharingEnabled, setOfflineAccessSharingEnabled] =
+    React.useState(false)
+
+  return (
+    <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+      <SheetTrigger asChild>
+        <Button variant="ghost" size="sm" className="p-0">
+          {isLargeScreen ? "Open Sidebar" : "Menu"}
+        </Button>
+      </SheetTrigger>
+      <SheetContent
+        side="left"
+        className="w-full sm:w-64 border-r pr-0"
+      >
+        <SheetHeader className="pl-6 pb-1.5">
+          <SheetTitle>Menu</SheetTitle>
+          <SheetDescription>
+            Navigate through Zambia's key data categories.
+          </SheetDescription>
+        </SheetHeader>
+        <ScrollArea className="h-[calc(100vh-8rem)] pl-6 pb-6">
+          <Separator className="mb-4" />
+          <NavigationMenu>
+            <NavigationMenuList>
+              <NavigationMenuItem>
+                <NavigationMenuTrigger>Data Categories</NavigationMenuTrigger>
+                <NavigationMenuContent>
+                  <ul className="grid gap-3 p-4 md:w-[400px] md:grid-cols-2 lg:w-[500px]">
+                    {list.map((item) => (
+                      <ListItem key={item} title={item}>
+                        Comprehensive statistics and insights.
+                      </ListItem>
+                    ))}
+                  </ul>
+                </NavigationMenuContent>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <a
+                    href="#"
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "data-[active]:text-foreground data-[state=open]:bg-accent data-[state=open]:text-foreground"
+                    )}
+                  >
+                    Explore Provinces
+                  </a>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <a
+                    href="#"
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "data-[active]:text-foreground data-[state=open]:bg-accent data-[state=open]:text-foreground"
+                    )}
+                  >
+                    Key Metrics
+                  </a>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <a
+                    href="#"
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "data-[active]:text-foreground data-[state=open]:bg-accent data-[state=open]:text-foreground"
+                    )}
+                  >
+                    Financial Data
+                  </a>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <a
+                    href="#"
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "data-[active]:text-foreground data-[state=open]:bg-accent data-[state=open]:text-foreground"
+                    )}
+                  >
+                    Economic Sectors
+                  </a>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <a
+                    href="#"
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "data-[active]:text-foreground data-[state=open]:bg-accent data-[state=open]:text-foreground"
+                    )}
+                  >
+                    Historical Trends
+                  </a>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <a
+                    href="#"
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "data-[active]:text-foreground data-[state=open]:bg-accent data-[state=open]:text-foreground"
+                    )}
+                  >
+                    Health Metrics
+                  </a>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <a
+                    href="#"
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "data-[active]:text-foreground data-[state=open]:bg-accent data-[state=open]:text-foreground"
+                    )}
+                  >
+                    Education Metrics
+                  </a>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <a
+                    href="#"
+                    className={cn(
+                      navigationMenuTriggerStyle(),
+                      "data-[active]:text-foreground data-[state=open]:bg-accent data-[state=open]:text-foreground"
+                    )}
+                  >
+                    Agriculture Metrics
+                  </a>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+          <Separator className="my-4" />
+          <Accordion type="single" collapsible>
+            <AccordionItem value="provinces">
+              <AccordionTrigger>Provinces</AccordionTrigger>
+              <AccordionContent>
+                <ul className="grid gap-3 p-4 md:w-[400px] md:grid-cols-2 lg:w-[500px]">
+                  {provinces.map((province) => (
+                    <li key={province.id}>
+                      <NavigationMenuLink asChild>
+                        <a
+                          href="#"
+                          className={cn(
+                            "block select-none space-y-1.5 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                          )}
+                        >
+                          <div className="text-sm font-medium leading-none">
+                            {province.name}
+                          </div>
+                          <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                            {province.description}
+                          </p>
+                        </a>
+                      </NavigationMenuLink>
+                    </li>
+                  ))}
+                </ul>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <Separator className="my-4" />
+          <div className="flex items-center space-x-2">
+            <Avatar>
+              <AvatarImage src="/examples/card-example.png" alt="Avatar" />
+              <AvatarFallback>OM</AvatarFallback>
+            </Avatar>
+            <div className="space-y-0.5">
+              <h4 className="text-sm font-medium leading-none">
+                Zambian Insights
+              </h4>
+              <p className="text-xs text-muted-foreground">info@zm.gov</p>
+            </div>
           </div>
-        </div>
-      </div>
-    )
-  }
-)
-Sidebar.displayName = "Sidebar"
-
-const SidebarTrigger = React.forwardRef<
-  React.ElementRef<typeof Button>,
-  React.ComponentProps<typeof Button>
->(({ className, onClick, ...props }, ref) => {
-  const { toggleSidebar } = useSidebar()
-
-  return (
-    <Button
-      ref={ref}
-      data-sidebar="trigger"
-      variant="ghost"
-      size="icon"
-      className={cn("h-7 w-7", className)}
-      onClick={(event) => {
-        onClick?.(event)
-        toggleSidebar()
-      }}
-      {...props}
-    >
-      <PanelLeft />
-      <span className="sr-only">Toggle Sidebar</span>
-    </Button>
+          <Separator className="my-4" />
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium">Settings</h4>
+            <Button variant="ghost" className="w-full justify-start">
+              Profile
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Notifications
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Display
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Accessibility
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Language
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Security
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Billing
+            </Button>
+          </div>
+          <Separator className="my-4" />
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium">Appearance</h4>
+            <Button variant="ghost" className="w-full justify-start">
+              Theme
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Customization
+            </Button>
+          </div>
+          <Separator className="my-4" />
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium">Advanced</h4>
+            <Button variant="ghost" className="w-full justify-start">
+              Integrations
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Keyboard shortcuts
+            </Button>
+          </div>
+          <Separator className="my-4" />
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium">Help</h4>
+            <Button variant="ghost" className="w-full justify-start">
+              New Feature
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Bug Report
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Performance
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Experimental
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Beta
+            </Button>
+          </div>
+          <Separator className="my-4" />
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium">Legal</h4>
+            <Button variant="ghost" className="w-full justify-start">
+              Terms of Service
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Privacy Policy
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              License
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Changelog
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Status
+            </Button>
+          </div>
+          <Separator className="my-4" />
+          <div className="space-y-2">
+            <h4 className="text-sm font-medium">Account</h4>
+            <Button variant="ghost" className="w-full justify-start">
+              Log out
+            </Button>
+            <Button variant="ghost" className="w-full justify-start">
+              Delete account
+            </Button>
+          </div>
+        </ScrollArea>
+        <SheetFooter className="flex flex-col items-center justify-end space-y-2 border-t p-6">
+          <Tooltip content="Search the data">
+            <button
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+            >
+              <Search className="h-5 w-5 text-gray-600 dark:text-gray-300" />
+            </button>
+          </Tooltip>
+          <SheetClose asChild>
+            <Button type="button" variant="outline">
+              Close
+            </Button>
+          </SheetClose>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   )
-})
-SidebarTrigger.displayName = "SidebarTrigger"
-
-const SidebarRail = React.forwardRef<
-  HTMLButtonElement,
-  React.ComponentProps<"button">
->(({ className, ...props }, ref) => {
-  const { toggleSidebar } = useSidebar()
-
-  return (
-    <button
-      ref={ref}
-      data-sidebar="rail"
-      aria-label="Toggle Sidebar"
-      tabIndex={-1}
-      onClick={toggleSidebar}
-      title="Toggle Sidebar"
-      className={cn(
-        "absolute inset-y-0 z-20 hidden w-4 -translate-x-1/2 transition-all ease-linear after:absolute after:inset-y-0 after:left-1/2 after:w-[2px] hover:after:bg-sidebar-border group-data-[side=left]:-right-4 group-data-[side=right]:left-0 sm:flex",
-        "[[data-side=left]_&]:cursor-w-resize [[data-side=right]_&]:cursor-e-resize",
-        "[[data-side=left][data-state=collapsed]_&]:cursor-e-resize [[data-side=right][data-state=collapsed]_&]:cursor-w-resize",
-        "group-data-[collapsible=offcanvas]:translate-x-0 group-data-[collapsible=offcanvas]:after:left-full group-data-[collapsible=offcanvas]:hover:bg-sidebar",
-        "[[data-side=left][data-collapsible=offcanvas]_&]:-right-2",
-        "[[data-side=right][data-collapsible=offcanvas]_&]:-left-2",
-        className
-      )}
-      {...props}
-    />
-  )
-})
-SidebarRail.displayName = "SidebarRail"
-
-const SidebarInset = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"main">
->(({ className, ...props }, ref) => {
-  return (
-    <main
-      ref={ref}
-      className={cn(
-        "relative flex min-h-svh flex-1 flex-col bg-background",
-        "peer-data-[variant=inset]:min-h-[calc(100svh-theme(spacing.4))] md:peer-data-[variant=inset]:m-2 md:peer-data-[state=collapsed]:peer-data-[variant=inset]:ml-2 md:peer-data-[variant=inset]:ml-0 md:peer-data-[variant=inset]:rounded-xl md:peer-data-[variant=inset]:shadow",
-        className
-      )}
-      {...props}
-    />
-  )
-})
-SidebarInset.displayName = "SidebarInset"
-
-const SidebarInput = React.forwardRef<
-  React.ElementRef<typeof Input>,
-  React.ComponentProps<typeof Input>
->(({ className, ...props }, ref) => {
-  return (
-    <Input
-      ref={ref}
-      data-sidebar="input"
-      className={cn(
-        "h-8 w-full bg-background shadow-none focus-visible:ring-2 focus-visible:ring-sidebar-ring",
-        className
-      )}
-      {...props}
-    />
-  )
-})
-SidebarInput.displayName = "SidebarInput"
-
-const SidebarHeader = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div">
->(({ className, ...props }, ref) => {
-  return (
-    <div
-      ref={ref}
-      data-sidebar="header"
-      className={cn("flex flex-col gap-2 p-2", className)}
-      {...props}
-    />
-  )
-})
-SidebarHeader.displayName = "SidebarHeader"
-
-const SidebarFooter = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div">
->(({ className, ...props }, ref) => {
-  return (
-    <div
-      ref={ref}
-      data-sidebar="footer"
-      className={cn("flex flex-col gap-2 p-2", className)}
-      {...props}
-    />
-  )
-})
-SidebarFooter.displayName = "SidebarFooter"
-
-const SidebarSeparator = React.forwardRef<
-  React.ElementRef<typeof Separator>,
-  React.ComponentProps<typeof Separator>
->(({ className, ...props }, ref) => {
-  return (
-    <Separator
-      ref={ref}
-      data-sidebar="separator"
-      className={cn("mx-2 w-auto bg-sidebar-border", className)}
-      {...props}
-    />
-  )
-})
-SidebarSeparator.displayName = "SidebarSeparator"
-
-const SidebarContent = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div">
->(({ className, ...props }, ref) => {
-  return (
-    <div
-      ref={ref}
-      data-sidebar="content"
-      className={cn(
-        "flex min-h-0 flex-1 flex-col gap-2 overflow-auto group-data-[collapsible=icon]:overflow-hidden",
-        className
-      )}
-      {...props}
-    />
-  )
-})
-SidebarContent.displayName = "SidebarContent"
-
-const SidebarGroup = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div">
->(({ className, ...props }, ref) => {
-  return (
-    <div
-      ref={ref}
-      data-sidebar="group"
-      className={cn("relative flex w-full min-w-0 flex-col p-2", className)}
-      {...props}
-    />
-  )
-})
-SidebarGroup.displayName = "SidebarGroup"
-
-const SidebarGroupLabel = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div"> & { asChild?: boolean }
->(({ className, asChild = false, ...props }, ref) => {
-  const Comp = asChild ? Slot : "div"
-
-  return (
-    <Comp
-      ref={ref}
-      data-sidebar="group-label"
-      className={cn(
-        "duration-200 flex h-8 shrink-0 items-center rounded-md px-2 text-xs font-medium text-sidebar-foreground/70 outline-none ring-sidebar-ring transition-[margin,opa] ease-linear focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
-        "group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0",
-        className
-      )}
-      {...props}
-    />
-  )
-})
-SidebarGroupLabel.displayName = "SidebarGroupLabel"
-
-const SidebarGroupAction = React.forwardRef<
-  HTMLButtonElement,
-  React.ComponentProps<"button"> & { asChild?: boolean }
->(({ className, asChild = false, ...props }, ref) => {
-  const Comp = asChild ? Slot : "button"
-
-  return (
-    <Comp
-      ref={ref}
-      data-sidebar="group-action"
-      className={cn(
-        "absolute right-3 top-3.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-none ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0",
-        "after:absolute after:-inset-2 after:md:hidden",
-        "group-data-[collapsible=icon]:hidden",
-        className
-      )}
-      {...props}
-    />
-  )
-})
-SidebarGroupAction.displayName = "SidebarGroupAction"
-
-const SidebarGroupContent = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div">
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    data-sidebar="group-content"
-    className={cn("w-full text-sm", className)}
-    {...props}
-  />
-))
-SidebarGroupContent.displayName = "SidebarGroupContent"
-
-const SidebarMenu = React.forwardRef<
-  HTMLUListElement,
-  React.ComponentProps<"ul">
->(({ className, ...props }, ref) => (
-  <ul
-    ref={ref}
-    data-sidebar="menu"
-    className={cn("flex w-full min-w-0 flex-col gap-1", className)}
-    {...props}
-  />
-))
-SidebarMenu.displayName = "SidebarMenu"
-
-const SidebarMenuItem = React.forwardRef<
-  HTMLLIElement,
-  React.ComponentProps<"li">
->(({ className, ...props }, ref) => (
-  <li
-    ref={ref}
-    data-sidebar="menu-item"
-    className={cn("group/menu-item relative", className)}
-    {...props}
-  />
-))
-SidebarMenuItem.displayName = "SidebarMenuItem"
-
-const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
-  {
-    variants: {
-      variant: {
-        default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-        outline:
-          "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
-      },
-      size: {
-        default: "h-8 text-sm",
-        sm: "h-7 text-xs",
-        lg: "h-12 text-sm group-data-[collapsible=icon]:!p-0",
-      },
-    },
-    defaultVariants: {
-      variant: "default",
-      size: "default",
-    },
-  }
-)
-
-const SidebarMenuButton = React.forwardRef<
-  HTMLButtonElement,
-  React.ComponentProps<"button"> & {
-    asChild?: boolean
-    isActive?: boolean
-    tooltip?: string | React.ComponentProps<typeof TooltipContent>
-  } & VariantProps<typeof sidebarMenuButtonVariants>
->(
-  (
-    {
-      asChild = false,
-      isActive = false,
-      variant = "default",
-      size = "default",
-      tooltip,
-      className,
-      ...props
-    },
-    ref
-  ) => {
-    const Comp = asChild ? Slot : "button"
-    const { isMobile, state } = useSidebar()
-
-    const button = (
-      <Comp
-        ref={ref}
-        data-sidebar="menu-button"
-        data-size={size}
-        data-active={isActive}
-        className={cn(sidebarMenuButtonVariants({ variant, size }), className)}
-        {...props}
-      />
-    )
-
-    if (!tooltip) {
-      return button
-    }
-
-    if (typeof tooltip === "string") {
-      tooltip = {
-        children: tooltip,
-      }
-    }
-
-    return (
-      <Tooltip content={tooltip.children}>
-        <TooltipTrigger asChild>{button}</TooltipTrigger>
-        <TooltipContent
-          side="right"
-          align="center"
-          hidden={state !== "collapsed" || isMobile}
-          {...tooltip}
-        />
-      </Tooltip>
-    )
-  }
-)
-SidebarMenuButton.displayName = "SidebarMenuButton"
-
-const SidebarMenuAction = React.forwardRef<
-  HTMLButtonElement,
-  React.ComponentProps<"button"> & {
-    asChild?: boolean
-    showOnHover?: boolean
-  }
->(({ className, asChild = false, showOnHover = false, ...props }, ref) => {
-  const Comp = asChild ? Slot : "button"
-
-  return (
-    <Comp
-      ref={ref}
-      data-sidebar="menu-action"
-      className={cn(
-        "absolute right-1 top-1.5 flex aspect-square w-5 items-center justify-center rounded-md p-0 text-sidebar-foreground outline-none ring-sidebar-ring transition-transform hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 peer-hover/menu-button:text-sidebar-accent-foreground [&>svg]:size-4 [&>svg]:shrink-0",
-        "after:absolute after:-inset-2 after:md:hidden",
-        "peer-data-[size=sm]/menu-button:top-1",
-        "peer-data-[size=default]/menu-button:top-1.5",
-        "peer-data-[size=lg]/menu-button:top-2.5",
-        "group-data-[collapsible=icon]:hidden",
-        showOnHover &&
-          "group-focus-within/menu-item:opacity-100 group-hover/menu-item:opacity-100 data-[state=open]:opacity-100 peer-data-[active=true]/menu-button:text-sidebar-accent-foreground md:opacity-0",
-        className
-      )}
-      {...props}
-    />
-  )
-})
-SidebarMenuAction.displayName = "SidebarMenuAction"
-
-const SidebarMenuBadge = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div">
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    data-sidebar="menu-badge"
-    className={cn(
-      "absolute right-1 flex h-5 min-w-5 items-center justify-center rounded-md px-1 text-xs font-medium tabular-nums text-sidebar-foreground select-none pointer-events-none",
-      "peer-hover/menu-button:text-sidebar-accent-foreground peer-data-[active=true]/menu-button:text-sidebar-accent-foreground",
-      "peer-data-[size=sm]/menu-button:top-1",
-      "peer-data-[size=default]/menu-button:top-1.5",
-      "peer-data-[size=lg]/menu-button:top-2.5",
-      "group-data-[collapsible=icon]:hidden",
-      className
-    )}
-    {...props}
-  />
-))
-SidebarMenuBadge.displayName = "SidebarMenuBadge"
-
-const SidebarMenuSkeleton = React.forwardRef<
-  HTMLDivElement,
-  React.ComponentProps<"div"> & {
-    showIcon?: boolean
-  }
->(({ className, showIcon = false, ...props }, ref) => {
-  const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
-  }, [])
-
-  return (
-    <div
-      ref={ref}
-      data-sidebar="menu-skeleton"
-      className={cn("rounded-md h-8 flex gap-2 px-2 items-center", className)}
-      {...props}
-    >
-      {showIcon && (
-        <Skeleton
-          className="size-4 rounded-md"
-          data-sidebar="menu-skeleton-icon"
-        />
-      )}
-      <Skeleton
-        className="h-4 flex-1 max-w-[--skeleton-width]"
-        data-sidebar="menu-skeleton-text"
-        style={
-          {
-            "--skeleton-width": width,
-          } as React.CSSProperties
-        }
-      />
-    </div>
-  )
-})
-SidebarMenuSkeleton.displayName = "SidebarMenuSkeleton"
-
-const SidebarMenuSub = React.forwardRef<
-  HTMLUListElement,
-  React.ComponentProps<"ul">
->(({ className, ...props }, ref) => (
-  <ul
-    ref={ref}
-    data-sidebar="menu-sub"
-    className={cn(
-      "mx-3.5 flex min-w-0 translate-x-px flex-col gap-1 border-l border-sidebar-border px-2.5 py-0.5",
-      "group-data-[collapsible=icon]:hidden",
-      className
-    )}
-    {...props}
-  />
-))
-SidebarMenuSub.displayName = "SidebarMenuSub"
-
-const SidebarMenuSubItem = React.forwardRef<
-  HTMLLIElement,
-  React.ComponentProps<"li">
->(({ ...props }, ref) => <li ref={ref} {...props} />)
-SidebarMenuSubItem.displayName = "SidebarMenuSubItem"
-
-const SidebarMenuSubButton = React.forwardRef<
-  HTMLAnchorElement,
-  React.ComponentProps<"a"> & {
-    asChild?: boolean
-    size?: "sm" | "md"
-    isActive?: boolean
-  }
->(({ asChild = false, size = "md", isActive, className, ...props }, ref) => {
-  const Comp = asChild ? Slot : "a"
-
-  return (
-    <Comp
-      ref={ref}
-      data-sidebar="menu-sub-button"
-      data-size={size}
-      data-active={isActive}
-      className={cn(
-        "flex h-7 min-w-0 -translate-x-px items-center gap-2 overflow-hidden rounded-md px-2 text-sidebar-foreground outline-none ring-sidebar-ring hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0 [&>svg]:text-sidebar-accent-foreground",
-        "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground",
-        size === "sm" && "text-xs",
-        size === "md" && "text-sm",
-        "group-data-[collapsible=icon]:hidden",
-        className
-      )}
-      {...props}
-    />
-  )
-})
-SidebarMenuSubButton.displayName = "SidebarMenuSubButton"
-
-export {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupAction,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarInput,
-  SidebarInset,
-  SidebarMenu,
-  SidebarMenuAction,
-  SidebarMenuBadge,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSkeleton,
-  SidebarMenuSub,
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
-  SidebarProvider,
-  SidebarRail,
-  SidebarSeparator,
-  SidebarTrigger,
-  useSidebar,
 }

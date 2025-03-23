@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -120,6 +119,18 @@
     opacity: 0;
     transform: translateY(-10px);
     transition: opacity 300ms, transform 300ms;
+  }
+
+  /* Fade-in animation */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   /* Glass effect */

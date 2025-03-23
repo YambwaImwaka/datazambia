@@ -7,6 +7,7 @@ import ExchangeRatesSection from "./ExchangeRatesSection";
 import StockMarketSection from "./StockMarketSection";
 import EconomicIndicatorsSection from "./EconomicIndicatorsSection";
 import CommoditiesSection from "./CommoditiesSection";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const FinanceOverview = () => {
   const { data: exchangeRates, loading: loadingExchangeRates } = useExchangeRateData();
@@ -15,6 +16,7 @@ export const FinanceOverview = () => {
   const { data: commodityPrices, loading: loadingCommodities } = useCommodityPrices();
   const [activeTab, setActiveTab] = useState("exchange-rates");
   const [isVisible, setIsVisible] = useState(false);
+  const isMobile = useIsMobile();
   
   useEffect(() => {
     setIsVisible(true);
@@ -29,22 +31,22 @@ export const FinanceOverview = () => {
       }}
     >
       <Tabs defaultValue="exchange-rates" onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-4 mb-8">
+        <TabsList className={`grid ${isMobile ? 'grid-cols-2 gap-2' : 'grid-cols-4'} mb-8`}>
           <TabsTrigger value="exchange-rates" className="flex items-center space-x-2">
             <DollarSign className="h-4 w-4" />
-            <span>Exchange Rates</span>
+            <span className={isMobile ? 'text-xs' : ''}>Exchange Rates</span>
           </TabsTrigger>
           <TabsTrigger value="stock-market" className="flex items-center space-x-2">
             <BarChart3 className="h-4 w-4" />
-            <span>Stock Market</span>
+            <span className={isMobile ? 'text-xs' : ''}>Stock Market</span>
           </TabsTrigger>
           <TabsTrigger value="economic-indicators" className="flex items-center space-x-2">
             <Landmark className="h-4 w-4" />
-            <span>Economic Indicators</span>
+            <span className={isMobile ? 'text-xs' : ''}>Economic Indicators</span>
           </TabsTrigger>
           <TabsTrigger value="commodities" className="flex items-center space-x-2">
             <TrendingUp className="h-4 w-4" />
-            <span>Commodities</span>
+            <span className={isMobile ? 'text-xs' : ''}>Commodities</span>
           </TabsTrigger>
         </TabsList>
         
