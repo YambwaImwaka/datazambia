@@ -7,6 +7,7 @@ export interface StockData {
   name: string;
   price: number;
   change: string;
+  changePercent: string;  // Added the missing property
 }
 
 export interface StockMarketData {
@@ -49,14 +50,14 @@ export const useStockMarketData = () => {
             ]
           },
           stocks: [
-            { symbol: "ZANAF", name: "Zambia National Commercial Bank", price: 3.87, change: "+5.17%" },
-            { symbol: "ZSUG", name: "Zambia Sugar Plc", price: 4.52, change: "+4.63%" },
-            { symbol: "MTNZ", name: "MTN Zambia", price: 7.25, change: "+3.87%" },
-            { symbol: "ZCCM", name: "ZCCM Investment Holdings", price: 12.68, change: "+3.42%" },
-            { symbol: "CECA", name: "Copperbelt Energy Corporation", price: 5.31, change: "+2.91%" },
-            { symbol: "LUSE", name: "Lusaka Water & Sewerage", price: 2.78, change: "+1.84%" },
-            { symbol: "ZMBL", name: "Zambeef Products", price: 6.12, change: "+1.49%" },
-            { symbol: "PEZA", name: "Prime Energy Zambia", price: 8.97, change: "+0.79%" }
+            { symbol: "ZANAF", name: "Zambia National Commercial Bank", price: 3.87, change: "+0.19", changePercent: "+5.17%" },
+            { symbol: "ZSUG", name: "Zambia Sugar Plc", price: 4.52, change: "+0.20", changePercent: "+4.63%" },
+            { symbol: "MTNZ", name: "MTN Zambia", price: 7.25, change: "+0.27", changePercent: "+3.87%" },
+            { symbol: "ZCCM", name: "ZCCM Investment Holdings", price: 12.68, change: "+0.42", changePercent: "+3.42%" },
+            { symbol: "CECA", name: "Copperbelt Energy Corporation", price: 5.31, change: "+0.15", changePercent: "+2.91%" },
+            { symbol: "LUSE", name: "Lusaka Water & Sewerage", price: 2.78, change: "+0.05", changePercent: "+1.84%" },
+            { symbol: "ZMBL", name: "Zambeef Products", price: 6.12, change: "+0.09", changePercent: "+1.49%" },
+            { symbol: "PEZA", name: "Prime Energy Zambia", price: 8.97, change: "+0.07", changePercent: "+0.79%" }
           ]
         };
         

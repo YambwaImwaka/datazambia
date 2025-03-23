@@ -9,6 +9,10 @@ interface TooltipProps {
   className?: string;
 }
 
+export const TooltipProvider = ({ children }: { children: ReactNode }) => {
+  return <>{children}</>;
+};
+
 export const Tooltip = ({
   content,
   children,
