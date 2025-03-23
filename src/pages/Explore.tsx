@@ -17,6 +17,13 @@ const Explore = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  // Transform provinces data for MapChart
+  const mapData = provinces.map(province => ({
+    id: province.id,
+    name: province.name,
+    value: province.gdp // Using GDP as the value for color intensity
+  }));
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -98,7 +105,7 @@ const Explore = () => {
                       </h2>
                       
                       <div className="h-[600px] w-full bg-white dark:bg-gray-900 rounded-lg overflow-hidden mb-8">
-                        <MapChart provinces={provinces} />
+                        <MapChart data={mapData} />
                       </div>
                       
                       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
