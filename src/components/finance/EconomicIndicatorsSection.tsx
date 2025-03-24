@@ -2,7 +2,7 @@
 import { EconomicIndicator } from "@/services/economic/EconomicIndicatorService";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, TrendingUp, BarChart3, DollarSign, Calendar } from "lucide-react";
 
 interface EconomicIndicatorsSectionProps {
   economicIndicators: EconomicIndicator[] | null;
@@ -11,6 +11,20 @@ interface EconomicIndicatorsSectionProps {
 }
 
 export const EconomicIndicatorsSection = ({ economicIndicators, loading, isVisible }: EconomicIndicatorsSectionProps) => {
+  
+  // Get appropriate icon based on indicator name
+  const getIndicatorIcon = (name: string) => {
+    if (name.includes('GDP') || name.includes('Growth')) {
+      return <TrendingUp className="h-5 w-5 text-blue-500" />;
+    } else if (name.includes('Rate') || name.includes('Inflation') || name.includes('Unemployment')) {
+      return <BarChart3 className="h-5 w-5 text-amber-500" />;
+    } else if (name.includes('Debt') || name.includes('Deficit') || name.includes('Reserves')) {
+      return <DollarSign className="h-5 w-5 text-emerald-500" />;
+    } else {
+      return <Calendar className="h-5 w-5 text-purple-500" />;
+    }
+  };
+
   return (
     <div>
       <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
@@ -36,33 +50,43 @@ export const EconomicIndicatorsSection = ({ economicIndicators, loading, isVisib
           {economicIndicators.map((indicator, index) => (
             <Card 
               key={indicator.name}
-              className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg"
+              className={`p-6 bg-gradient-to-br from-white to-gray-50 dark:from-gray-800 dark:to-gray-800/80 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md transition-all duration-300 hover:shadow-lg hover:-translate-y-1 ${
+                indicator.isPositive ? 'border-l-4 border-l-green-500' : 'border-l-4 border-l-red-500'
+              }`}
               style={{ 
                 opacity: 0,
                 animation: isVisible ? `fade-in 0.5s ease-out ${index * 0.08}s forwards` : "none"
               }}
             >
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                {indicator.name}
-              </h3>
-              <div className="flex items-center mb-2">
+              <div className="flex items-center gap-2 mb-3">
+                {getIndicatorIcon(indicator.name)}
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {indicator.name}
+                </h3>
+              </div>
+              
+              <div className="flex items-center mb-3">
                 <div className="text-3xl font-bold text-gray-900 dark:text-white">
                   {indicator.value}
                 </div>
-                <div className={`flex items-center ml-3 ${indicator.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                <div className={`flex items-center ml-3 px-2 py-1 rounded ${
+                  indicator.isPositive ? 'text-green-600 bg-green-50 dark:bg-green-900/20' : 'text-red-600 bg-red-50 dark:bg-red-900/20'
+                }`}>
                   {indicator.isPositive ? 
-                    <ArrowUpRight className="h-4 w-4 mr-1" /> : 
-                    <ArrowDownRight className="h-4 w-4 mr-1" />
+                    <ArrowUpRight className="h-3 w-3 mr-1" /> : 
+                    <ArrowDownRight className="h-3 w-3 mr-1" />
                   }
-                  <span>{indicator.change}</span>
+                  <span className="text-xs font-medium">{indicator.change}</span>
                 </div>
               </div>
-              <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
                 {indicator.description}
               </p>
-              <div className="text-xs text-gray-500 dark:text-gray-400 flex justify-between">
-                <span>Source: {indicator.source}</span>
-                <span>Updated: {indicator.lastUpdated}</span>
+              
+              <div className="text-xs text-gray-500 dark:text-gray-400 flex justify-between pt-2 border-t border-gray-100 dark:border-gray-700">
+                <span>{indicator.source}</span>
+                <span>{indicator.lastUpdated}</span>
               </div>
             </Card>
           ))}

@@ -5,6 +5,7 @@ import { MapChart } from '@/components/maps/MapChart';
 import { provinces, dataCategories } from '@/utils/data';
 import AgricultureDashboard from '@/components/agriculture/AgricultureDashboard';
 import FinanceOverview from '@/components/finance/FinanceOverview';
+import EconomyDashboard from '@/components/economy/EconomyDashboard';
 
 const Explore = () => {
   const { categoryId } = useParams<{ categoryId?: string }>();
@@ -20,6 +21,8 @@ const Explore = () => {
       return <AgricultureDashboard />;
     } else if (currentCategory === "finance") {
       return <FinanceOverview />;
+    } else if (currentCategory === "economy") {
+      return <EconomyDashboard />;
     } else {
       // Default case - show the province map
       // Transform the data for the MapChart component
