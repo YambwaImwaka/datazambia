@@ -34,7 +34,7 @@ interface BarChartProps {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="custom-tooltip">
+      <div className="custom-tooltip bg-white dark:bg-gray-800 p-3 border border-gray-200 dark:border-gray-700 shadow-lg rounded-md">
         <p className="font-medium text-gray-900 dark:text-white">{label}</p>
         <div className="mt-2">
           {payload.map((entry: any, index: number) => (

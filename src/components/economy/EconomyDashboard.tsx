@@ -121,10 +121,9 @@ const EconomyDashboard = () => {
                 <BarChart 
                   data={gdpData.map(item => ({ name: item.year, value: item.growth }))}
                   xAxisKey="name"
-                  yAxisKey="value"
-                  barKey="value"
-                  colors={['#0284c7']}
-                  formatValue={(value) => `${value}%`}
+                  bars={[
+                    { dataKey: "value", name: "Growth Rate", color: "#0284c7" }
+                  ]}
                 />
               </div>
             </Card>
@@ -136,17 +135,19 @@ const EconomyDashboard = () => {
             <h3 className="text-xl font-semibold mb-4">Sector Contribution to GDP</h3>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <div className="h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart 
-                    data={sectorContributionData}
-                    xAxisKey="sector"
-                    yAxisKey="percentage"
-                    barKey="percentage"
-                    colors={sectorContributionData.map(item => item.color)}
-                    formatValue={(value) => `${value}%`}
-                    layout={isMobile ? "vertical" : "horizontal"}
-                  />
-                </ResponsiveContainer>
+                <BarChart 
+                  data={sectorContributionData.map(item => ({
+                    name: item.sector,
+                    value: item.percentage
+                  }))}
+                  xAxisKey="name"
+                  bars={sectorContributionData.map(item => ({
+                    dataKey: "value",
+                    name: item.sector,
+                    color: item.color
+                  }))}
+                  layout={isMobile ? "vertical" : "horizontal"}
+                />
               </div>
               
               <div>
