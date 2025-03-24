@@ -1,289 +1,130 @@
 
-import { useState, useEffect, useRef } from "react";
-import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
+import React from 'react';
 import { Card } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
 
-// Simplified Zambia GeoJSON with province boundaries (direct content to avoid fetch errors)
-const ZAMBIA_GEO_DATA = {
-  "type": "Topology",
-  "objects": {
-    "zambia": {
-      "type": "GeometryCollection",
-      "geometries": [
-        {
-          "type": "Polygon",
-          "properties": { "NAME_1": "Central" },
-          "arcs": [[0,1,2,3]]
-        },
-        {
-          "type": "Polygon",
-          "properties": { "NAME_1": "Copperbelt" },
-          "arcs": [[4,5,6,7]]
-        },
-        {
-          "type": "Polygon",
-          "properties": { "NAME_1": "Eastern" },
-          "arcs": [[8,9,10,11]]
-        },
-        {
-          "type": "Polygon",
-          "properties": { "NAME_1": "Luapula" },
-          "arcs": [[12,13,14,15]]
-        },
-        {
-          "type": "Polygon",
-          "properties": { "NAME_1": "Lusaka" },
-          "arcs": [[16,17,18,19]]
-        },
-        {
-          "type": "Polygon",
-          "properties": { "NAME_1": "Muchinga" },
-          "arcs": [[20,21,22,23]]
-        },
-        {
-          "type": "Polygon",
-          "properties": { "NAME_1": "Northern" },
-          "arcs": [[24,25,26,27]]
-        },
-        {
-          "type": "Polygon",
-          "properties": { "NAME_1": "North-Western" },
-          "arcs": [[28,29,30,31]]
-        },
-        {
-          "type": "Polygon", 
-          "properties": { "NAME_1": "Southern" },
-          "arcs": [[32,33,34,35]]
-        },
-        {
-          "type": "Polygon",
-          "properties": { "NAME_1": "Western" },
-          "arcs": [[36,37,38,39]]
-        }
-      ]
-    }
-  },
-  "arcs": [
-    [[28.5,-11.5],[29.5,-12.5],[30.5,-13.5],[29.5,-14.5],[28.5,-13.5],[28.5,-11.5]],
-    [[28.5,-11.5],[27.5,-12.5],[28.5,-13.5],[29.5,-12.5],[28.5,-11.5]],
-    [[27.5,-12.5],[26.5,-13.5],[27.5,-14.5],[28.5,-13.5],[27.5,-12.5]],
-    [[26.5,-13.5],[25.5,-14.5],[26.5,-15.5],[27.5,-14.5],[26.5,-13.5]],
-    [[25.5,-11.5],[26.5,-12.5],[27.5,-13.5],[26.5,-14.5],[25.5,-13.5],[25.5,-11.5]],
-    [[25.5,-11.5],[24.5,-12.5],[25.5,-13.5],[26.5,-12.5],[25.5,-11.5]],
-    [[24.5,-12.5],[23.5,-13.5],[24.5,-14.5],[25.5,-13.5],[24.5,-12.5]],
-    [[23.5,-13.5],[22.5,-14.5],[23.5,-15.5],[24.5,-14.5],[23.5,-13.5]],
-    [[32.5,-11.5],[33.5,-12.5],[34.5,-13.5],[33.5,-14.5],[32.5,-13.5],[32.5,-11.5]],
-    [[32.5,-11.5],[31.5,-12.5],[32.5,-13.5],[33.5,-12.5],[32.5,-11.5]],
-    [[31.5,-12.5],[30.5,-13.5],[31.5,-14.5],[32.5,-13.5],[31.5,-12.5]],
-    [[30.5,-13.5],[29.5,-14.5],[30.5,-15.5],[31.5,-14.5],[30.5,-13.5]],
-    [[29.5,-8.5],[30.5,-9.5],[31.5,-10.5],[30.5,-11.5],[29.5,-10.5],[29.5,-8.5]],
-    [[29.5,-8.5],[28.5,-9.5],[29.5,-10.5],[30.5,-9.5],[29.5,-8.5]],
-    [[28.5,-9.5],[27.5,-10.5],[28.5,-11.5],[29.5,-10.5],[28.5,-9.5]],
-    [[27.5,-10.5],[26.5,-11.5],[27.5,-12.5],[28.5,-11.5],[27.5,-10.5]],
-    [[28.5,-15.5],[29.5,-16.5],[30.5,-17.5],[29.5,-18.5],[28.5,-17.5],[28.5,-15.5]],
-    [[28.5,-15.5],[27.5,-16.5],[28.5,-17.5],[29.5,-16.5],[28.5,-15.5]],
-    [[27.5,-16.5],[26.5,-17.5],[27.5,-18.5],[28.5,-17.5],[27.5,-16.5]],
-    [[26.5,-17.5],[25.5,-18.5],[26.5,-19.5],[27.5,-18.5],[26.5,-17.5]],
-    [[31.5,-10.5],[32.5,-11.5],[33.5,-12.5],[32.5,-13.5],[31.5,-12.5],[31.5,-10.5]],
-    [[31.5,-10.5],[30.5,-11.5],[31.5,-12.5],[32.5,-11.5],[31.5,-10.5]],
-    [[30.5,-11.5],[29.5,-12.5],[30.5,-13.5],[31.5,-12.5],[30.5,-11.5]],
-    [[29.5,-12.5],[28.5,-13.5],[29.5,-14.5],[30.5,-13.5],[29.5,-12.5]],
-    [[30.5,-9.5],[31.5,-10.5],[32.5,-11.5],[31.5,-12.5],[30.5,-11.5],[30.5,-9.5]],
-    [[30.5,-9.5],[29.5,-10.5],[30.5,-11.5],[31.5,-10.5],[30.5,-9.5]],
-    [[29.5,-10.5],[28.5,-11.5],[29.5,-12.5],[30.5,-11.5],[29.5,-10.5]],
-    [[28.5,-11.5],[27.5,-12.5],[28.5,-13.5],[29.5,-12.5],[28.5,-11.5]],
-    [[23.5,-11.5],[24.5,-12.5],[25.5,-13.5],[24.5,-14.5],[23.5,-13.5],[23.5,-11.5]],
-    [[23.5,-11.5],[22.5,-12.5],[23.5,-13.5],[24.5,-12.5],[23.5,-11.5]],
-    [[22.5,-12.5],[21.5,-13.5],[22.5,-14.5],[23.5,-13.5],[22.5,-12.5]],
-    [[21.5,-13.5],[20.5,-14.5],[21.5,-15.5],[22.5,-14.5],[21.5,-13.5]],
-    [[27.5,-16.5],[28.5,-17.5],[29.5,-18.5],[28.5,-19.5],[27.5,-18.5],[27.5,-16.5]],
-    [[27.5,-16.5],[26.5,-17.5],[27.5,-18.5],[28.5,-17.5],[27.5,-16.5]],
-    [[26.5,-17.5],[25.5,-18.5],[26.5,-19.5],[27.5,-18.5],[26.5,-17.5]],
-    [[25.5,-18.5],[24.5,-19.5],[25.5,-20.5],[26.5,-19.5],[25.5,-18.5]],
-    [[22.5,-14.5],[23.5,-15.5],[24.5,-16.5],[23.5,-17.5],[22.5,-16.5],[22.5,-14.5]],
-    [[22.5,-14.5],[21.5,-15.5],[22.5,-16.5],[23.5,-15.5],[22.5,-14.5]],
-    [[21.5,-15.5],[20.5,-16.5],[21.5,-17.5],[22.5,-16.5],[21.5,-15.5]],
-    [[20.5,-16.5],[19.5,-17.5],[20.5,-18.5],[21.5,-17.5],[20.5,-16.5]]
-  ]
-};
-
+// Define props interface for the MapChart component
 export interface MapChartProps {
-  data: Array<{
-    id: string;
+  data: {
+    id?: string;
     name: string;
     value: number;
-    coordinates?: [number, number];
+    coordinates: [number, number];
     color?: string;
-  }>;
-  colorScale?: string[];
-  title?: string;
-  className?: string;
+  }[];
+  title: string;
+  description?: string;
   height?: number;
-  showLegend?: boolean;
+  width?: string;
+  colorScale?: string[];
   tooltipFormat?: (name: string, value: number) => string;
-  onClick?: (provinceId: string) => void;
+  onClick?: (id: string) => void;
 }
 
-export const MapChart = ({
+export const MapChart: React.FC<MapChartProps> = ({
   data,
-  colorScale = ["#C6E5FF", "#66B2FF", "#0066CC", "#003366"],
   title,
-  className,
-  height = 400,
-  showLegend = true,
-  tooltipFormat = (name, value) => `${name}: ${value}`,
-  onClick,
-}: MapChartProps) => {
-  const [tooltipContent, setTooltipContent] = useState("");
-  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-  const [showTooltip, setShowTooltip] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const mapRef = useRef<HTMLDivElement>(null);
-
-  // Map province names from GeoJSON to our data IDs
-  const provinceMapping: Record<string, string> = {
-    "Central": "central",
-    "Copperbelt": "copperbelt",
-    "Eastern": "eastern",
-    "Luapula": "luapula",
-    "Lusaka": "lusaka",
-    "Muchinga": "muchinga", 
-    "Northern": "northern",
-    "North-Western": "northwestern",
-    "Southern": "southern",
-    "Western": "western"
-  };
-
-  // Get min and max values for color scale
-  const values = data.map(d => d.value);
-  const min = Math.min(...values);
-  const max = Math.max(...values);
-
-  // Get color for value
-  const getColor = (value: number) => {
-    const normalizedValue = (value - min) / (max - min);
-    const index = Math.min(
-      Math.floor(normalizedValue * colorScale.length),
-      colorScale.length - 1
+  description,
+  height = 500,
+  width = '100%',
+  colorScale,
+  tooltipFormat,
+  onClick
+}) => {
+  if (!data || data.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg">
+        <p className="text-gray-400">No map data available</p>
+      </div>
     );
-    return colorScale[index];
-  };
+  }
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoaded(true);
-    }, 500);
-    return () => clearTimeout(timer);
-  }, []);
+  const maxValue = Math.max(...data.map(item => item.value));
 
-  const handleMouseMove = (event: React.MouseEvent) => {
-    if (mapRef.current) {
-      const rect = mapRef.current.getBoundingClientRect();
-      setTooltipPosition({
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top
-      });
+  const handlePointClick = (id?: string) => {
+    if (onClick && id) {
+      onClick(id);
     }
   };
 
   return (
-    <div
-      ref={mapRef}
-      className={cn("w-full relative", className)}
-      style={{ height }}
-      onMouseMove={handleMouseMove}
-    >
-      {title && (
-        <h3 className="font-medium text-gray-900 dark:text-white mb-2">{title}</h3>
+    <Card className="p-6 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-md">
+      <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{title}</h3>
+      {description && (
+        <p className="text-gray-600 dark:text-gray-300 mb-4">{description}</p>
       )}
       
-      <ComposableMap
-        projection="geoMercator"
-        projectionConfig={{ 
-          scale: 2500,
-          center: [28, -13.5]
-        }}
-        style={{
-          width: "100%",
-          height: "100%",
-          opacity: isLoaded ? 1 : 0,
-          transition: "opacity 0.5s ease-in-out"
-        }}
-      >
-        <ZoomableGroup>
-          <Geographies geography={ZAMBIA_GEO_DATA}>
-            {({ geographies }) =>
-              geographies.map((geo) => {
-                const provinceId = provinceMapping[geo.properties.NAME_1];
-                const provinceData = data.find(d => d.id === provinceId);
-                
-                return (
-                  <Geography
-                    key={geo.rsmKey}
-                    geography={geo}
-                    fill={provinceData ? getColor(provinceData.value) : "#F5F5F5"}
-                    stroke="#FFFFFF"
-                    strokeWidth={0.5}
-                    style={{
-                      default: { outline: "none" },
-                      hover: { 
-                        fill: provinceData ? getColor(provinceData.value) : "#F5F5F5",
-                        opacity: 0.8,
-                        outline: "none"
-                      },
-                      pressed: { outline: "none" }
-                    }}
-                    onMouseEnter={() => {
-                      if (provinceData) {
-                        setTooltipContent(tooltipFormat(provinceData.name, provinceData.value));
-                        setShowTooltip(true);
-                      }
-                    }}
-                    onMouseLeave={() => {
-                      setShowTooltip(false);
-                    }}
-                    onClick={() => {
-                      if (onClick && provinceId) {
-                        onClick(provinceId);
-                      }
-                    }}
-                  />
-                );
-              })
-            }
-          </Geographies>
-        </ZoomableGroup>
-      </ComposableMap>
-      
-      {showTooltip && (
-        <div
-          className="absolute pointer-events-none bg-white dark:bg-gray-800 px-4 py-2 rounded-md shadow-lg border border-gray-200 dark:border-gray-700 text-sm z-10"
-          style={{
-            left: tooltipPosition.x + 10,
-            top: tooltipPosition.y - 40,
-          }}
+      <div className="relative" style={{ height, width }}>
+        {/* Simple SVG map of Zambia */}
+        <svg 
+          width="100%" 
+          height="100%" 
+          viewBox="0 0 800 600" 
+          className="border border-gray-200 dark:border-gray-700 rounded-lg bg-gray-50 dark:bg-gray-900"
         >
-          {tooltipContent}
+          <g transform="translate(100, 100) scale(2.5)">
+            <path 
+              d="M148.2,38.1C147.3,37.2,146.3,36.5,145.2,35.9C144.2,35.3,143.1,34.9,142,34.7C140.9,34.5,139.8,34.5,138.7,34.6C137.6,34.7,136.5,35,135.5,35.4C134.5,35.8,133.5,36.4,132.6,37.1C131.7,37.8,130.9,38.6,130.2,39.5C129.5,40.4,128.9,41.4,128.5,42.4C128.1,43.4,127.8,44.5,127.7,45.6C127.6,46.7,127.6,47.8,127.8,48.9C128,50,128.4,51.1,128.9,52.1C129.5,53.2,130.2,54.2,131.1,55.1C132,56,132.9,56.8,143.6,53L148.2,38.1Z" 
+              fill="#1E3A8A"
+              stroke="#FFFFFF"
+              strokeWidth="0.5"
+            />
+            {/* Add more path elements for other provinces */}
+            
+            {/* Data points with radius based on value */}
+            {data.map((item, index) => {
+              const size = (item.value / maxValue) * 30 + 10; // Scale circle size
+              
+              return (
+                <g 
+                  key={index} 
+                  transform={`translate(${item.coordinates[0] * 6}, ${item.coordinates[1] * 5})`}
+                  onClick={() => handlePointClick(item.id)}
+                  className="cursor-pointer"
+                >
+                  <circle 
+                    cx="0" 
+                    cy="0" 
+                    r={size} 
+                    fill={item.color || "#3B82F6"} 
+                    fillOpacity="0.7"
+                    stroke="#FFFFFF"
+                    strokeWidth="1"
+                  />
+                  <text 
+                    x="0" 
+                    y="0" 
+                    textAnchor="middle" 
+                    dy=".3em" 
+                    fill="white" 
+                    fontSize="8"
+                    fontWeight="bold"
+                  >
+                    {item.name}
+                  </text>
+                  {tooltipFormat && (
+                    <title>{tooltipFormat(item.name, item.value)}</title>
+                  )}
+                </g>
+              );
+            })}
+          </g>
+        </svg>
+        
+        <div className="mt-4 flex flex-wrap gap-4 justify-center">
+          {data.map((item, index) => (
+            <div key={index} className="flex items-center gap-2">
+              <div 
+                className="w-3 h-3 rounded-full" 
+                style={{ backgroundColor: item.color || "#3B82F6" }}
+              ></div>
+              <span className="text-sm text-gray-700 dark:text-gray-300">
+                {item.name}: {item.value}
+              </span>
+            </div>
+          ))}
         </div>
-      )}
-      
-      {showLegend && (
-        <div className="absolute bottom-4 left-4 bg-white dark:bg-gray-800 rounded-md shadow-md p-2 border border-gray-200 dark:border-gray-700 flex items-center text-xs space-x-3">
-          <span>Low</span>
-          <div className="flex space-x-0.5">
-            {colorScale.map((color, i) => (
-              <div
-                key={i}
-                className="w-4 h-4"
-                style={{ backgroundColor: color }}
-              />
-            ))}
-          </div>
-          <span>High</span>
-        </div>
-      )}
-    </div>
+      </div>
+    </Card>
   );
 };
 

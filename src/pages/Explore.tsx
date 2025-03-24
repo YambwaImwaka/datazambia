@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapChart } from '@/components/charts/MapChart';
@@ -5,6 +6,7 @@ import { provinces, dataCategories } from '@/utils/data';
 import AgricultureDashboard from '@/components/agriculture/AgricultureDashboard';
 import FinanceOverview from '@/components/finance/FinanceOverview';
 import EconomyDashboard from '@/components/economy/EconomyDashboard';
+import HealthDashboard from '@/components/health/HealthDashboard';
 import { ArrowUpRight } from 'lucide-react';
 
 const Explore = () => {
@@ -25,13 +27,7 @@ const Explore = () => {
     } else if (currentCategory === "economy") {
       return <EconomyDashboard />;
     } else if (currentCategory === "health") {
-      return <div className="container mx-auto py-8 px-4">
-        <h1 className="text-3xl font-bold mb-6">Health Metrics Dashboard</h1>
-        <p className="text-gray-600 dark:text-gray-300 mb-8">Comprehensive health statistics and insights across Zambia.</p>
-        <div className="p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md text-center">
-          <p className="text-lg">Health metrics dashboard is coming soon.</p>
-        </div>
-      </div>;
+      return <HealthDashboard />;
     } else if (currentCategory === "education") {
       return <div className="container mx-auto py-8 px-4">
         <h1 className="text-3xl font-bold mb-6">Education Metrics Dashboard</h1>
