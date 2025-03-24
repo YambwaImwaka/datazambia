@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapChart } from '@/components/charts/MapChart';
@@ -60,7 +59,6 @@ const Explore = () => {
             <MapChart 
               data={provinceMapData}
               title="Population Distribution by Province"
-              description="Visualization of population density across Zambia's provinces (millions)"
               colorScale={['#C6E5FF', '#66B2FF', '#0066CC', '#003366']}
               tooltipFormat={(name, value) => `${name}: ${value}M population`}
               onClick={(provinceId) => navigate(`/province/${provinceId}`)}
@@ -150,12 +148,10 @@ const Explore = () => {
 
   // Generate a deterministic color based on province name
   function getRandomColor(name: string) {
-    // Simple hash function to generate a number from a string
     let hash = 0;
     for (let i = 0; i < name.length; i++) {
       hash = name.charCodeAt(i) + ((hash << 5) - hash);
     }
-    // Convert to hex color
     let color = '#';
     for (let i = 0; i < 3; i++) {
       const value = (hash >> (i * 8)) & 0xFF;

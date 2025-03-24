@@ -1,18 +1,19 @@
 
 import { useState, useEffect, useRef } from "react";
 import { ComposableMap, Geographies, Geography, ZoomableGroup } from "react-simple-maps";
-import { Tooltip } from "@/components/ui/tooltip";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 // Simplified Zambia GeoJSON with province boundaries
 const ZAMBIA_GEO_URL = "https://raw.githubusercontent.com/deldersveld/topojson/master/countries/zambia/zambia-provinces.json";
 
-interface MapChartProps {
+export interface MapChartProps {
   data: Array<{
     id: string;
     name: string;
     value: number;
+    coordinates?: [number, number];
+    color?: string;
   }>;
   colorScale?: string[];
   title?: string;
