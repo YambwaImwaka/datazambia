@@ -20,7 +20,7 @@ export const useExchangeRateData = () => {
     const fetchExchangeRates = async () => {
       setLoading(true);
       try {
-        // Using the free.currconv.com API (has CORS support)
+        // Using the open.er-api.com API (has CORS support)
         const response = await fetch(
           'https://open.er-api.com/v6/latest/ZMW'
         );
@@ -33,22 +33,25 @@ export const useExchangeRateData = () => {
         
         if (!exchangeData || !exchangeData.rates) {
           // Fallback to mock data if API doesn't return expected format
-          setData(getMockExchangeRates());
           console.log('Using mock exchange rate data due to API format issues');
+          setData(getMockExchangeRates());
           return;
         }
         
-        // Convert data to the format we need (data comes as ZMW=1)
-        const formattedData = {
+        // Format the data - we want ZMW as base, but with rates correctly
+        // representing how many units of ZMW = 1 unit of other currency
+        const formattedData: ExchangeRateData = {
           base: 'ZMW',
           rates: {
-            USD: Number((1 / exchangeData.rates.USD).toFixed(2)),
-            EUR: Number((1 / exchangeData.rates.EUR).toFixed(2)),
-            GBP: Number((1 / exchangeData.rates.GBP).toFixed(2)),
-            CNY: Number((1 / exchangeData.rates.CNY).toFixed(2)),
-            ZAR: Number((1 / exchangeData.rates.ZAR).toFixed(2))
+            USD: exchangeData.rates.USD, 
+            EUR: exchangeData.rates.EUR,
+            GBP: exchangeData.rates.GBP,
+            CNY: exchangeData.rates.CNY,
+            ZAR: exchangeData.rates.ZAR
           },
-          date: exchangeData.date || new Date().toISOString().split('T')[0]
+          date: exchangeData.time_last_update_utc 
+            ? new Date(exchangeData.time_last_update_utc).toISOString().split('T')[0]
+            : new Date().toISOString().split('T')[0]
         };
         
         setData(formattedData);
@@ -57,8 +60,8 @@ export const useExchangeRateData = () => {
         setError(err instanceof Error ? err.message : 'Unknown error occurred');
         
         // Use mock data on failure
-        setData(getMockExchangeRates());
         console.log('Using mock exchange rate data due to API error');
+        setData(getMockExchangeRates());
       } finally {
         setLoading(false);
       }
@@ -72,11 +75,11 @@ export const useExchangeRateData = () => {
     return {
       base: 'ZMW',
       rates: {
-        USD: 18.75,
-        EUR: 17.21,
-        GBP: 14.83,
-        CNY: 136.42,
-        ZAR: 342.16
+        USD: 0.053,
+        EUR: 0.049,
+        GBP: 0.042,
+        CNY: 0.38,
+        ZAR: 0.96
       },
       date: new Date().toISOString().split('T')[0]
     };

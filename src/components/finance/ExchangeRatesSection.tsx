@@ -2,7 +2,7 @@
 import { ExchangeRateData } from "@/services/exchange-rates/ExchangeRateService";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { TrendingUp, TrendingDown, AlertTriangle, Refresh } from "lucide-react";
+import { TrendingUp, TrendingDown, AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 
@@ -71,7 +71,7 @@ export const ExchangeRatesSection = ({ exchangeRates, loading, isVisible }: Exch
           onClick={handleRefresh}
           disabled={refreshing || loading}
         >
-          <Refresh className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+          <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
           Refresh
         </Button>
       </div>
@@ -144,7 +144,7 @@ export const ExchangeRatesSection = ({ exchangeRates, loading, isVisible }: Exch
             We couldn't fetch the latest exchange rates. This might be due to API rate limits or connectivity issues.
           </p>
           <Button onClick={handleRefresh} className="mx-auto">
-            <Refresh className="h-4 w-4 mr-1" />
+            <RefreshCw className="h-4 w-4 mr-1" />
             Try Again
           </Button>
         </div>

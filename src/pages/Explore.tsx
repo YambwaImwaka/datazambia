@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapChart } from '@/components/maps/MapChart';
+import { MapChart } from '@/components/charts/MapChart';
 import { provinces, dataCategories } from '@/utils/data';
 import AgricultureDashboard from '@/components/agriculture/AgricultureDashboard';
 import FinanceOverview from '@/components/finance/FinanceOverview';
@@ -52,10 +52,6 @@ const Explore = () => {
         color: getRandomColor(province.name) // Generate a color based on province name
       }));
 
-      const handleProvinceClick = (provinceId: string) => {
-        navigate(`/province/${provinceId}`);
-      };
-
       return (
         <div className="container mx-auto py-8 px-4">
           <h1 className="text-3xl font-bold mb-6">Explore Zambia</h1>
@@ -65,7 +61,9 @@ const Explore = () => {
               data={provinceMapData}
               title="Population Distribution by Province"
               description="Visualization of population density across Zambia's provinces (millions)"
-              onClick={handleProvinceClick}
+              colorScale={['#C6E5FF', '#66B2FF', '#0066CC', '#003366']}
+              tooltipFormat={(name, value) => `${name}: ${value}M population`}
+              onClick={(provinceId) => navigate(`/province/${provinceId}`)}
             />
           </div>
           
