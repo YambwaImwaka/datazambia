@@ -1,15 +1,17 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapChart } from '@/components/maps/MapChart';
 import { provinces, dataCategories } from '@/utils/data';
 import AgricultureDashboard from '@/components/agriculture/AgricultureDashboard';
 import FinanceOverview from '@/components/finance/FinanceOverview';
 import EconomyDashboard from '@/components/economy/EconomyDashboard';
+import { ArrowUpRight } from 'lucide-react';
 
 const Explore = () => {
   const { categoryId } = useParams<{ categoryId?: string }>();
   const [currentCategory, setCurrentCategory] = useState<string | undefined>(categoryId);
+  const navigate = useNavigate();
   
   useEffect(() => {
     setCurrentCategory(categoryId);
@@ -23,15 +25,36 @@ const Explore = () => {
       return <FinanceOverview />;
     } else if (currentCategory === "economy") {
       return <EconomyDashboard />;
+    } else if (currentCategory === "health") {
+      return <div className="container mx-auto py-8 px-4">
+        <h1 className="text-3xl font-bold mb-6">Health Metrics Dashboard</h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-8">Comprehensive health statistics and insights across Zambia.</p>
+        <div className="p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md text-center">
+          <p className="text-lg">Health metrics dashboard is coming soon.</p>
+        </div>
+      </div>;
+    } else if (currentCategory === "education") {
+      return <div className="container mx-auto py-8 px-4">
+        <h1 className="text-3xl font-bold mb-6">Education Metrics Dashboard</h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-8">Comprehensive education statistics and insights across Zambia.</p>
+        <div className="p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md text-center">
+          <p className="text-lg">Education metrics dashboard is coming soon.</p>
+        </div>
+      </div>;
     } else {
       // Default case - show the province map
       // Transform the data for the MapChart component
       const provinceMapData = provinces.map(province => ({
+        id: province.id,
         name: province.name,
         value: province.population, // Using population as the value
         coordinates: province.coordinates as [number, number],
         color: getRandomColor(province.name) // Generate a color based on province name
       }));
+
+      const handleProvinceClick = (provinceId: string) => {
+        navigate(`/province/${provinceId}`);
+      };
 
       return (
         <div className="container mx-auto py-8 px-4">
@@ -42,17 +65,22 @@ const Explore = () => {
               data={provinceMapData}
               title="Population Distribution by Province"
               description="Visualization of population density across Zambia's provinces (millions)"
+              onClick={handleProvinceClick}
             />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {provinces.map(province => (
-              <div key={province.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
+              <div 
+                key={province.id} 
+                className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-300 cursor-pointer"
+                onClick={() => navigate(`/province/${province.id}`)}
+              >
                 <div className="relative h-48 overflow-hidden">
                   <img 
                     src={province.image} 
                     alt={province.name} 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-40 flex items-end">
                     <div className="p-4 text-white">
@@ -97,7 +125,7 @@ const Explore = () => {
                     </div>
                   </div>
                   
-                  <div>
+                  <div className="mb-4">
                     <h3 className="font-semibold mb-2">Tourist Attractions</h3>
                     <ul className="list-disc list-inside text-gray-700 dark:text-gray-300">
                       {province.touristAttractions.map((attraction, index) => (
@@ -105,6 +133,14 @@ const Explore = () => {
                       ))}
                     </ul>
                   </div>
+                  
+                  <Link 
+                    to={`/province/${province.id}`}
+                    className="inline-flex items-center mt-2 text-zambia-600 hover:text-zambia-700 font-medium"
+                  >
+                    View Province Details
+                    <ArrowUpRight className="ml-1 h-4 w-4" />
+                  </Link>
                 </div>
               </div>
             ))}
