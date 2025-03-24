@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { MapChart } from '@/components/maps/MapChart';
 import { provinces, dataCategories } from '@/utils/data';
 import AgricultureDashboard from '@/components/agriculture/AgricultureDashboard';
@@ -146,9 +146,9 @@ const Explore = () => {
         {/* Category selection */}
         <div className="flex flex-wrap gap-3 mb-8">
           {dataCategories.map(category => (
-            <a 
+            <Link 
               key={category.id}
-              href={`/explore/${category.id}`}
+              to={`/explore/${category.id}`}
               className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 currentCategory === category.id 
                   ? 'bg-zambia-600 text-white' 
@@ -156,7 +156,7 @@ const Explore = () => {
               }`}
             >
               {category.name}
-            </a>
+            </Link>
           ))}
         </div>
         

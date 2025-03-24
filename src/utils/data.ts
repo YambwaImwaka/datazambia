@@ -516,12 +516,12 @@ export const economicSectors = [
 
 // Data categories for navigation
 export const dataCategories = [
-  { id: "overview", name: "Overview" },
-  { id: "health", name: "Health" },
-  { id: "education", name: "Education" },
-  { id: "agriculture", name: "Agriculture" },
-  { id: "economy", name: "Economy" },
-  { id: "finance", name: "Finance" }
+  { id: "overview", name: "Overview", description: "General overview of Zambia's provinces and key metrics" },
+  { id: "health", name: "Health", description: "Health metrics and statistics across Zambia" },
+  { id: "education", name: "Education", description: "Education data and enrollment statistics" },
+  { id: "agriculture", name: "Agriculture", description: "Agricultural production and farming statistics" },
+  { id: "economy", name: "Economy", description: "Economic indicators and business metrics" },
+  { id: "finance", name: "Finance", description: "Financial data including exchange rates and market indicators" }
 ];
 
 // Time periods for filtering
