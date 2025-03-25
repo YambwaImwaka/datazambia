@@ -62,7 +62,7 @@ const UsersAdmin = () => {
         // Fallback to just using profiles if admin API not available
         const adminIds = new Set(roles.map(r => r.user_id));
         
-        const mappedUsers = profiles.map(profile => ({
+        const mappedUsers: ProfileWithRole[] = profiles.map(profile => ({
           id: profile.id,
           email: 'Email hidden', // Can't access emails without admin rights
           username: profile.username,
@@ -77,9 +77,19 @@ const UsersAdmin = () => {
       
       // If auth data available, merge everything
       const adminIds = new Set(roles.map(r => r.user_id));
-      const emailMap = new Map(authData.users.map(user => [user.id, user.email]));
       
-      const mappedUsers = profiles.map(profile => ({
+      // Fix: Create Map with proper key-value pairs
+      const emailMap = new Map<string, string>();
+      if (authData && authData.users) {
+        authData.users.forEach(user => {
+          if (user.id && user.email) {
+            emailMap.set(user.id, user.email);
+          }
+        });
+      }
+      
+      // Fix: Ensure email is always a string
+      const mappedUsers: ProfileWithRole[] = profiles.map(profile => ({
         id: profile.id,
         email: emailMap.get(profile.id) || 'Unknown',
         username: profile.username,
