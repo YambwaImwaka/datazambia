@@ -20,6 +20,13 @@ interface ProfileWithRole {
   created_at: string;
 }
 
+// Define a type for the user data from Supabase Auth Admin API
+interface SupabaseAuthUser {
+  id: string;
+  email?: string;
+  [key: string]: any; // Allow for other properties
+}
+
 const UsersAdmin = () => {
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
@@ -78,11 +85,12 @@ const UsersAdmin = () => {
       // If auth data available, merge everything
       const adminIds = new Set(roles.map(r => r.user_id));
       
-      // Fix: Create Map with proper key-value pairs
+      // Fix: Properly type the auth users data and add null checks
       const emailMap = new Map<string, string>();
       if (authData && authData.users) {
-        authData.users.forEach(user => {
-          if (user.id && user.email) {
+        const authUsers = authData.users as SupabaseAuthUser[];
+        authUsers.forEach(user => {
+          if (user && user.id && user.email) {
             emailMap.set(user.id, user.email);
           }
         });
