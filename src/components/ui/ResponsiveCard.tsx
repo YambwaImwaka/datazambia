@@ -33,7 +33,7 @@ const cardVariants = cva(
 );
 
 export interface ResponsiveCardProps 
-  extends React.HTMLAttributes<HTMLDivElement>,
+  extends Omit<React.HTMLAttributes<HTMLDivElement>, 'title'>,
     VariantProps<typeof cardVariants> {
   title?: React.ReactNode;
   description?: React.ReactNode;
