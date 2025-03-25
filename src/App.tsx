@@ -34,37 +34,39 @@ const App = () => (
       <TooltipProvider>
         <BrowserRouter>
           <AuthProvider>
-            <Routes>
-              {/* Public routes */}
-              <Route path="/" element={<Index />} />
-              <Route path="/province/:provinceId" element={<ProvinceProfile />} />
-              <Route path="/provinces" element={<ProvincesList />} />
-              <Route path="/explore" element={<Explore />} />
-              <Route path="/explore/:categoryId" element={<Explore />} />
-              <Route path="/about" element={<About />} />
-              
-              {/* Auth routes - accessible only when NOT logged in */}
-              <Route element={<ProtectedRoute requireAuth={false} />}>
-                <Route path="/auth/signin" element={<SignIn />} />
-                <Route path="/auth/signup" element={<SignUp />} />
-              </Route>
-              
-              {/* Protected routes - accessible only when logged in */}
-              <Route element={<ProtectedRoute requireAuth={true} />}>
-                <Route path="/dashboard" element={<Dashboard />} />
-                {/* Redirect /admin to /admin/users for convenience */}
-                <Route path="/admin" element={<Navigate to="/admin/users" replace />} />
-              </Route>
-              
-              {/* Admin routes - accessible only to admins */}
-              <Route element={<ProtectedRoute requireAuth={true} requireAdmin={true} />}>
-                <Route path="/admin/users" element={<UsersAdmin />} />
-                <Route path="/admin/users/:userId" element={<UsersAdmin />} />
-              </Route>
-              
-              {/* Catch-all route */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
+            <div className="min-h-screen flex flex-col">
+              <Routes>
+                {/* Public routes */}
+                <Route path="/" element={<Index />} />
+                <Route path="/province/:provinceId" element={<ProvinceProfile />} />
+                <Route path="/provinces" element={<ProvincesList />} />
+                <Route path="/explore" element={<Explore />} />
+                <Route path="/explore/:categoryId" element={<Explore />} />
+                <Route path="/about" element={<About />} />
+                
+                {/* Auth routes - accessible only when NOT logged in */}
+                <Route element={<ProtectedRoute requireAuth={false} />}>
+                  <Route path="/auth/signin" element={<SignIn />} />
+                  <Route path="/auth/signup" element={<SignUp />} />
+                </Route>
+                
+                {/* Protected routes - accessible only when logged in */}
+                <Route element={<ProtectedRoute requireAuth={true} />}>
+                  <Route path="/dashboard" element={<Dashboard />} />
+                  {/* Redirect /admin to /admin/users for convenience */}
+                  <Route path="/admin" element={<Navigate to="/admin/users" replace />} />
+                </Route>
+                
+                {/* Admin routes - accessible only to admins */}
+                <Route element={<ProtectedRoute requireAuth={true} requireAdmin={true} />}>
+                  <Route path="/admin/users" element={<UsersAdmin />} />
+                  <Route path="/admin/users/:userId" element={<UsersAdmin />} />
+                </Route>
+                
+                {/* Catch-all route */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </div>
             <Toaster />
             <Sonner />
           </AuthProvider>

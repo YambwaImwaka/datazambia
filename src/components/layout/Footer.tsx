@@ -1,158 +1,165 @@
 
-import { Link } from "react-router-dom";
-import { Facebook, Twitter, Instagram, Youtube, Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Link } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Github, Twitter, Linkedin, Mail, ExternalLink } from 'lucide-react';
 
 const Footer = () => {
+  const isMobile = useIsMobile();
+
+  const currentYear = new Date().getFullYear();
+  
+  const footerSections = [
+    {
+      title: 'Explore',
+      links: [
+        { name: 'Provinces', href: '/provinces' },
+        { name: 'Data Explorer', href: '/explore' },
+        { name: 'Agriculture', href: '/explore/agriculture' },
+        { name: 'Economy', href: '/explore/economy' },
+        { name: 'Health', href: '/explore/health' },
+      ],
+    },
+    {
+      title: 'Resources',
+      links: [
+        { name: 'About', href: '/about' },
+        { name: 'Dashboard', href: '/dashboard' },
+        { name: 'Open Data', href: '/data' },
+        { name: 'API Access', href: '/api' },
+        { name: 'Documentation', href: '/docs' },
+      ],
+    },
+    {
+      title: 'Company',
+      links: [
+        { name: 'Team', href: '/team' },
+        { name: 'Careers', href: '/careers' },
+        { name: 'Blog', href: '/blog' },
+        { name: 'Press', href: '/press' },
+        { name: 'Contact', href: '/contact' },
+      ],
+    },
+    {
+      title: 'Legal',
+      links: [
+        { name: 'Privacy Policy', href: '/privacy' },
+        { name: 'Terms of Service', href: '/terms' },
+        { name: 'Data Policy', href: '/data-policy' },
+        { name: 'Cookies', href: '/cookies' },
+      ],
+    },
+  ];
+
+  const socialLinks = [
+    { name: 'Github', icon: <Github className="h-5 w-5" />, href: 'https://github.com' },
+    { name: 'Twitter', icon: <Twitter className="h-5 w-5" />, href: 'https://twitter.com' },
+    { name: 'LinkedIn', icon: <Linkedin className="h-5 w-5" />, href: 'https://linkedin.com' },
+    { name: 'Mail', icon: <Mail className="h-5 w-5" />, href: 'mailto:info@zambiainsight.com' },
+  ];
+
   return (
-    <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-4">
-            <Link to="/" className="flex items-center space-x-2">
-              <div className="w-10 h-10 rounded-full bg-zambia-600 flex items-center justify-center">
-                <span className="text-white font-bold text-lg">ZI</span>
-              </div>
-              <span className="font-display font-bold text-xl text-gray-900 dark:text-white">
-                Zambia Insight
-              </span>
+    <footer className="bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800 pt-12 pb-8">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
+          <div className="lg:col-span-1">
+            <Link to="/" className="flex items-center gap-2 mb-4">
+              <span className="bg-zambia-600 text-white font-bold text-xl px-2 py-1 rounded">ZI</span>
+              <span className="font-bold text-lg">Zambia Insight</span>
             </Link>
-            <p className="text-sm text-gray-600 dark:text-gray-400 max-w-xs">
-              Comprehensive data visualization platform for Zambia's provinces, providing insights into health, education, economy, and more.
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 max-w-xs">
+              Providing comprehensive data visualization and insights for Zambia's provinces to support informed decision-making.
             </p>
-            <div className="flex space-x-4">
-              <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 hover:bg-zambia-100 hover:text-zambia-600">
-                <Facebook size={18} />
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 hover:bg-zambia-100 hover:text-zambia-600">
-                <Twitter size={18} />
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 hover:bg-zambia-100 hover:text-zambia-600">
-                <Instagram size={18} />
-              </Button>
-              <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 hover:bg-zambia-100 hover:text-zambia-600">
-                <Youtube size={18} />
-              </Button>
+            <div className="flex space-x-4 mb-8">
+              {socialLinks.map((link) => (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gray-500 hover:text-zambia-600 dark:text-gray-400 dark:hover:text-zambia-400 transition-colors"
+                  aria-label={link.name}
+                >
+                  {link.icon}
+                </a>
+              ))}
             </div>
           </div>
           
-          <div>
-            <h3 className="font-medium text-sm text-gray-900 dark:text-white uppercase tracking-wider mb-4">
-              Explore
-            </h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/explore/overview" className="text-sm text-gray-600 dark:text-gray-400 hover:text-zambia-600">
-                  Overview
-                </Link>
-              </li>
-              <li>
-                <Link to="/explore/health" className="text-sm text-gray-600 dark:text-gray-400 hover:text-zambia-600">
-                  Health
-                </Link>
-              </li>
-              <li>
-                <Link to="/explore/education" className="text-sm text-gray-600 dark:text-gray-400 hover:text-zambia-600">
-                  Education
-                </Link>
-              </li>
-              <li>
-                <Link to="/explore/agriculture" className="text-sm text-gray-600 dark:text-gray-400 hover:text-zambia-600">
-                  Agriculture
-                </Link>
-              </li>
-              <li>
-                <Link to="/explore/economy" className="text-sm text-gray-600 dark:text-gray-400 hover:text-zambia-600">
-                  Economy
-                </Link>
-              </li>
-              <li>
-                <Link to="/explore/infrastructure" className="text-sm text-gray-600 dark:text-gray-400 hover:text-zambia-600">
-                  Infrastructure
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="font-medium text-sm text-gray-900 dark:text-white uppercase tracking-wider mb-4">
-              Provinces
-            </h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/province/lusaka" className="text-sm text-gray-600 dark:text-gray-400 hover:text-zambia-600">
-                  Lusaka
-                </Link>
-              </li>
-              <li>
-                <Link to="/province/copperbelt" className="text-sm text-gray-600 dark:text-gray-400 hover:text-zambia-600">
-                  Copperbelt
-                </Link>
-              </li>
-              <li>
-                <Link to="/province/central" className="text-sm text-gray-600 dark:text-gray-400 hover:text-zambia-600">
-                  Central
-                </Link>
-              </li>
-              <li>
-                <Link to="/province/eastern" className="text-sm text-gray-600 dark:text-gray-400 hover:text-zambia-600">
-                  Eastern
-                </Link>
-              </li>
-              <li>
-                <Link to="/province/southern" className="text-sm text-gray-600 dark:text-gray-400 hover:text-zambia-600">
-                  Southern
-                </Link>
-              </li>
-              <li>
-                <Link to="/provinces" className="text-sm text-zambia-600 font-medium">
-                  View all provinces →
-                </Link>
-              </li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="font-medium text-sm text-gray-900 dark:text-white uppercase tracking-wider mb-4">
-              Subscribe
-            </h3>
-            <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-              Subscribe to our newsletter for the latest updates and insights.
-            </p>
-            <div className="space-y-2">
-              <div className="flex space-x-2">
-                <Input 
-                  type="email" 
-                  placeholder="Your email" 
-                  className="bg-white border-gray-200"
-                />
-                <Button className="bg-zambia-600 hover:bg-zambia-700">
-                  <Mail size={16} className="mr-2" />
-                  Subscribe
-                </Button>
-              </div>
-              <p className="text-xs text-gray-500 dark:text-gray-500">
-                By subscribing, you agree to our Privacy Policy and Terms of Service.
-              </p>
+          {!isMobile ? (
+            // Desktop footer layout
+            <>
+              {footerSections.map((section) => (
+                <div key={section.title}>
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-4">
+                    {section.title}
+                  </h3>
+                  <ul className="space-y-2">
+                    {section.links.map((link) => (
+                      <li key={link.name}>
+                        <Link
+                          to={link.href}
+                          className="text-sm text-gray-600 hover:text-zambia-600 dark:text-gray-400 dark:hover:text-zambia-400 transition-colors"
+                        >
+                          {link.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </>
+          ) : (
+            // Mobile footer layout (simplified)
+            <div className="grid grid-cols-2 gap-8">
+              {footerSections.slice(0, 2).map((section) => (
+                <div key={section.title}>
+                  <h3 className="text-sm font-semibold text-gray-900 dark:text-white uppercase tracking-wider mb-3">
+                    {section.title}
+                  </h3>
+                  <ul className="space-y-2">
+                    {section.links.slice(0, 3).map((link) => (
+                      <li key={link.name}>
+                        <Link
+                          to={link.href}
+                          className="text-sm text-gray-600 hover:text-zambia-600 dark:text-gray-400 dark:hover:text-zambia-400 transition-colors"
+                        >
+                          {link.name}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
             </div>
-          </div>
+          )}
         </div>
         
-        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-gray-500 dark:text-gray-500">
-            © 2023 Zambia Insight. All rights reserved.
-          </p>
-          <div className="flex space-x-6 mt-4 md:mt-0">
-            <Link to="/privacy" className="text-sm text-gray-500 dark:text-gray-500 hover:text-zambia-600">
-              Privacy Policy
-            </Link>
-            <Link to="/terms" className="text-sm text-gray-500 dark:text-gray-500 hover:text-zambia-600">
-              Terms of Service
-            </Link>
-            <Link to="/contact" className="text-sm text-gray-500 dark:text-gray-500 hover:text-zambia-600">
-              Contact Us
-            </Link>
+        <div className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-800">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <p className="text-sm text-gray-500 dark:text-gray-400">
+              &copy; {currentYear} Zambia Insight. All rights reserved.
+            </p>
+            
+            <div className="mt-4 md:mt-0 flex items-center">
+              <a
+                href="https://data.gov.zm"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-gray-500 hover:text-zambia-600 dark:text-gray-400 dark:hover:text-zambia-400 transition-colors flex items-center mr-4"
+              >
+                <span>Data Source</span>
+                <ExternalLink className="ml-1 h-3 w-3" />
+              </a>
+              <a
+                href="https://github.com/zambia-insight"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-sm text-gray-500 hover:text-zambia-600 dark:text-gray-400 dark:hover:text-zambia-400 transition-colors flex items-center"
+              >
+                <span>Open Source</span>
+                <ExternalLink className="ml-1 h-3 w-3" />
+              </a>
+            </div>
           </div>
         </div>
       </div>
