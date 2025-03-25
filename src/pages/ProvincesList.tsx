@@ -30,8 +30,24 @@ const ProvincesList = () => {
   const provinceMapData = provinces.map(province => ({
     id: province.id,
     name: province.name,
-    value: province.population
+    value: province.population,
+    coordinates: province.coordinates as [number, number],
+    color: getRandomColor(province.name)
   }));
+  
+  // Generate a deterministic color based on province name
+  function getRandomColor(name: string) {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    let color = '#';
+    for (let i = 0; i < 3; i++) {
+      const value = (hash >> (i * 8)) & 0xFF;
+      color += ('00' + value.toString(16)).substr(-2);
+    }
+    return color;
+  }
 
   return (
     <div className="min-h-screen flex flex-col">

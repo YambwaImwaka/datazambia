@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useMemo } from "react";
 import { 
   useHealthIndicatorsData,
@@ -60,7 +59,6 @@ export const HealthDashboard = () => {
   const isMobile = useMediaQuery("(max-width: 768px)");
   
   useEffect(() => {
-    // Delay visibility for smoother rendering
     const timer = setTimeout(() => {
       setIsVisible(true);
     }, 100);
@@ -68,21 +66,18 @@ export const HealthDashboard = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Filter healthcare data by province
   const filteredHealthcareData = useMemo(() => 
     healthcareData?.filter(item => 
       (selectedProvince === "all" || item.province === selectedProvince) &&
       (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()))
     ), [healthcareData, selectedProvince, searchTerm]);
   
-  // Filter maternal health data by province
   const filteredMaternalData = useMemo(() => 
     maternalData?.filter(item => 
       (selectedProvince === "all" || item.province === selectedProvince) &&
       (searchTerm === "" || item.province.toLowerCase().includes(searchTerm.toLowerCase()))
     ), [maternalData, selectedProvince, searchTerm]);
   
-  // Filter immunization data by province and vaccine type
   const filteredImmunizationData = useMemo(() => 
     immunizationData?.filter(item => 
       (selectedProvince === "all" || item.province === selectedProvince) &&
@@ -91,14 +86,12 @@ export const HealthDashboard = () => {
         item.vaccine.toLowerCase().includes(searchTerm.toLowerCase()))
     ), [immunizationData, selectedProvince, searchTerm]);
   
-  // Filter disease data by disease name
   const filteredDiseaseData = useMemo(() => 
     diseaseData?.filter(item => 
       searchTerm === "" || 
       item.disease.toLowerCase().includes(searchTerm.toLowerCase())
     ), [diseaseData, searchTerm]);
   
-  // Prepare data for maternal health chart
   const getMaternalHealthChartData = useMemo(() => {
     if (!filteredMaternalData) return [];
     
@@ -111,7 +104,6 @@ export const HealthDashboard = () => {
     }));
   }, [filteredMaternalData]);
   
-  // Prepare data for disease prevalence chart
   const getDiseaseChartData = useMemo(() => {
     if (!filteredDiseaseData) return [];
     
@@ -250,11 +242,11 @@ export const HealthDashboard = () => {
                 <div className="h-80">
                   <BarChart
                     data={getDiseaseChartData}
-                    categories={[
-                      { name: "Prevalence Rate", key: "prevalence", color: "#ef4444" },
-                      { name: "Mortality Rate", key: "mortality", color: "#6366f1" }
+                    bars={[
+                      { dataKey: "prevalence", name: "Prevalence Rate", color: "#ef4444" },
+                      { dataKey: "mortality", name: "Mortality Rate", color: "#6366f1" }
                     ]}
-                    index="name"
+                    xAxisKey="name"
                     height={300}
                     yAxisLabel="per 100,000 population"
                   />
