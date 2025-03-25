@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Loader2 } from 'lucide-react';
 
@@ -14,6 +14,14 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   requireAdmin = false
 }) => {
   const { user, isLoading, isAdmin } = useAuth();
+  const location = useLocation();
+
+  // Store the attempted URL in localStorage when redirecting to login
+  useEffect(() => {
+    if (requireAuth && !isLoading && !user) {
+      localStorage.setItem('redirectAfterLogin', location.pathname);
+    }
+  }, [requireAuth, isLoading, user, location.pathname]);
 
   if (isLoading) {
     return (
@@ -26,7 +34,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // If authentication is required and user is not logged in, redirect to login
   if (requireAuth && !user) {
-    return <Navigate to="/auth/signin" replace />;
+    return <Navigate to="/auth/signin" state={{ from: location }} replace />;
   }
 
   // If admin access is required and user is not an admin, redirect to dashboard

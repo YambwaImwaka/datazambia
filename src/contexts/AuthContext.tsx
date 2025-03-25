@@ -105,10 +105,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       toast.success('Successfully signed in!');
-      navigate('/dashboard');
+      // Navigate is handled by the component with redirect path
     } catch (error: any) {
       toast.error(error.message || 'An error occurred during sign in');
       console.error('Error during sign in:', error);
+      throw error; // Re-throw to allow component to handle
     } finally {
       setIsLoading(false);
     }

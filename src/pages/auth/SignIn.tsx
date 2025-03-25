@@ -1,9 +1,9 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -21,7 +21,22 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const SignIn = () => {
-  const { signIn, isLoading } = useAuth();
+  const { signIn, isLoading, user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Check for redirect path from location state or localStorage
+  const fromState = location.state?.from?.pathname;
+  const fromStorage = localStorage.getItem('redirectAfterLogin');
+  const redirectPath = fromState || fromStorage || '/dashboard';
+  
+  useEffect(() => {
+    // If user is already logged in, redirect
+    if (user) {
+      localStorage.removeItem('redirectAfterLogin');
+      navigate(redirectPath, { replace: true });
+    }
+  }, [user, navigate, redirectPath]);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -32,7 +47,13 @@ const SignIn = () => {
   });
 
   const onSubmit = async (data: FormValues) => {
-    await signIn(data.email, data.password);
+    try {
+      await signIn(data.email, data.password);
+      // The redirect will happen automatically in the useEffect when user state updates
+    } catch (error) {
+      // Error handling is done in AuthContext
+      console.error("Sign in failed:", error);
+    }
   };
 
   return (

@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ThemeProvider } from "@/components/theme-provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import Index from "./pages/Index";
@@ -52,12 +52,14 @@ const App = () => (
               {/* Protected routes - accessible only when logged in */}
               <Route element={<ProtectedRoute requireAuth={true} />}>
                 <Route path="/dashboard" element={<Dashboard />} />
+                {/* Redirect /admin to /admin/users for convenience */}
+                <Route path="/admin" element={<Navigate to="/admin/users" replace />} />
               </Route>
               
               {/* Admin routes - accessible only to admins */}
               <Route element={<ProtectedRoute requireAuth={true} requireAdmin={true} />}>
                 <Route path="/admin/users" element={<UsersAdmin />} />
-                {/* Add more admin routes here */}
+                <Route path="/admin/users/:userId" element={<UsersAdmin />} />
               </Route>
               
               {/* Catch-all route */}
