@@ -2,221 +2,222 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import { provinces } from '@/utils/data';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Edit, Trash2, PlusCircle, MapPin, Activity, BarChart, FileText } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Textarea } from '@/components/ui/textarea';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { useForm } from 'react-hook-form';
+import { PencilIcon, PlusIcon, SearchIcon, TrashIcon } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import mockProvinces from '@/utils/data';
 
 const ContentManagementPanel = () => {
   const [activeTab, setActiveTab] = useState('provinces');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedProvinceId, setSelectedProvinceId] = useState<string | null>(null);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  
+  // Mock query - in a real app this would fetch from Supabase
+  const { data: provinces } = useQuery({
+    queryKey: ['provinces'],
+    queryFn: () => Promise.resolve(mockProvinces),
+    initialData: mockProvinces,
+  });
+  
+  const filteredProvinces = provinces.filter(province => 
+    province.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    province.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    province.capital.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  
+  const selectedProvince = provinces.find(p => p.id === selectedProvinceId);
+  
+  const form = useForm({
+    defaultValues: {
+      name: selectedProvince?.name || '',
+      capital: selectedProvince?.capital || '',
+      description: selectedProvince?.description || '',
+    }
+  });
+  
+  const openEditDialog = (provinceId: string) => {
+    setSelectedProvinceId(provinceId);
+    const province = provinces.find(p => p.id === provinceId);
+    if (province) {
+      form.reset({
+        name: province.name,
+        capital: province.capital,
+        description: province.description,
+      });
+    }
+    setIsEditDialogOpen(true);
+  };
+  
+  const handleSaveChanges = (values: any) => {
+    console.log('Saving changes:', values);
+    // In a real app, this would call a Supabase mutation to update the province
+    setIsEditDialogOpen(false);
+  };
 
   return (
     <Card>
       <CardHeader>
         <CardTitle>Content Management</CardTitle>
         <CardDescription>
-          Manage the data and content displayed throughout the site
+          Manage all content across the Zambia Insight platform
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Tabs defaultValue="provinces" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
           <TabsList>
             <TabsTrigger value="provinces">Provinces</TabsTrigger>
-            <TabsTrigger value="statistics">Statistics</TabsTrigger>
-            <TabsTrigger value="featured">Featured Content</TabsTrigger>
-            <TabsTrigger value="reports">Reports</TabsTrigger>
+            <TabsTrigger value="datasets">Datasets</TabsTrigger>
+            <TabsTrigger value="articles">Articles</TabsTrigger>
+            <TabsTrigger value="pages">Static Pages</TabsTrigger>
           </TabsList>
-
-          <TabsContent value="provinces" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium">Provinces Database</h3>
-              <Button>
-                <PlusCircle className="h-4 w-4 mr-2" />
+          
+          <TabsContent value="provinces" className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="relative w-full md:w-96">
+                <SearchIcon className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input 
+                  placeholder="Search provinces..." 
+                  className="pl-9" 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
+              <Button className="ml-auto">
+                <PlusIcon className="mr-2 h-4 w-4" />
                 Add Province
               </Button>
             </div>
             
-            <div className="border rounded-md">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Capital</TableHead>
-                    <TableHead>Population</TableHead>
-                    <TableHead>Area (km²)</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {provinces.map((province) => (
-                    <TableRow key={province.id}>
-                      <TableCell className="font-medium">
-                        <div className="flex items-center">
-                          <MapPin className="h-4 w-4 mr-2 text-muted-foreground" />
-                          {province.name}
-                        </div>
-                      </TableCell>
-                      <TableCell>{province.capital}</TableCell>
-                      <TableCell>{province.population.toLocaleString()}</TableCell>
-                      <TableCell>{province.area.toLocaleString()}</TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="icon">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
+            <Card>
+              <ScrollArea className="h-[400px] w-full rounded-md border">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Capital</TableHead>
+                      <TableHead>Population</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="statistics" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium">Statistics & Indicators</h3>
-              <Button>
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Add Statistic
-              </Button>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredProvinces.map((province) => (
+                      <TableRow key={province.id}>
+                        <TableCell className="font-medium">{province.name}</TableCell>
+                        <TableCell>{province.capital}</TableCell>
+                        <TableCell>{province.population.toLocaleString()}</TableCell>
+                        <TableCell className="text-right">
+                          <Button 
+                            variant="ghost" 
+                            size="icon"
+                            onClick={() => openEditDialog(province.id)}
+                          >
+                            <PencilIcon className="h-4 w-4" />
+                          </Button>
+                          <Button variant="ghost" size="icon">
+                            <TrashIcon className="h-4 w-4" />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </ScrollArea>
+            </Card>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card>
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="text-sm font-medium">Health Statistics</CardTitle>
-                    <Activity className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">15 indicators</p>
-                  <div className="flex justify-end mt-4">
-                    <Button variant="outline" size="sm">Manage</Button>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="text-sm font-medium">Economic Indicators</CardTitle>
-                    <BarChart className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">23 indicators</p>
-                  <div className="flex justify-end mt-4">
-                    <Button variant="outline" size="sm">Manage</Button>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="text-sm font-medium">Agriculture Data</CardTitle>
-                    <FileText className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground">18 indicators</p>
-                  <div className="flex justify-end mt-4">
-                    <Button variant="outline" size="sm">Manage</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+            <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+              <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                  <DialogTitle>Edit Province</DialogTitle>
+                </DialogHeader>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(handleSaveChanges)} className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                      <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Province Name</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <FormField
+                        control={form.control}
+                        name="capital"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Capital City</FormLabel>
+                            <FormControl>
+                              <Input {...field} />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    
+                    <FormField
+                      control={form.control}
+                      name="description"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Description</FormLabel>
+                          <FormControl>
+                            <Textarea 
+                              {...field} 
+                              className="min-h-[120px]" 
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    <DialogFooter>
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        onClick={() => setIsEditDialogOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+                      <Button type="submit">Save Changes</Button>
+                    </DialogFooter>
+                  </form>
+                </Form>
+              </DialogContent>
+            </Dialog>
           </TabsContent>
           
-          <TabsContent value="featured" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium">Featured Content Management</h3>
-              <Button>
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Add Featured Item
-              </Button>
-            </div>
-            
-            <div className="border rounded-md">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Position</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {provinces.slice(0, 5).map((province, index) => (
-                    <TableRow key={province.id}>
-                      <TableCell className="font-medium">
-                        {province.name} Overview
-                      </TableCell>
-                      <TableCell>Province</TableCell>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>
-                        <span className="px-2 py-1 rounded-full text-xs bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100">
-                          Active
-                        </span>
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="icon">
-                            <Edit className="h-4 w-4" />
-                          </Button>
-                          <Button variant="ghost" size="icon">
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+          <TabsContent value="datasets">
+            <Card className="p-6">
+              <p className="text-muted-foreground">Dataset management coming soon...</p>
+            </Card>
           </TabsContent>
           
-          <TabsContent value="reports" className="space-y-6">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-medium">Report Templates</h3>
-              <Button>
-                <PlusCircle className="h-4 w-4 mr-2" />
-                Add Report Template
-              </Button>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base">Province Summary Report</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">A comprehensive overview of key metrics for a selected province</p>
-                  <div className="flex justify-end">
-                    <Button variant="outline" size="sm">Edit Template</Button>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base">Economic Trends Report</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm text-muted-foreground mb-4">Analysis of economic indicators over time with visualizations</p>
-                  <div className="flex justify-end">
-                    <Button variant="outline" size="sm">Edit Template</Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+          <TabsContent value="articles">
+            <Card className="p-6">
+              <p className="text-muted-foreground">Article management coming soon...</p>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="pages">
+            <Card className="p-6">
+              <p className="text-muted-foreground">Static page management coming soon...</p>
+            </Card>
           </TabsContent>
         </Tabs>
       </CardContent>

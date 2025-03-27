@@ -78,6 +78,93 @@ export type Database = {
         }
         Relationships: []
       }
+      site_config: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          favicon_url: string | null
+          id: string
+          logo_url: string | null
+          primary_color: string | null
+          secondary_color: string | null
+          site_description: string | null
+          site_name: string
+          site_tagline: string | null
+          updated_at: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          favicon_url?: string | null
+          id?: string
+          logo_url?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          site_description?: string | null
+          site_name?: string
+          site_tagline?: string | null
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          favicon_url?: string | null
+          id?: string
+          logo_url?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          site_description?: string | null
+          site_name?: string
+          site_tagline?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      system_settings: {
+        Row: {
+          created_at: string
+          email_footer_text: string | null
+          email_from_address: string | null
+          email_from_name: string | null
+          enable_comments: boolean
+          enable_notifications: boolean
+          enable_user_favorites: boolean
+          enable_user_registration: boolean
+          id: string
+          maintenance_mode: boolean
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          email_footer_text?: string | null
+          email_from_address?: string | null
+          email_from_name?: string | null
+          enable_comments?: boolean
+          enable_notifications?: boolean
+          enable_user_favorites?: boolean
+          enable_user_registration?: boolean
+          id?: string
+          maintenance_mode?: boolean
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          email_footer_text?: string | null
+          email_from_address?: string | null
+          email_from_name?: string | null
+          enable_comments?: boolean
+          enable_notifications?: boolean
+          enable_user_favorites?: boolean
+          enable_user_registration?: boolean
+          id?: string
+          maintenance_mode?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_favorites: {
         Row: {
           created_at: string
