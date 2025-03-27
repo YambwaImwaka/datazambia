@@ -12,7 +12,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { useForm } from 'react-hook-form';
 import { PencilIcon, PlusIcon, SearchIcon, TrashIcon } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
-import mockProvinces from '@/utils/data';
+import { provinces } from '@/utils/data';
 
 const ContentManagementPanel = () => {
   const [activeTab, setActiveTab] = useState('provinces');
@@ -21,19 +21,19 @@ const ContentManagementPanel = () => {
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   
   // Mock query - in a real app this would fetch from Supabase
-  const { data: provinces } = useQuery({
+  const { data: provincesData } = useQuery({
     queryKey: ['provinces'],
-    queryFn: () => Promise.resolve(mockProvinces),
-    initialData: mockProvinces,
+    queryFn: () => Promise.resolve(provinces),
+    initialData: provinces,
   });
   
-  const filteredProvinces = provinces.filter(province => 
+  const filteredProvinces = provincesData.filter(province => 
     province.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     province.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
     province.capital.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
-  const selectedProvince = provinces.find(p => p.id === selectedProvinceId);
+  const selectedProvince = provincesData.find(p => p.id === selectedProvinceId);
   
   const form = useForm({
     defaultValues: {
@@ -45,7 +45,7 @@ const ContentManagementPanel = () => {
   
   const openEditDialog = (provinceId: string) => {
     setSelectedProvinceId(provinceId);
-    const province = provinces.find(p => p.id === provinceId);
+    const province = provincesData.find(p => p.id === provinceId);
     if (province) {
       form.reset({
         name: province.name,
