@@ -18,6 +18,7 @@ import Dashboard from "./pages/Dashboard";
 import UserProfile from "./pages/profile/UserProfile";
 import UserFavorites from "./pages/profile/UserFavorites";
 import UsersAdmin from "./pages/admin/Users";
+import AdminDashboard from "./pages/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
@@ -57,12 +58,13 @@ const App = () => (
                   <Route path="/dashboard" element={<Dashboard />} />
                   <Route path="/profile" element={<UserProfile />} />
                   <Route path="/favorites" element={<UserFavorites />} />
-                  {/* Redirect /admin to /admin/users for convenience */}
-                  <Route path="/admin" element={<Navigate to="/admin/users" replace />} />
+                  {/* Redirect /admin to /admin/dashboard for convenience */}
+                  <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
                 </Route>
                 
                 {/* Admin routes - accessible only to admins */}
                 <Route element={<ProtectedRoute requireAuth={true} requireAdmin={true} />}>
+                  <Route path="/admin/dashboard" element={<AdminDashboard />} />
                   <Route path="/admin/users" element={<UsersAdmin />} />
                   <Route path="/admin/users/:userId" element={<UsersAdmin />} />
                 </Route>

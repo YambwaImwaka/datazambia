@@ -16,7 +16,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import MobileNav from './MobileNav';
 import UserNotifications from '@/components/notifications/UserNotifications';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { User, LogOut, Settings, Heart, BarChart2, UserCog } from 'lucide-react';
+import { User, LogOut, Settings, Heart, BarChart2, UserCog, Layout } from 'lucide-react';
 
 const Header = () => {
   const { user, signOut, isAdmin } = useAuth();
@@ -61,7 +61,7 @@ const Header = () => {
                 )}
                 {isAdmin && (
                   <li>
-                    <Link to="/admin" className="text-sm hover:text-primary transition-colors">
+                    <Link to="/admin/dashboard" className="text-sm hover:text-primary transition-colors">
                       Admin
                     </Link>
                   </li>
@@ -114,9 +114,9 @@ const Header = () => {
                     <span>Settings</span>
                   </DropdownMenuItem>
                   {isAdmin && (
-                    <DropdownMenuItem onClick={() => navigate('/admin')}>
-                      <UserCog className="mr-2 h-4 w-4" />
-                      <span>Admin</span>
+                    <DropdownMenuItem onClick={() => navigate('/admin/dashboard')}>
+                      <Layout className="mr-2 h-4 w-4" />
+                      <span>Admin Panel</span>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
