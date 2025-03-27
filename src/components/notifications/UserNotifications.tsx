@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,6 +8,7 @@ import { ResponsiveCard } from '@/components/ui/ResponsiveCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Bell, CheckCheck, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface Notification {
   id: string;

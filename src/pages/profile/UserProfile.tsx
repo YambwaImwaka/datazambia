@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -34,13 +33,28 @@ const notificationFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 type NotificationFormValues = z.infer<typeof notificationFormSchema>;
 
+interface ProfileData {
+  id: string;
+  username?: string;
+  full_name?: string;
+  bio?: string;
+  location?: string;
+  avatar_url?: string;
+  theme?: string;
+  notification_preferences?: {
+    email: boolean;
+    app: boolean;
+  };
+  [key: string]: any;
+}
+
 const UserProfile = () => {
   const { user, isLoading: authLoading } = useAuth();
   const { theme, setTheme } = useTheme();
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
-  const [profileData, setProfileData] = useState<any>(null);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
 
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -76,10 +90,9 @@ const UserProfile = () => {
         }
 
         if (data) {
-          setProfileData(data);
-          setAvatarUrl(data.avatar_url);
+          setProfileData(data as ProfileData);
+          setAvatarUrl(data.avatar_url || null);
           
-          // Set form values
           profileForm.reset({
             username: data.username || '',
             full_name: data.full_name || '',
@@ -87,8 +100,7 @@ const UserProfile = () => {
             location: data.location || '',
           });
 
-          // Set notification preferences
-          const notificationPrefs = data.notification_preferences || { email: true, app: true };
+          const notificationPrefs = data.notification_preferences as { email: boolean; app: boolean } || { email: true, app: true };
           notificationForm.reset({
             email: notificationPrefs.email,
             app: notificationPrefs.app,
@@ -203,7 +215,6 @@ const UserProfile = () => {
     const newTheme = theme === 'dark' ? 'light' : 'dark';
     setTheme(newTheme);
     
-    // Save theme preference to profile
     supabase
       .from('profiles')
       .update({ theme: newTheme })
@@ -244,7 +255,6 @@ const UserProfile = () => {
         <h1 className="text-3xl font-bold mb-6">Your Profile</h1>
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          {/* Sidebar */}
           <div className="lg:col-span-1">
             <ResponsiveCard variant="elevated" className="mb-6">
               <div className="flex flex-col items-center p-6">
@@ -252,7 +262,7 @@ const UserProfile = () => {
                   <Avatar className="h-24 w-24 mb-4 border-2 border-primary">
                     <AvatarImage src={avatarUrl || undefined} />
                     <AvatarFallback className="text-lg">
-                      {user.user_metadata?.full_name?.[0] || user.email?.[0].toUpperCase() || 'U'}
+                      {profileData?.full_name?.[0] || user.email?.[0]?.toUpperCase() || 'U'}
                     </AvatarFallback>
                   </Avatar>
                   <label htmlFor="avatar-upload" className="absolute -bottom-1 -right-1 bg-primary text-primary-foreground h-8 w-8 rounded-full flex items-center justify-center cursor-pointer hover:bg-primary/90 transition-colors">
@@ -300,7 +310,6 @@ const UserProfile = () => {
             </ResponsiveCard>
           </div>
           
-          {/* Main content */}
           <div className="lg:col-span-3">
             <Tabs defaultValue="profile" className="w-full">
               <TabsList className="mb-4">
