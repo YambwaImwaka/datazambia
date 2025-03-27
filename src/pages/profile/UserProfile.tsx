@@ -17,6 +17,7 @@ import { ResponsiveCard } from '@/components/ui/ResponsiveCard';
 import { toast } from 'sonner';
 import { Loader2, User, Image, Bell, Settings, MapPin, Moon, Sun } from 'lucide-react';
 import { useTheme } from '@/components/theme-provider';
+import { Json } from '@/integrations/supabase/types';
 
 const profileFormSchema = z.object({
   username: z.string().min(3, { message: 'Username must be at least 3 characters' }).optional(),
@@ -33,6 +34,11 @@ const notificationFormSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 type NotificationFormValues = z.infer<typeof notificationFormSchema>;
 
+interface NotificationPreferences {
+  email: boolean;
+  app: boolean;
+}
+
 interface ProfileData {
   id: string;
   username?: string;
@@ -41,10 +47,7 @@ interface ProfileData {
   location?: string;
   avatar_url?: string;
   theme?: string;
-  notification_preferences?: {
-    email: boolean;
-    app: boolean;
-  };
+  notification_preferences?: NotificationPreferences;
   [key: string]: any;
 }
 
@@ -90,7 +93,12 @@ const UserProfile = () => {
         }
 
         if (data) {
-          setProfileData(data as ProfileData);
+          const processedData: ProfileData = {
+            ...data,
+            notification_preferences: parseNotificationPreferences(data.notification_preferences),
+          };
+          
+          setProfileData(processedData);
           setAvatarUrl(data.avatar_url || null);
           
           profileForm.reset({
@@ -100,7 +108,7 @@ const UserProfile = () => {
             location: data.location || '',
           });
 
-          const notificationPrefs = data.notification_preferences as { email: boolean; app: boolean } || { email: true, app: true };
+          const notificationPrefs = processedData.notification_preferences || { email: true, app: true };
           notificationForm.reset({
             email: notificationPrefs.email,
             app: notificationPrefs.app,
@@ -116,6 +124,28 @@ const UserProfile = () => {
 
     fetchProfileData();
   }, [user, profileForm, notificationForm]);
+
+  const parseNotificationPreferences = (jsonData: Json | null): NotificationPreferences => {
+    if (!jsonData) {
+      return { email: true, app: true };
+    }
+    
+    try {
+      if (typeof jsonData === 'object' && jsonData !== null && !Array.isArray(jsonData) &&
+          'email' in jsonData && 'app' in jsonData &&
+          typeof jsonData.email === 'boolean' && typeof jsonData.app === 'boolean') {
+        return {
+          email: jsonData.email,
+          app: jsonData.app
+        };
+      }
+      
+      return { email: true, app: true };
+    } catch (e) {
+      console.error('Error parsing notification preferences:', e);
+      return { email: true, app: true };
+    }
+  };
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (!event.target.files || !event.target.files.length) {
