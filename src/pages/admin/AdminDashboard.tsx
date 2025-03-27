@@ -11,6 +11,8 @@ import ContentManagementPanel from '@/components/admin/ContentManagementPanel';
 import UserManagementPanel from '@/components/admin/UserManagementPanel';
 import SystemSettingsPanel from '@/components/admin/SystemSettingsPanel';
 import AnalyticsPanel from '@/components/admin/AnalyticsPanel';
+import MediaManagementPanel from '@/components/admin/MediaManagementPanel';
+import AdminAccountsPanel from '@/components/admin/AdminAccountsPanel';
 
 const AdminDashboard = () => {
   const { isAdmin } = useAuth();
@@ -46,10 +48,12 @@ const AdminDashboard = () => {
         </div>
 
         <Tabs defaultValue="site-config" value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full md:w-auto grid-cols-2 md:grid-cols-5 gap-2">
+          <TabsList className="grid w-full md:w-auto grid-cols-2 md:grid-cols-7 gap-2">
             <TabsTrigger value="site-config">Site Config</TabsTrigger>
             <TabsTrigger value="content">Content</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
+            <TabsTrigger value="admins">Admins</TabsTrigger>
+            <TabsTrigger value="media">Media</TabsTrigger>
             <TabsTrigger value="system">System</TabsTrigger>
             <TabsTrigger value="analytics">Analytics</TabsTrigger>
           </TabsList>
@@ -64,6 +68,14 @@ const AdminDashboard = () => {
 
           <TabsContent value="users">
             <UserManagementPanel />
+          </TabsContent>
+
+          <TabsContent value="admins">
+            <AdminAccountsPanel />
+          </TabsContent>
+
+          <TabsContent value="media">
+            <MediaManagementPanel />
           </TabsContent>
 
           <TabsContent value="system">
