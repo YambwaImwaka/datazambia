@@ -1,9 +1,8 @@
 
-import { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
-import { ThemeToggle } from '@/components/theme-toggle';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,133 +12,133 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { ThemeToggle } from '@/components/theme-toggle';
 import MobileNav from './MobileNav';
-import { cn } from '@/lib/utils';
+import UserNotifications from '@/components/notifications/UserNotifications';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { User, LogOut, Settings, Heart, BarChart2, UserCog } from 'lucide-react';
 
 const Header = () => {
-  const { user, isAdmin, signOut } = useAuth();
-  const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
+  const { user, signOut, isAdmin } = useAuth();
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
 
-  // Change header style on scroll
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, []);
-
-  // Check if the current route is active
-  const isActiveRoute = (path: string) => {
-    if (path === '/') {
-      return location.pathname === '/';
-    }
-    return location.pathname.startsWith(path);
-  };
-
-  const navLinks = [
-    { name: 'Home', path: '/' },
-    { name: 'Provinces', path: '/provinces' },
-    { name: 'Explore', path: '/explore' },
-    { name: 'About', path: '/about' },
-  ];
-
   return (
-    <header
-      className={cn(
-        'fixed top-0 left-0 right-0 z-40 transition-all duration-300',
-        scrolled
-          ? 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm'
-          : 'bg-transparent'
-      )}
-    >
-      <div className="container mx-auto px-4">
-        <div className="flex h-16 items-center justify-between">
-          <div className="flex items-center gap-2">
-            <MobileNav />
-            
-            <Link to="/" className="flex items-center gap-2">
-              <span className="bg-zambia-600 text-white font-bold text-xl px-2 py-1 rounded">ZI</span>
-              <span className="font-bold text-lg hidden sm:inline">Zambia Insight</span>
-            </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-1">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={cn(
-                  'px-3 py-2 rounded-md text-sm font-medium transition-colors',
-                  isActiveRoute(link.path)
-                    ? 'text-zambia-600 dark:text-zambia-400 bg-zambia-50 dark:bg-zambia-900/20'
-                    : 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
+    <header className="fixed top-0 left-0 right-0 h-16 bg-background z-50 border-b">
+      <div className="container h-full mx-auto px-4 flex items-center justify-between">
+        <div className="flex items-center">
+          <MobileNav />
+          
+          <Link to="/" className="flex items-center">
+            <img src="/logo.png" alt="Zambia Insight" className="h-8 w-auto mr-2" />
+            <span className="text-xl font-bold hidden md:inline-block">Zambia Insight</span>
+          </Link>
+          
+          {!isMobile && (
+            <nav className="ml-10">
+              <ul className="flex space-x-6">
+                <li>
+                  <Link to="/provinces" className="text-sm hover:text-primary transition-colors">
+                    Provinces
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/explore" className="text-sm hover:text-primary transition-colors">
+                    Explore
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/about" className="text-sm hover:text-primary transition-colors">
+                    About
+                  </Link>
+                </li>
+                {user && (
+                  <li>
+                    <Link to="/dashboard" className="text-sm hover:text-primary transition-colors">
+                      Dashboard
+                    </Link>
+                  </li>
                 )}
-              >
-                {link.name}
-              </Link>
-            ))}
-          </nav>
+                {isAdmin && (
+                  <li>
+                    <Link to="/admin" className="text-sm hover:text-primary transition-colors">
+                      Admin
+                    </Link>
+                  </li>
+                )}
+              </ul>
+            </nav>
+          )}
+        </div>
 
-          <div className="flex items-center gap-2">
-            <ThemeToggle />
-            
-            {user ? (
+        <div className="flex items-center space-x-2">
+          <ThemeToggle />
+
+          {user ? (
+            <>
+              <UserNotifications />
+              
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-8 w-8 rounded-full" aria-label="User menu">
-                    <Avatar className="h-8 w-8 border border-border">
-                      <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.full_name || 'User'} />
-                      <AvatarFallback className="bg-primary/10 text-primary text-sm">
-                        {user.email?.[0].toUpperCase() || 'U'}
+                  <Button variant="ghost" size="icon" className="rounded-full h-9 w-9 ml-1">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.user_metadata?.avatar_url} />
+                      <AvatarFallback className="text-xs">
+                        {user.user_metadata?.full_name?.[0] || user.email?.[0].toUpperCase() || 'U'}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <DropdownMenuLabel className="font-normal">
+                <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuLabel>
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">{user.user_metadata?.full_name || 'User'}</p>
-                      <p className="text-xs leading-none text-muted-foreground truncate">
-                        {user.email}
-                      </p>
+                      <p className="text-sm font-medium">{user.user_metadata?.full_name || 'User'}</p>
+                      <p className="text-xs text-muted-foreground truncate">{user.email}</p>
                     </div>
                   </DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/dashboard">Dashboard</Link>
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/favorites')}>
+                    <Heart className="mr-2 h-4 w-4" />
+                    <span>Favorites</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/dashboard')}>
+                    <BarChart2 className="mr-2 h-4 w-4" />
+                    <span>Dashboard</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/profile')}>
+                    <Settings className="mr-2 h-4 w-4" />
+                    <span>Settings</span>
                   </DropdownMenuItem>
                   {isAdmin && (
-                    <DropdownMenuItem asChild>
-                      <Link to="/admin/users">Admin</Link>
+                    <DropdownMenuItem onClick={() => navigate('/admin')}>
+                      <UserCog className="mr-2 h-4 w-4" />
+                      <span>Admin</span>
                     </DropdownMenuItem>
                   )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={() => signOut()}>
-                    Sign out
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Sign out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : (
-              !isMobile && (
-                <div className="flex items-center gap-2">
-                  <Button variant="ghost" asChild>
-                    <Link to="/auth/signin">Sign In</Link>
-                  </Button>
-                  <Button asChild>
-                    <Link to="/auth/signup">Sign Up</Link>
-                  </Button>
-                </div>
-              )
-            )}
-          </div>
+            </>
+          ) : (
+            <>
+              {!isMobile && (
+                <Button variant="outline" size="sm" asChild>
+                  <Link to="/auth/signin">Sign In</Link>
+                </Button>
+              )}
+              <Button size="sm" asChild>
+                <Link to="/auth/signup">Sign Up</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>

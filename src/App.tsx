@@ -15,6 +15,8 @@ import About from "./pages/About";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
 import Dashboard from "./pages/Dashboard";
+import UserProfile from "./pages/profile/UserProfile";
+import UserFavorites from "./pages/profile/UserFavorites";
 import UsersAdmin from "./pages/admin/Users";
 import NotFound from "./pages/NotFound";
 
@@ -53,6 +55,8 @@ const App = () => (
                 {/* Protected routes - accessible only when logged in */}
                 <Route element={<ProtectedRoute requireAuth={true} />}>
                   <Route path="/dashboard" element={<Dashboard />} />
+                  <Route path="/profile" element={<UserProfile />} />
+                  <Route path="/favorites" element={<UserFavorites />} />
                   {/* Redirect /admin to /admin/users for convenience */}
                   <Route path="/admin" element={<Navigate to="/admin/users" replace />} />
                 </Route>

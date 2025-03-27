@@ -9,30 +9,93 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      notifications: {
+        Row: {
+          created_at: string
+          id: string
+          is_read: boolean | null
+          message: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
+          bio: string | null
           created_at: string
           full_name: string | null
           id: string
+          location: string | null
+          notification_preferences: Json | null
+          preferences: Json | null
+          theme: string | null
           updated_at: string
           username: string | null
         }
         Insert: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
           full_name?: string | null
           id: string
+          location?: string | null
+          notification_preferences?: Json | null
+          preferences?: Json | null
+          theme?: string | null
           updated_at?: string
           username?: string | null
         }
         Update: {
           avatar_url?: string | null
+          bio?: string | null
           created_at?: string
           full_name?: string | null
           id?: string
+          location?: string | null
+          notification_preferences?: Json | null
+          preferences?: Json | null
+          theme?: string | null
           updated_at?: string
           username?: string | null
+        }
+        Relationships: []
+      }
+      user_favorites: {
+        Row: {
+          created_at: string
+          id: string
+          province_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          province_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          province_id?: string
+          user_id?: string
         }
         Relationships: []
       }
