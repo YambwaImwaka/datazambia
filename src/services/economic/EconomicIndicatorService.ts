@@ -22,18 +22,19 @@ export const useEconomicIndicators = () => {
     const fetchEconomicData = async () => {
       setLoading(true);
       try {
-        // In a real application, this would fetch from a dedicated economic data API
-        // Using simulated data with realistic values for 2025 Zambia
-        // This would typically come from sources like World Bank, IMF, or national statistics
-        
+        // Simulating data fetch without relying on external APIs that might fail
+        // Using consistent mock data for the indicators
         const today = new Date();
         const lastMonth = new Date(today);
         lastMonth.setMonth(today.getMonth() - 1);
         
+        // Wait a short time to simulate network request
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
         const indicators: EconomicIndicator[] = [
           { 
             name: "Inflation Rate", 
-            value: (6.8 + (Math.random() * 0.4 - 0.2)).toFixed(1) + "%", 
+            value: "6.8%", 
             change: "-0.7%", 
             isPositive: true, 
             description: "Year-on-year inflation rate",
@@ -42,7 +43,7 @@ export const useEconomicIndicators = () => {
           },
           { 
             name: "Interest Rate", 
-            value: (7.5 + (Math.random() * 0.2 - 0.1)).toFixed(1) + "%", 
+            value: "7.5%", 
             change: "-0.5%", 
             isPositive: true, 
             description: "Central bank policy rate",
@@ -51,7 +52,7 @@ export const useEconomicIndicators = () => {
           },
           { 
             name: "Foreign Reserves", 
-            value: "$" + (4.2 + (Math.random() * 0.3 - 0.15)).toFixed(1) + "B", 
+            value: "$4.2B", 
             change: "+11.3%", 
             isPositive: true, 
             description: "Gross international reserves",
@@ -60,7 +61,7 @@ export const useEconomicIndicators = () => {
           },
           { 
             name: "National Debt", 
-            value: "$" + (15.6 + (Math.random() * 0.6 - 0.3)).toFixed(1) + "B", 
+            value: "$15.6B", 
             change: "-3.4%", 
             isPositive: true, 
             description: "Total public debt",
@@ -69,7 +70,7 @@ export const useEconomicIndicators = () => {
           },
           { 
             name: "Budget Deficit", 
-            value: (4.3 + (Math.random() * 0.3 - 0.15)).toFixed(1) + "%", 
+            value: "4.3%", 
             change: "-0.9%", 
             isPositive: true, 
             description: "As percentage of GDP",
@@ -78,7 +79,7 @@ export const useEconomicIndicators = () => {
           },
           { 
             name: "GDP Growth Rate", 
-            value: (5.2 + (Math.random() * 0.4 - 0.2)).toFixed(1) + "%", 
+            value: "5.2%", 
             change: "+0.3%", 
             isPositive: true, 
             description: "Annual GDP growth rate",
@@ -87,7 +88,7 @@ export const useEconomicIndicators = () => {
           },
           { 
             name: "Unemployment Rate", 
-            value: (12.8 + (Math.random() * 0.5 - 0.25)).toFixed(1) + "%", 
+            value: "12.8%", 
             change: "-0.6%", 
             isPositive: true, 
             description: "Percentage of labor force",
@@ -100,6 +101,30 @@ export const useEconomicIndicators = () => {
       } catch (err) {
         console.error('Failed to fetch economic data:', err);
         setError(err instanceof Error ? err.message : 'Unknown error occurred');
+        
+        // Fallback data in case of errors
+        const fallbackData: EconomicIndicator[] = [
+          { 
+            name: "Inflation Rate", 
+            value: "6.8%", 
+            change: "-0.7%", 
+            isPositive: true, 
+            description: "Year-on-year inflation rate",
+            lastUpdated: "March 2025",
+            source: "Bank of Zambia"
+          },
+          { 
+            name: "GDP Growth Rate", 
+            value: "5.2%", 
+            change: "+0.3%", 
+            isPositive: true, 
+            description: "Annual GDP growth rate",
+            lastUpdated: "Q1 2025",
+            source: "Zambia Statistics Agency"
+          }
+        ];
+        
+        setData(fallbackData);
       } finally {
         setLoading(false);
       }

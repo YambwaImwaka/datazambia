@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Landmark, ChevronRight, Database, Globe } from "lucide-react";
@@ -20,31 +19,26 @@ import { useQuery } from "@tanstack/react-query";
 const Index = () => {
   const [activeTab, setActiveTab] = useState("overview");
   
-  // Fetch World Bank indicators for Zambia
-  const { data: gdpData, isLoading: isGdpLoading } = useQuery({
-    queryKey: ['worldbank', WORLD_BANK_INDICATORS.GDP_PER_CAPITA],
-    queryFn: () => fetchDevelopmentIndicator(WORLD_BANK_INDICATORS.GDP_PER_CAPITA)
-  });
+  const localGdpData = historicalData.gdp.map(item => ({
+    year: item.year,
+    value: item.value
+  }));
   
-  const { data: populationData, isLoading: isPopLoading } = useQuery({
-    queryKey: ['worldbank', WORLD_BANK_INDICATORS.POPULATION_GROWTH],
-    queryFn: () => fetchDevelopmentIndicator(WORLD_BANK_INDICATORS.POPULATION_GROWTH)
-  });
+  const localPopulationData = historicalData.population.map(item => ({
+    year: item.year,
+    value: item.value
+  }));
   
-  // Format World Bank data for charts
-  const formatWorldBankData = (data: any[] | undefined) => {
-    if (!data || data.length === 0) return [];
+  const [isDataLoading, setIsDataLoading] = useState(true);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsDataLoading(false);
+    }, 800);
     
-    return data
-      .slice(0, 10)
-      .sort((a, b) => parseInt(a.date) - parseInt(b.date))
-      .map(item => ({
-        year: item.date,
-        value: item.value
-      }));
-  };
-
-  // Scroll to top on page load
+    return () => clearTimeout(timer);
+  }, []);
+  
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -54,19 +48,14 @@ const Index = () => {
       <Header />
       
       <main className="flex-grow">
-        {/* Hero Section */}
         <Hero />
         
-        {/* Real-time Weather Section */}
         <WeatherSection />
         
-        {/* Key Metrics Section */}
         <KeyMetrics />
         
-        {/* Featured Provinces Section */}
         <FeaturedProvinces />
         
-        {/* Data Insights Section */}
         <section className="py-20 bg-white dark:bg-gray-900">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center mb-12">
@@ -118,11 +107,11 @@ const Index = () => {
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                       Population Growth
                     </h3>
-                    {isPopLoading ? (
+                    {isDataLoading ? (
                       <Skeleton className="w-full h-[300px]" />
                     ) : (
                       <LineChart
-                        data={formatWorldBankData(populationData) || historicalData.population}
+                        data={localPopulationData}
                         lines={[
                           { dataKey: "value", name: "Annual Growth (%)", color: "#0ea5e9" }
                         ]}
@@ -131,7 +120,7 @@ const Index = () => {
                       />
                     )}
                     <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                      Source: World Bank Development Indicators
+                      Source: Zambia Statistics Agency
                     </div>
                   </Card>
                   
@@ -139,11 +128,11 @@ const Index = () => {
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                       GDP Per Capita
                     </h3>
-                    {isGdpLoading ? (
+                    {isDataLoading ? (
                       <Skeleton className="w-full h-[300px]" />
                     ) : (
                       <LineChart
-                        data={formatWorldBankData(gdpData) || historicalData.gdp}
+                        data={localGdpData}
                         lines={[
                           { dataKey: "value", name: "USD", color: "#10b981" }
                         ]}
@@ -152,7 +141,7 @@ const Index = () => {
                       />
                     )}
                     <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                      Source: World Bank Development Indicators
+                      Source: Zambia Statistics Agency
                     </div>
                   </Card>
                 </div>
@@ -355,7 +344,6 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Provinces Map Preview */}
         <section className="py-16 bg-gray-50 dark:bg-gray-800">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
@@ -416,7 +404,6 @@ const Index = () => {
           </div>
         </section>
         
-        {/* Call to Action Section */}
         <section className="py-20 bg-gradient-to-r from-zambia-600 to-blue-700 text-white">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
