@@ -45,9 +45,9 @@ export interface CityWeatherData {
 
 export type WeatherDataMap = Record<string, CityWeatherData>;
 
-// Using WeatherAPI.com - API key not needed for this demo as we're using their free tier
-// This approach ensures we don't need to store an API key
+// Using WeatherAPI.com with the provided API key
 const BASE_URL = "https://api.weatherapi.com/v1";
+const API_KEY = "bcaa8b55980d423a90e10039250104"; // Using the provided API key
 
 export const useWeatherData = (locations: string[]) => {
   const [data, setData] = useState<WeatherData[] | null>(null);
@@ -63,7 +63,7 @@ export const useWeatherData = (locations: string[]) => {
         const weatherPromises = locations.map(async (location) => {
           // Use the forecast API endpoint to get current weather and forecast data
           const response = await fetch(
-            `${BASE_URL}/forecast.json?key=fe94c7f84c5e44b88c3221521232101&q=${encodeURIComponent(location)}&days=3&aqi=no&alerts=no`
+            `${BASE_URL}/forecast.json?key=${API_KEY}&q=${encodeURIComponent(location)}&days=3&aqi=no&alerts=no`
           );
 
           if (!response.ok) {
@@ -130,7 +130,7 @@ export const useMultipleCitiesWeather = (cities: string[]) => {
         await Promise.all(cities.map(async (city) => {
           try {
             const response = await fetch(
-              `${BASE_URL}/current.json?key=fe94c7f84c5e44b88c3221521232101&q=${encodeURIComponent(city)}&aqi=no`
+              `${BASE_URL}/current.json?key=${API_KEY}&q=${encodeURIComponent(city)}&aqi=no`
             );
             
             if (!response.ok) {
