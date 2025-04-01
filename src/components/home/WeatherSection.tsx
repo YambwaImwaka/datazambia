@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CloudRain, Sun, Wind, Droplets, CloudLightning, Cloud, Sunrise, CloudSnow, ThermometerSun } from "lucide-react";
 import { motion } from "framer-motion";
+import { toast } from '@/components/ui/use-toast';
 
 export const WeatherSection = () => {
   const cities = ["Lusaka", "Ndola", "Livingstone", "Kitwe", "Chipata"];
@@ -32,6 +33,17 @@ export const WeatherSection = () => {
       }
     };
   }, []);
+
+  // Show error toast once if there's an error
+  useEffect(() => {
+    if (error) {
+      toast({
+        title: "Weather data error",
+        description: "Unable to fetch weather data. Please try again later.",
+        variant: "destructive",
+      });
+    }
+  }, [error]);
 
   // Function to get appropriate weather icon
   const getWeatherIcon = (condition: string) => {
@@ -109,7 +121,7 @@ export const WeatherSection = () => {
           <div className="inline-block mb-4">
             <div className="flex items-center justify-center space-x-2 bg-sky-50 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 px-4 py-2 rounded-full text-sm font-medium">
               <Sun size={16} />
-              <span>Weather Updates</span>
+              <span>Live Weather Updates</span>
             </div>
           </div>
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white mb-6">
