@@ -30,8 +30,12 @@ const Header = () => {
           <MobileNav />
           
           <Link to="/" className="flex items-center">
-            <img src="/logo.png" alt="Zambia Insight" className="h-8 w-auto mr-2" />
-            <span className="text-xl font-bold hidden md:inline-block">Zambia Insight</span>
+            <img 
+              src="/lovable-uploads/2f245af2-a159-479f-b943-399b757e847a.png" 
+              alt="Data Zambia" 
+              className="h-10 w-auto mr-2" 
+            />
+            <span className="text-xl font-bold hidden md:inline-block">Data Zambia</span>
           </Link>
           
           {!isMobile && (

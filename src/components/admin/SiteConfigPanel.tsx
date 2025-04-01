@@ -48,7 +48,7 @@ const SiteConfigPanel = () => {
   const form = useForm<SiteConfigFormValues>({
     resolver: zodResolver(siteConfigSchema),
     defaultValues: {
-      site_name: '',
+      site_name: 'Data Zambia',
       site_tagline: '',
       site_description: '',
       contact_email: '',
@@ -185,7 +185,7 @@ const SiteConfigPanel = () => {
       <CardHeader>
         <CardTitle>Site Configuration</CardTitle>
         <CardDescription>
-          Manage basic site settings and branding elements
+          Manage basic Data Zambia settings and branding elements
         </CardDescription>
       </CardHeader>
       <CardContent>
