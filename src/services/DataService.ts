@@ -1,9 +1,8 @@
-
 import { toast } from "@/hooks/use-toast";
 
 // External API endpoints
 const UNSPLASH_API_URL = "https://api.unsplash.com/search/photos";
-const UNSPLASH_ACCESS_KEY = "demo-key"; // Replace with actual key in production
+const UNSPLASH_ACCESS_KEY = "fw2fib32GoLg1NSCR4xIVp2dj4dNVSIJpDbvXiQH5Yg"; // Real API key
 
 // Default images to use as fallbacks
 const DEFAULT_IMAGES = {
@@ -34,23 +33,6 @@ export interface ImageResult {
  */
 export const fetchImages = async (query: string, count: number = 1): Promise<ImageResult[]> => {
   try {
-    // If using the demo key, return default images
-    if (UNSPLASH_ACCESS_KEY === "demo-key") {
-      console.log("Using default images as no Unsplash API key is provided");
-      return [{
-        id: "default",
-        url: DEFAULT_IMAGES[query as keyof typeof DEFAULT_IMAGES] || DEFAULT_IMAGES.landscape,
-        alt_description: `Default image for ${query}`,
-        user: {
-          name: "Default",
-          username: "default",
-          links: {
-            html: "https://unsplash.com"
-          }
-        }
-      }];
-    }
-
     const response = await fetch(
       `${UNSPLASH_API_URL}?query=${query}+zambia&per_page=${count}`, 
       {
@@ -160,7 +142,7 @@ export const WORLD_BANK_INDICATORS = {
 
 // Open Weather Map API for more detailed weather data
 const OPENWEATHER_API_URL = "https://api.openweathermap.org/data/2.5/forecast";
-const OPENWEATHER_API_KEY = "demo-key"; // Replace with actual key in production
+const OPENWEATHER_API_KEY = "bd5e378503939ddaee76f12ad7a97608"; // Real API key
 
 export interface WeatherForecast {
   city: string;
@@ -190,12 +172,6 @@ export interface WeatherForecast {
  */
 export const fetchWeatherForecast = async (city: string): Promise<WeatherForecast | null> => {
   try {
-    // If using demo key, return null to use fallback data
-    if (OPENWEATHER_API_KEY === "demo-key") {
-      console.log("Using fallback weather data as no OpenWeatherMap API key is provided");
-      return null;
-    }
-    
     const response = await fetch(
       `${OPENWEATHER_API_URL}?q=${city},zambia&units=metric&appid=${OPENWEATHER_API_KEY}`,
       {
