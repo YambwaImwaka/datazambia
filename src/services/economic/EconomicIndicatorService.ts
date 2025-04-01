@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { toast } from "@/hooks/use-toast";
 
@@ -15,6 +16,10 @@ export interface EconomicIndicator {
 // Base API URL for economic data
 const ECONOMIC_API_URL = "https://api.worldbank.org/v2/country/ZMB/indicator";
 
+// Cache mechanism to reduce API calls
+const API_CACHE_KEY = 'zmb_economic_indicators';
+const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
+
 // Get economic indicators from real data sources
 export const useEconomicIndicators = () => {
   const [data, setData] = useState<EconomicIndicator[] | null>(null);
@@ -24,7 +29,16 @@ export const useEconomicIndicators = () => {
   useEffect(() => {
     const fetchEconomicData = async () => {
       setLoading(true);
+      
       try {
+        // Try to load from cache first
+        const cachedData = tryLoadFromCache();
+        if (cachedData) {
+          setData(cachedData);
+          setLoading(false);
+          return;
+        }
+        
         // Indicator codes for various economic metrics
         const indicators = {
           inflation: "FP.CPI.TOTL.ZG", // Inflation, consumer prices (annual %)
@@ -35,20 +49,10 @@ export const useEconomicIndicators = () => {
           unemploymentRate: "SL.UEM.TOTL.ZS" // Unemployment, total (% of total labor force)
         };
 
-        // Fetch data for each indicator
+        // Fetch data for each indicator with retries
         const responses = await Promise.all(
           Object.entries(indicators).map(async ([key, code]) => {
-            const response = await fetch(
-              `${ECONOMIC_API_URL}/${code}?format=json&per_page=5`, 
-              { headers: { 'Content-Type': 'application/json' } }
-            );
-            
-            if (!response.ok) {
-              throw new Error(`Failed to fetch ${key} data: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            return { key, data: data[1] || [] }; // World Bank API returns an array with metadata and data
+            return await fetchWithRetry(key, code);
           })
         );
 
@@ -146,6 +150,8 @@ export const useEconomicIndicators = () => {
             };
           });
 
+        // Save to cache
+        saveToCache(processedData);
         setData(processedData);
       } catch (err) {
         console.error('Failed to fetch economic data:', err);
@@ -164,6 +170,72 @@ export const useEconomicIndicators = () => {
 
     fetchEconomicData();
   }, []);
+
+  // Retry mechanism for API calls
+  const fetchWithRetry = async (key: string, code: string, retries = 3) => {
+    let retryCount = 0;
+    
+    while (retryCount < retries) {
+      try {
+        const response = await fetch(
+          `${ECONOMIC_API_URL}/${code}?format=json&per_page=5`, 
+          { headers: { 'Content-Type': 'application/json' } }
+        );
+        
+        if (!response.ok) {
+          throw new Error(`Failed to fetch ${key} data: ${response.status}`);
+        }
+        
+        const responseData = await response.json();
+        return { key, data: responseData[1] || [] }; // World Bank API returns an array with metadata and data
+      } catch (error) {
+        retryCount++;
+        
+        if (retryCount >= retries) {
+          console.error(`Failed to fetch ${key} after ${retries} attempts`);
+          return { key, data: [] };
+        }
+        
+        // Wait before retrying (exponential backoff)
+        await new Promise(resolve => setTimeout(resolve, 1000 * Math.pow(2, retryCount)));
+      }
+    }
+    
+    return { key, data: [] };
+  };
+
+  // Cache management functions
+  const tryLoadFromCache = (): EconomicIndicator[] | null => {
+    try {
+      const cachedDataStr = localStorage.getItem(API_CACHE_KEY);
+      if (!cachedDataStr) return null;
+      
+      const { data, timestamp } = JSON.parse(cachedDataStr);
+      
+      // Check if cache is expired
+      if (Date.now() - timestamp > CACHE_EXPIRY) {
+        localStorage.removeItem(API_CACHE_KEY);
+        return null;
+      }
+      
+      return data;
+    } catch (err) {
+      console.error('Error loading from cache:', err);
+      return null;
+    }
+  };
+  
+  const saveToCache = (data: EconomicIndicator[]) => {
+    try {
+      const cacheData = {
+        data,
+        timestamp: Date.now()
+      };
+      localStorage.setItem(API_CACHE_KEY, JSON.stringify(cacheData));
+    } catch (err) {
+      console.error('Error saving to cache:', err);
+    }
+  };
 
   return { data, loading, error };
 };

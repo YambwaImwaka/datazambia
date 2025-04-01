@@ -1,26 +1,34 @@
-# Welcome to your Lovable project
 
-## Project info
+# Zambia Insight - Provincial Analytics Dashboard
 
-**URL**: https://lovable.dev/projects/4a037b97-80c3-4d2f-9086-fa4a62eb8228
+## Project Overview
 
-## How can I edit this code?
+Zambia Insight is a comprehensive dashboard application that provides detailed analytics and information about Zambian provinces, economic indicators, financial data, and more.
 
-There are several ways of editing your application.
+## Features
 
-**Use Lovable**
+- Interactive provincial data visualization
+- Real-time economic indicators
+- Financial market data
+- Commodity price tracking
+- User authentication and personalization
+- Admin dashboard for content management
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/4a037b97-80c3-4d2f-9086-fa4a62eb8228) and start prompting.
+## Tech Stack
 
-Changes made via Lovable will be committed automatically to this repo.
+This project is built with:
 
-**Use your preferred IDE**
+- Vite
+- TypeScript
+- React
+- shadcn-ui
+- Tailwind CSS
+- Supabase (authentication and database)
+- Recharts (data visualization)
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Development Setup
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+To set up the project for local development:
 
 ```sh
 # Step 1: Clone the repository using the project's Git URL.
@@ -36,34 +44,80 @@ npm i
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Building for Production
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+To build the project for production:
 
-**Use GitHub Codespaces**
+```sh
+# Generate production-ready files
+npm run build
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Preview the production build locally
+npm run preview
+```
 
-## What technologies are used for this project?
+## Deployment to CPanel Hosting
 
-This project is built with .
+To deploy this application on CPanel hosting:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+1. **Build the project**:
+   ```sh
+   npm run build
+   ```
 
-## How can I deploy this project?
+2. **Prepare the files**:
+   - After the build process completes, you'll have a `dist` folder
+   - Create a ZIP file of the entire `dist` folder
 
-Simply open [Lovable](https://lovable.dev/projects/4a037b97-80c3-4d2f-9086-fa4a62eb8228) and click on Share -> Publish.
+3. **Upload to CPanel**:
+   - Login to your CPanel account
+   - Navigate to File Manager
+   - Go to the public_html directory or a subdirectory where you want to deploy
+   - Upload and extract the ZIP file
 
-## I want to use a custom domain - is that possible?
+4. **Configure .htaccess**:
+   - Create or edit the `.htaccess` file in your root directory
+   - Add the following rules to support client-side routing:
 
-We don't support custom domains (yet). If you want to deploy your project under your own domain then we recommend using Netlify. Visit our docs for more details: [Custom domains](https://docs.lovable.dev/tips-tricks/custom-domain/)
+   ```apache
+   <IfModule mod_rewrite.c>
+     RewriteEngine On
+     RewriteBase /
+     RewriteRule ^index\.html$ - [L]
+     RewriteCond %{REQUEST_FILENAME} !-f
+     RewriteCond %{REQUEST_FILENAME} !-d
+     RewriteRule . /index.html [L]
+   </IfModule>
+   ```
+
+5. **Additional CPanel Settings**:
+   - If you're deploying to a subdirectory, update the base path in `vite.config.ts`
+   - Set up any necessary environment variables in your CPanel hosting environment
+
+## Data Update Frequency
+
+- Economic indicators: Updated quarterly from the World Bank API
+- Exchange rates: Updated daily
+- Stock market data: Updated daily on business days
+- Commodity prices: Updated daily
+
+## Browser Support
+
+This application supports:
+- Chrome (latest)
+- Firefox (latest)
+- Safari (latest)
+- Edge (latest)
+
+## Custom Domain Setup
+
+To use a custom domain with this project:
+
+1. Purchase your domain
+2. Point your domain's DNS records to your hosting provider
+3. Configure the domain in CPanel
+4. Update the site's base URL configuration if deploying to a subdirectory
+
+## Need Help?
+
+For assistance with deployment issues or feature requests, please contact the development team.
