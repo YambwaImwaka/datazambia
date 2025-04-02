@@ -1,3 +1,4 @@
+
 import { toast } from "@/hooks/use-toast";
 
 // External API endpoints
@@ -33,20 +34,24 @@ export interface ImageResult {
  */
 export const fetchImages = async (query: string, count: number = 1): Promise<ImageResult[]> => {
   try {
+    console.log(`Fetching images for query: ${query}`);
     const response = await fetch(
-      `${UNSPLASH_API_URL}?query=${query}+zambia&per_page=${count}`, 
+      `${UNSPLASH_API_URL}?query=${encodeURIComponent(query)}+zambia&per_page=${count}`, 
       {
         headers: {
           Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}`
-        }
+        },
+        mode: 'cors'
       }
     );
 
     if (!response.ok) {
+      console.error(`Unsplash API error: ${response.status} ${response.statusText}`);
       throw new Error(`Failed to fetch images: ${response.status}`);
     }
 
     const data = await response.json();
+    console.log(`Received ${data.results.length} images from Unsplash for query: ${query}`);
     
     return data.results.map((result: any) => ({
       id: result.id,
@@ -62,6 +67,12 @@ export const fetchImages = async (query: string, count: number = 1): Promise<Ima
     }));
   } catch (error) {
     console.error("Error fetching images:", error);
+    toast({
+      title: "Image Loading Error",
+      description: `Could not load images for ${query}, using fallback images`,
+      variant: "destructive"
+    });
+    
     // Fall back to default images
     return [{
       id: "default",
@@ -172,8 +183,9 @@ export interface WeatherForecast {
  */
 export const fetchWeatherForecast = async (city: string): Promise<WeatherForecast | null> => {
   try {
+    console.log(`Fetching weather forecast for: ${city}`);
     const response = await fetch(
-      `${OPENWEATHER_API_URL}?q=${city},zambia&units=metric&appid=${OPENWEATHER_API_KEY}`,
+      `${OPENWEATHER_API_URL}?q=${encodeURIComponent(city)},zambia&units=metric&appid=${OPENWEATHER_API_KEY}`,
       {
         headers: {
           'Content-Type': 'application/json'
@@ -182,16 +194,23 @@ export const fetchWeatherForecast = async (city: string): Promise<WeatherForecas
     );
 
     if (!response.ok) {
+      console.error(`OpenWeather API error: ${response.status} ${response.statusText}`);
       throw new Error(`Failed to fetch weather forecast: ${response.status}`);
     }
 
     const data = await response.json();
+    console.log(`Received weather data for: ${city}`);
     return {
       city: data.city.name,
       list: data.list
     };
   } catch (error) {
     console.error(`Error fetching weather forecast for ${city}:`, error);
+    toast({
+      title: "Weather Data Error",
+      description: `Could not load weather forecast for ${city}`,
+      variant: "destructive"
+    });
     return null;
   }
 };
