@@ -1,9 +1,9 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Session, User } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
+import { makeAdmin } from '@/utils/makeAdmin';
 
 type AuthContextType = {
   session: Session | null;
@@ -13,6 +13,7 @@ type AuthContextType = {
   signUp: (email: string, password: string, metadata?: { full_name?: string, username?: string }) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  makeUserAdmin: (email: string) => Promise<{success: boolean; message: string}>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -25,7 +26,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
@@ -34,7 +34,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     );
 
-    // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
@@ -46,7 +45,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
   }, []);
 
-  // Check if user is an admin
   useEffect(() => {
     if (!user) {
       setIsAdmin(false);
@@ -105,11 +103,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       toast.success('Successfully signed in!');
-      // Navigate is handled by the component with redirect path
+      navigate('/');
     } catch (error: any) {
       toast.error(error.message || 'An error occurred during sign in');
       console.error('Error during sign in:', error);
-      throw error; // Re-throw to allow component to handle
+      throw error;
     } finally {
       setIsLoading(false);
     }
@@ -129,6 +127,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const makeUserAdmin = async (email: string) => {
+    if (!isAdmin) {
+      return { success: false, message: "Only administrators can promote users" };
+    }
+    
+    try {
+      const result = await makeAdmin(email);
+      if (result.success) {
+        toast.success(`User ${email} has been granted admin privileges`);
+      } else {
+        toast.error(result.message);
+      }
+      return result;
+    } catch (error: any) {
+      console.error('Error making admin:', error);
+      toast.error(error.message || 'Failed to grant admin privileges');
+      return { 
+        success: false, 
+        message: error.message || 'Failed to grant admin privileges'
+      };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -139,6 +160,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signUp,
         signIn,
         signOut,
+        makeUserAdmin,
       }}
     >
       {children}

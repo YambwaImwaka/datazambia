@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -17,6 +16,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import * as z from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { makeAdmin } from '@/utils/makeAdmin';
 
 type AdminUser = {
   id: string;
@@ -43,7 +43,6 @@ const AdminAccountsPanel = () => {
     },
   });
 
-  // Fetch admin users
   const { data: adminUsers = [], isLoading } = useQuery({
     queryKey: ['admin-users'],
     queryFn: async () => {
@@ -61,19 +60,17 @@ const AdminAccountsPanel = () => {
     },
   });
 
-  // Filter admin users by search term
   const filteredAdmins = adminUsers.filter(admin => 
     admin.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (admin.full_name && admin.full_name.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (admin.username && admin.username.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  // Add admin mutation
   const addAdminMutation = useMutation({
     mutationFn: async (email: string) => {
-      const { data, error } = await supabase.rpc('make_admin', { email });
+      const result = await makeAdmin(email);
       
-      if (error) throw error;
+      if (!result.success) throw new Error(result.message);
       
       return email;
     },
@@ -96,7 +93,6 @@ const AdminAccountsPanel = () => {
     }
   });
 
-  // Remove admin mutation
   const removeAdminMutation = useMutation({
     mutationFn: async (userId: string) => {
       const { error } = await supabase
@@ -125,7 +121,6 @@ const AdminAccountsPanel = () => {
   });
 
   const handleRemoveAdmin = (admin: AdminUser) => {
-    // Don't allow removing yourself
     if (admin.id === currentUser?.id) {
       toast.error("You cannot remove your own administrator privileges");
       return;

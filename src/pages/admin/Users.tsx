@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { User, Settings, Search, ArrowLeft, Shield, ShieldX } from 'lucide-react';
+import { makeAdmin, removeAdmin } from '@/utils/makeAdmin';
 
 interface ProfileWithRole {
   id: string;
@@ -20,11 +20,10 @@ interface ProfileWithRole {
   created_at: string;
 }
 
-// Define a type for the user data from Supabase Auth Admin API
 interface SupabaseAuthUser {
   id: string;
   email?: string;
-  [key: string]: any; // Allow for other properties
+  [key: string]: any;
 }
 
 const UsersAdmin = () => {
@@ -47,14 +46,12 @@ const UsersAdmin = () => {
     try {
       setIsLoading(true);
       
-      // Fetch profiles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('id, username, full_name, created_at');
       
       if (profilesError) throw profilesError;
       
-      // Fetch roles
       const { data: roles, error: rolesError } = await supabase
         .from('user_roles')
         .select('user_id, role')
@@ -62,16 +59,14 @@ const UsersAdmin = () => {
       
       if (rolesError) throw rolesError;
       
-      // Fetch auth users to get emails
       const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
       
       if (authError) {
-        // Fallback to just using profiles if admin API not available
         const adminIds = new Set(roles.map(r => r.user_id));
         
         const mappedUsers: ProfileWithRole[] = profiles.map(profile => ({
           id: profile.id,
-          email: 'Email hidden', // Can't access emails without admin rights
+          email: 'Email hidden',
           username: profile.username,
           full_name: profile.full_name,
           is_admin: adminIds.has(profile.id),
@@ -82,10 +77,8 @@ const UsersAdmin = () => {
         return;
       }
       
-      // If auth data available, merge everything
       const adminIds = new Set(roles.map(r => r.user_id));
       
-      // Fix: Properly type the auth users data and add null checks
       const emailMap = new Map<string, string>();
       if (authData && authData.users) {
         const authUsers = authData.users as SupabaseAuthUser[];
@@ -96,7 +89,6 @@ const UsersAdmin = () => {
         });
       }
       
-      // Fix: Ensure email is always a string
       const mappedUsers: ProfileWithRole[] = profiles.map(profile => ({
         id: profile.id,
         email: emailMap.get(profile.id) || 'Unknown',
@@ -118,28 +110,29 @@ const UsersAdmin = () => {
   const toggleAdminRole = async (userId: string, isCurrentlyAdmin: boolean) => {
     try {
       if (isCurrentlyAdmin) {
-        // Remove admin role
-        const { error } = await supabase
-          .from('user_roles')
-          .delete()
-          .eq('user_id', userId)
-          .eq('role', 'admin');
-          
-        if (error) throw error;
+        const result = await removeAdmin(userId);
+        
+        if (!result.success) throw new Error(result.message);
         
         toast.success('Admin role removed');
       } else {
-        // Add admin role
-        const { error } = await supabase
-          .from('user_roles')
-          .insert({ user_id: userId, role: 'admin' });
+        const { data: userData, error: userError } = await supabase
+          .from('profiles')
+          .select('id, email')
+          .eq('id', userId)
+          .single();
           
-        if (error) throw error;
+        if (userError || !userData?.email) {
+          throw new Error('Could not find user email');
+        }
+        
+        const result = await makeAdmin(userData.email);
+        
+        if (!result.success) throw new Error(result.message);
         
         toast.success('Admin role added');
       }
       
-      // Refresh user list
       fetchUsers();
     } catch (error: any) {
       console.error('Error toggling admin role:', error);
