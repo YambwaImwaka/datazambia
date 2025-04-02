@@ -7,7 +7,7 @@ import ExchangeRatesSection from "./ExchangeRatesSection";
 import StockMarketSection from "./StockMarketSection";
 import EconomicIndicatorsSection from "./EconomicIndicatorsSection";
 import CommoditiesSection from "./CommoditiesSection";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { useBreakpoints } from "@/hooks/use-mobile";
 
 export const FinanceOverview = () => {
   const { data: exchangeRates, loading: loadingExchangeRates } = useExchangeRateData();
@@ -16,7 +16,7 @@ export const FinanceOverview = () => {
   const { data: commodityPrices, loading: loadingCommodities } = useCommodityPrices();
   const [activeTab, setActiveTab] = useState("exchange-rates");
   const [isVisible, setIsVisible] = useState(false);
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  const { isMobile, isTablet } = useBreakpoints();
   
   useEffect(() => {
     // Delay visibility for smoother rendering
@@ -27,31 +27,33 @@ export const FinanceOverview = () => {
     return () => clearTimeout(timer);
   }, []);
 
+  const isCompact = isMobile || isTablet;
+  
   return (
     <div 
-      className="w-full py-8"
+      className="w-full py-4 md:py-8"
       style={{ 
         opacity: isVisible ? 1 : 0,
         transition: "opacity 0.8s ease-out"
       }}
     >
       <Tabs defaultValue="exchange-rates" onValueChange={setActiveTab}>
-        <TabsList className={`grid ${isMobile ? 'grid-cols-2 gap-2 mb-4' : 'grid-cols-4 mb-8'}`}>
-          <TabsTrigger value="exchange-rates" className="flex items-center space-x-2">
+        <TabsList className={`grid ${isCompact ? 'grid-cols-2 gap-1 mb-3' : 'grid-cols-4 gap-2 mb-8'}`}>
+          <TabsTrigger value="exchange-rates" className="flex items-center space-x-2 h-auto py-2">
             <DollarSign className="h-4 w-4" />
-            <span className={isMobile ? 'text-xs' : ''}>Exchange Rates</span>
+            <span className={isMobile ? 'text-xs' : ''}>{!isMobile ? 'Exchange Rates' : 'Rates'}</span>
           </TabsTrigger>
-          <TabsTrigger value="stock-market" className="flex items-center space-x-2">
+          <TabsTrigger value="stock-market" className="flex items-center space-x-2 h-auto py-2">
             <BarChart3 className="h-4 w-4" />
-            <span className={isMobile ? 'text-xs' : ''}>Stock Market</span>
+            <span className={isMobile ? 'text-xs' : ''}>{!isMobile ? 'Stock Market' : 'Stocks'}</span>
           </TabsTrigger>
-          <TabsTrigger value="economic-indicators" className="flex items-center space-x-2">
+          <TabsTrigger value="economic-indicators" className="flex items-center space-x-2 h-auto py-2">
             <Landmark className="h-4 w-4" />
-            <span className={isMobile ? 'text-xs' : ''}>Economic Indicators</span>
+            <span className={isMobile ? 'text-xs' : ''}>{!isMobile ? 'Economic Indicators' : 'Economy'}</span>
           </TabsTrigger>
-          <TabsTrigger value="commodities" className="flex items-center space-x-2">
+          <TabsTrigger value="commodities" className="flex items-center space-x-2 h-auto py-2">
             <TrendingUp className="h-4 w-4" />
-            <span className={isMobile ? 'text-xs' : ''}>Commodities</span>
+            <span className={isMobile ? 'text-xs' : ''}>{!isMobile ? 'Commodities' : 'Commod.'}</span>
           </TabsTrigger>
         </TabsList>
         

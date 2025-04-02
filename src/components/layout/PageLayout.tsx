@@ -25,9 +25,9 @@ const PageLayout: React.FC<PageLayoutProps> = ({
     <div className="min-h-screen flex flex-col">
       {showHeader && <Header />}
       
-      <main className={cn("flex-grow py-8 md:py-12", bgColor)}>
+      <main className={cn("flex-grow py-4 md:py-12", bgColor)}>
         <div className={cn(
-          fullWidth ? 'container-fluid px-4' : 'container mx-auto px-4',
+          fullWidth ? 'container-fluid px-3 md:px-4' : 'container mx-auto px-3 md:px-4',
           'pt-16', // Space for header
           className
         )}>

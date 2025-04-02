@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Menu, X, Home, Map, Search, BarChart2, Info, User } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { toast } from 'sonner';
 
 interface NavItem {
   label: string;
@@ -45,6 +46,12 @@ const MobileNav = () => {
     },
   ];
 
+  const handleSignOut = () => {
+    signOut();
+    setOpen(false);
+    toast.success("Signed out successfully");
+  };
+
   if (!isMobile) return null;
 
   return (
@@ -53,13 +60,13 @@ const MobileNav = () => {
         <Button 
           variant="ghost" 
           size="icon" 
-          className="md:hidden"
+          className="md:hidden flex items-center justify-center"
           aria-label="Toggle menu"
         >
-          <Menu className="h-6 w-6" />
+          <Menu className="h-5 w-5" />
         </Button>
       </SheetTrigger>
-      <SheetContent side="left" className="p-0 max-w-[300px]">
+      <SheetContent side="left" className="p-0 max-w-[85vw] sm:max-w-[300px]">
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-4 border-b border-border">
             <h2 className="text-lg font-semibold">Menu</h2>
@@ -87,10 +94,10 @@ const MobileNav = () => {
                     <SheetClose asChild>
                       <Link
                         to={item.href}
-                        className="flex items-center gap-3 rounded-md px-3 py-2 text-sm hover:bg-accent hover:text-accent-foreground transition-colors"
+                        className="flex items-center gap-3 rounded-md px-3 py-3 text-base hover:bg-accent hover:text-accent-foreground transition-colors"
                         onClick={() => setOpen(false)}
                       >
-                        {item.icon}
+                        <span className="flex items-center justify-center w-6">{item.icon}</span>
                         <span>{item.label}</span>
                       </Link>
                     </SheetClose>
@@ -101,9 +108,9 @@ const MobileNav = () => {
           
           <div className="p-4 border-t border-border">
             {user ? (
-              <div className="space-y-3">
+              <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
+                  <div className="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                     {user.email?.[0].toUpperCase() || 'U'}
                   </div>
                   <div className="flex-1 min-w-0">
@@ -114,10 +121,7 @@ const MobileNav = () => {
                 <Button 
                   variant="outline" 
                   className="w-full" 
-                  onClick={() => {
-                    signOut();
-                    setOpen(false);
-                  }}
+                  onClick={handleSignOut}
                 >
                   Sign Out
                 </Button>
@@ -129,6 +133,7 @@ const MobileNav = () => {
                     asChild 
                     variant="outline" 
                     className="flex-1"
+                    size="sm"
                   >
                     <Link to="/auth/signin">Sign In</Link>
                   </Button>
@@ -137,6 +142,7 @@ const MobileNav = () => {
                   <Button 
                     asChild 
                     className="flex-1"
+                    size="sm"
                   >
                     <Link to="/auth/signup">Sign Up</Link>
                   </Button>

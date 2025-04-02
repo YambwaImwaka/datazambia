@@ -15,6 +15,7 @@ const cardVariants = cva(
         elevated: "bg-white dark:bg-gray-800 shadow-md hover:shadow-lg",
         interactive: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 hover:border-primary/50 hover:shadow-md cursor-pointer",
         glass: "bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border border-white/20 dark:border-gray-700/50",
+        compact: "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 p-0",
       },
       rounded: {
         default: "rounded-lg",
@@ -23,11 +24,21 @@ const cardVariants = cva(
         xl: "rounded-2xl",
         full: "rounded-3xl",
         none: "rounded-none",
+        responsive: "rounded-md md:rounded-lg",
       },
+      padding: {
+        default: "",
+        sm: "p-2",
+        md: "p-3 md:p-4",
+        lg: "p-4 md:p-6",
+        none: "p-0",
+        responsive: "p-2 sm:p-3 md:p-4 lg:p-6",
+      }
     },
     defaultVariants: {
       variant: "default",
-      rounded: "default",
+      rounded: "responsive",
+      padding: "responsive",
     }
   }
 );
@@ -52,6 +63,7 @@ const ResponsiveCard = React.forwardRef<HTMLDivElement, ResponsiveCardProps>(
     className,
     variant,
     rounded,
+    padding,
     title,
     description,
     footer,
@@ -68,22 +80,22 @@ const ResponsiveCard = React.forwardRef<HTMLDivElement, ResponsiveCardProps>(
     return (
       <Card 
         ref={ref} 
-        className={cn(cardVariants({ variant, rounded }), className)}
+        className={cn(cardVariants({ variant, rounded, padding }), className)}
         {...props}
       >
         {(title || description) && (
-          <CardHeader className={cn("flex flex-col space-y-1.5", headerClassName)}>
+          <CardHeader className={cn("flex flex-col space-y-1.5 p-3 md:p-4", headerClassName)}>
             {title && (
-              <CardTitle className={cn("text-xl font-semibold", titleClassName)}>
+              <CardTitle className={cn("text-lg md:text-xl font-semibold", titleClassName)}>
                 {isLoading ? (
-                  <div className="h-7 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                  <div className="h-6 md:h-7 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
                 ) : (
                   title
                 )}
               </CardTitle>
             )}
             {description && (
-              <CardDescription className={cn(descriptionClassName)}>
+              <CardDescription className={cn("text-sm", descriptionClassName)}>
                 {isLoading ? (
                   <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse mt-2"></div>
                 ) : (
@@ -94,7 +106,7 @@ const ResponsiveCard = React.forwardRef<HTMLDivElement, ResponsiveCardProps>(
           </CardHeader>
         )}
         
-        <CardContent className={cn("pt-0", contentClassName)}>
+        <CardContent className={cn("pt-0 p-3 md:p-4", contentClassName)}>
           {isLoading ? (
             <div className="space-y-3">
               <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
@@ -107,9 +119,9 @@ const ResponsiveCard = React.forwardRef<HTMLDivElement, ResponsiveCardProps>(
         </CardContent>
         
         {footer && (
-          <CardFooter className={cn(footerClassName)}>
+          <CardFooter className={cn("p-3 md:p-4", footerClassName)}>
             {isLoading ? (
-              <div className="h-10 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-9 md:h-10 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
             ) : (
               footer
             )}

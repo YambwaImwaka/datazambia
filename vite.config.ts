@@ -27,7 +27,7 @@ export default defineConfig(({ mode }) => ({
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true,
+        drop_console: mode === 'production',
       },
     },
     // Chunk size optimization
@@ -35,7 +35,7 @@ export default defineConfig(({ mode }) => ({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
-          ui: ['@radix-ui/react-dialog', '@radix-ui/react-icons'],
+          ui: ['@radix-ui/react-dialog', '@radix-ui/react-navigation-menu', 'sonner', 'next-themes'],
           charts: ['recharts'],
         },
       },
