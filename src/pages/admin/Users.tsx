@@ -59,39 +59,27 @@ const UsersAdmin = () => {
       
       if (rolesError) throw rolesError;
       
-      const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
-      
-      if (authError) {
-        const adminIds = new Set(roles.map(r => r.user_id));
+      let emailMap = new Map<string, string>();
+      try {
+        const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
         
-        const mappedUsers: ProfileWithRole[] = profiles.map(profile => ({
-          id: profile.id,
-          email: 'Email hidden',
-          username: profile.username,
-          full_name: profile.full_name,
-          is_admin: adminIds.has(profile.id),
-          created_at: profile.created_at
-        }));
-        
-        setUsers(mappedUsers);
-        return;
+        if (!authError && authData && authData.users) {
+          const authUsers = authData.users as SupabaseAuthUser[];
+          authUsers.forEach(user => {
+            if (user && user.id && user.email) {
+              emailMap.set(user.id, user.email);
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching auth users:', error);
       }
       
       const adminIds = new Set(roles.map(r => r.user_id));
       
-      const emailMap = new Map<string, string>();
-      if (authData && authData.users) {
-        const authUsers = authData.users as SupabaseAuthUser[];
-        authUsers.forEach(user => {
-          if (user && user.id && user.email) {
-            emailMap.set(user.id, user.email);
-          }
-        });
-      }
-      
       const mappedUsers: ProfileWithRole[] = profiles.map(profile => ({
         id: profile.id,
-        email: emailMap.get(profile.id) || 'Unknown',
+        email: emailMap.get(profile.id) || 'Email hidden',
         username: profile.username,
         full_name: profile.full_name,
         is_admin: adminIds.has(profile.id),
@@ -116,17 +104,13 @@ const UsersAdmin = () => {
         
         toast.success('Admin role removed');
       } else {
-        const { data: userData, error: userError } = await supabase
-          .from('profiles')
-          .select('id, email')
-          .eq('id', userId)
-          .single();
-          
-        if (userError || !userData?.email) {
-          throw new Error('Could not find user email');
+        const userEmail = users.find(u => u.id === userId)?.email;
+        
+        if (!userEmail || userEmail === 'Email hidden') {
+          throw new Error('Could not find user email. Please try again later.');
         }
         
-        const result = await makeAdmin(userData.email);
+        const result = await makeAdmin(userEmail);
         
         if (!result.success) throw new Error(result.message);
         
