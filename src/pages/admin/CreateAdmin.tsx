@@ -28,14 +28,15 @@ const CreateAdmin = () => {
   useEffect(() => {
     const checkAdmins = async () => {
       try {
-        const { data, error } = await supabase
+        const { count, error } = await supabase
           .from('user_roles')
           .select('count', { count: 'exact', head: true })
           .eq('role', 'admin');
         
         if (error) throw error;
         
-        setAdminCount(data || 0);
+        // Fix: Ensure we set a number value
+        setAdminCount(count || 0);
       } catch (err) {
         console.error("Error checking admin count:", err);
       }

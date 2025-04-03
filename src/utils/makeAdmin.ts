@@ -20,7 +20,7 @@ export const makeAdmin = async (email: string) => {
       .from('profiles')
       .select('id')
       .eq('email', email)
-      .maybeSingle();
+      .single();
     
     if (userError) {
       // Fall back to checking auth.users (requires admin function)
@@ -44,8 +44,7 @@ export const makeAdmin = async (email: string) => {
       .insert({
         user_id: userData.id,
         role: 'admin'
-      })
-      .select();
+      });
     
     if (roleError) {
       if (roleError.code === '23505') { // Unique violation
