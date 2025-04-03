@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { MapChart } from '@/components/charts/MapChart';
@@ -8,6 +7,7 @@ import FinanceOverview from '@/components/finance/FinanceOverview';
 import EconomyDashboard from '@/components/economy/EconomyDashboard';
 import HealthDashboard from '@/components/health/HealthDashboard';
 import { ArrowUpRight } from 'lucide-react';
+import PageLayout from '@/components/layout/PageLayout';
 
 const Explore = () => {
   const { categoryId } = useParams<{ categoryId?: string }>();
@@ -157,41 +157,39 @@ const Explore = () => {
   }
 
   return (
-    <div className="min-h-screen bg-white dark:bg-gray-950 pt-20">
-      <div className="container mx-auto px-4">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-            {currentCategory 
-              ? dataCategories.find(cat => cat.id === currentCategory)?.name || "Explore Data" 
-              : "Explore Zambia"}
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">
-            {currentCategory 
-              ? dataCategories.find(cat => cat.id === currentCategory)?.description || "Explore detailed insights" 
-              : "Discover insights across Zambia's provinces and sectors"}
-          </p>
-        </div>
-        
-        {/* Category selection */}
-        <div className="flex flex-wrap gap-3 mb-8">
-          {dataCategories.map(category => (
-            <Link 
-              key={category.id}
-              to={`/explore/${category.id}`}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                currentCategory === category.id 
-                  ? 'bg-zambia-600 text-white' 
-                  : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
-              }`}
-            >
-              {category.name}
-            </Link>
-          ))}
-        </div>
-        
-        {renderDashboard()}
+    <PageLayout>
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+          {currentCategory 
+            ? dataCategories.find(cat => cat.id === currentCategory)?.name || "Explore Data" 
+            : "Explore Zambia"}
+        </h1>
+        <p className="text-gray-600 dark:text-gray-300 mt-2">
+          {currentCategory 
+            ? dataCategories.find(cat => cat.id === currentCategory)?.description || "Explore detailed insights" 
+            : "Discover insights across Zambia's provinces and sectors"}
+        </p>
       </div>
-    </div>
+      
+      {/* Category selection */}
+      <div className="flex flex-wrap gap-3 mb-8">
+        {dataCategories.map(category => (
+          <Link 
+            key={category.id}
+            to={`/explore/${category.id}`}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              currentCategory === category.id 
+                ? 'bg-zambia-600 text-white' 
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+            }`}
+          >
+            {category.name}
+          </Link>
+        ))}
+      </div>
+      
+      {renderDashboard()}
+    </PageLayout>
   );
 };
 

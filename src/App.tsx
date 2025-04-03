@@ -20,6 +20,7 @@ import UserFavorites from "./pages/profile/UserFavorites";
 import UsersAdmin from "./pages/admin/Users";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import NotFound from "./pages/NotFound";
+import CreateAdmin from "./pages/admin/CreateAdmin";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -57,6 +58,7 @@ const App = () => (
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/profile" element={<UserProfile />} />
                 <Route path="/favorites" element={<UserFavorites />} />
+                <Route path="/create-admin" element={<CreateAdmin />} />
                 {/* Redirect /admin to /admin/dashboard for convenience */}
                 <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
               </Route>
