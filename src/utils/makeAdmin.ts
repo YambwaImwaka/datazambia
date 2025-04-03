@@ -15,9 +15,47 @@ import { toast } from 'sonner';
  */
 export const makeAdmin = async (email: string) => {
   try {
-    const { data, error } = await supabase.rpc('make_admin', { email });
+    // First check if user exists
+    const { data: userData, error: userError } = await supabase
+      .from('profiles')
+      .select('id')
+      .eq('email', email)
+      .maybeSingle();
     
-    if (error) throw error;
+    if (userError) {
+      // Fall back to checking auth.users (requires admin function)
+      const { data, error } = await supabase.rpc('make_admin', { email });
+      
+      if (error) throw error;
+      
+      return { success: true, message: `User ${email} has been granted admin privileges` };
+    }
+    
+    if (!userData) {
+      return { 
+        success: false, 
+        message: `User with email ${email} not found. They must register first.`, 
+      };
+    }
+    
+    // If we found the user in profiles, add the admin role
+    const { error: roleError } = await supabase
+      .from('user_roles')
+      .insert({
+        user_id: userData.id,
+        role: 'admin'
+      })
+      .select();
+    
+    if (roleError) {
+      if (roleError.code === '23505') { // Unique violation
+        return { 
+          success: false, 
+          message: `User ${email} is already an admin`, 
+        };
+      }
+      throw roleError;
+    }
     
     return { success: true, message: `User ${email} has been granted admin privileges` };
   } catch (error: any) {

@@ -58,13 +58,14 @@ const App = () => (
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/profile" element={<UserProfile />} />
                 <Route path="/favorites" element={<UserFavorites />} />
+                {/* Create Admin route - accessible to all users before first admin is created */}
                 <Route path="/create-admin" element={<CreateAdmin />} />
-                {/* Redirect /admin to /admin/dashboard for convenience */}
-                <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
               </Route>
               
               {/* Admin routes - accessible only to admins */}
               <Route element={<ProtectedRoute requireAuth={true} requireAdmin={true} />}>
+                {/* Redirect /admin to /admin/dashboard for convenience */}
+                <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/admin/users" element={<UsersAdmin />} />
                 <Route path="/admin/users/:userId" element={<UsersAdmin />} />

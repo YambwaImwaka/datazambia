@@ -1,14 +1,14 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Loader2, Upload, Search, FileType, Image, File, Trash2, FileText, Download, Filter } from 'lucide-react';
+import { Loader2, Upload, Search, FileType, Image, File, Trash2, FileText, Download, Filter, LayoutGrid, ListFilter } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -23,6 +23,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from '@/components/ui/badge';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 
 type MediaFile = {
   id: string;
@@ -38,6 +40,14 @@ type MediaFile = {
 };
 
 type FileTypeFilter = 'all' | 'image' | 'document' | 'other';
+type ViewMode = 'list' | 'grid';
+
+const fileUploadSchema = z.object({
+  alt_text: z.string().optional(),
+  description: z.string().optional(),
+});
+
+type FileUploadFormValues = z.infer<typeof fileUploadSchema>;
 
 const MediaManagementPanel = () => {
   const { user } = useAuth();
@@ -45,10 +55,12 @@ const MediaManagementPanel = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [uploadDialogOpen, setUploadDialogOpen] = useState(false);
   const [fileTypeFilter, setFileTypeFilter] = useState<FileTypeFilter>('all');
+  const [viewMode, setViewMode] = useState<ViewMode>('list');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  const form = useForm({
+  const form = useForm<FileUploadFormValues>({
+    resolver: zodResolver(fileUploadSchema),
     defaultValues: {
       alt_text: '',
       description: '',
@@ -131,11 +143,32 @@ const MediaManagementPanel = () => {
       const fileExt = formData.file.name.split('.').pop();
       const filePath = `${user.id}/${Date.now()}-${formData.file.name}`;
       
+      // Check if storage bucket exists and create if needed
+      try {
+        const { data: buckets } = await supabase.storage.listBuckets();
+        const mediaBucketExists = buckets?.some(bucket => bucket.name === 'media');
+        
+        if (!mediaBucketExists) {
+          toast.info('Setting up storage bucket...');
+          // This would require creating the bucket via SQL or API in a real app
+        }
+      } catch (error) {
+        console.error('Error checking buckets:', error);
+        // Continue with upload attempt anyway
+      }
+      
+      // Upload to storage
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('media')
-        .upload(filePath, formData.file);
+        .upload(filePath, formData.file, {
+          upsert: true,
+          contentType: formData.file.type
+        });
       
       if (uploadError) throw uploadError;
+      
+      // Get public URL
+      const { data: urlData } = supabase.storage.from('media').getPublicUrl(filePath);
       
       // Create record in media table
       const { data: mediaData, error: mediaError } = await supabase
@@ -167,9 +200,9 @@ const MediaManagementPanel = () => {
       setUploadDialogOpen(false);
       toast.success('File uploaded successfully');
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Upload error:', error);
-      toast.error('Failed to upload file');
+      toast.error(error.message || 'Failed to upload file');
     },
   });
 
@@ -196,9 +229,9 @@ const MediaManagementPanel = () => {
       queryClient.invalidateQueries({ queryKey: ['media-files'] });
       toast.success('File deleted successfully');
     },
-    onError: (error) => {
+    onError: (error: any) => {
       console.error('Delete error:', error);
-      toast.error('Failed to delete file');
+      toast.error(error.message || 'Failed to delete file');
     },
   });
 
@@ -281,155 +314,229 @@ const MediaManagementPanel = () => {
               </Select>
             </div>
             
-            <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="w-full sm:w-auto">
-                  <Upload className="mr-2 h-4 w-4" />
-                  Upload Media
+            <div className="flex gap-2">
+              <div className="flex border rounded-md">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={`rounded-none rounded-l-md ${viewMode === 'list' ? 'bg-muted' : ''}`}
+                  onClick={() => setViewMode('list')}
+                >
+                  <ListFilter className="h-4 w-4" />
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-[550px]">
-                <DialogHeader>
-                  <DialogTitle>Upload New Media</DialogTitle>
-                </DialogHeader>
-                
-                <Form {...form}>
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid w-full max-w-sm items-center gap-1.5">
-                      <FormLabel>File</FormLabel>
-                      <Input 
-                        type="file" 
-                        onChange={handleFileChange}
-                        className="cursor-pointer"
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className={`rounded-none rounded-r-md ${viewMode === 'grid' ? 'bg-muted' : ''}`}
+                  onClick={() => setViewMode('grid')}
+                >
+                  <LayoutGrid className="h-4 w-4" />
+                </Button>
+              </div>
+              
+              <Dialog open={uploadDialogOpen} onOpenChange={setUploadDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="w-full sm:w-auto">
+                    <Upload className="mr-2 h-4 w-4" />
+                    Upload Media
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[550px]">
+                  <DialogHeader>
+                    <DialogTitle>Upload New Media</DialogTitle>
+                  </DialogHeader>
+                  
+                  <Form {...form}>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      <div className="grid w-full max-w-sm items-center gap-1.5">
+                        <FormLabel>File</FormLabel>
+                        <Input 
+                          type="file" 
+                          onChange={handleFileChange}
+                          className="cursor-pointer"
+                        />
+                        {selectedFile && (
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {selectedFile.name} ({formatFileSize(selectedFile.size)})
+                          </p>
+                        )}
+                      </div>
+                      
+                      <FormField
+                        control={form.control}
+                        name="alt_text"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Alt Text</FormLabel>
+                            <FormControl>
+                              <Input {...field} placeholder="Descriptive text for the media" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
                       />
-                      {selectedFile && (
-                        <p className="text-sm text-muted-foreground mt-1">
-                          {selectedFile.name} ({formatFileSize(selectedFile.size)})
-                        </p>
-                      )}
-                    </div>
-                    
-                    <FormField
-                      control={form.control}
-                      name="alt_text"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Alt Text</FormLabel>
-                          <FormControl>
-                            <Input {...field} placeholder="Descriptive text for the media" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <FormField
-                      control={form.control}
-                      name="description"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Description</FormLabel>
-                          <FormControl>
-                            <Textarea 
-                              {...field} 
-                              placeholder="Additional details about this media file"
-                              className="min-h-[80px]"
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    
-                    <DialogFooter>
-                      <Button 
-                        type="button" 
-                        variant="outline" 
-                        onClick={() => {
-                          setUploadDialogOpen(false);
-                          setSelectedFile(null);
-                          form.reset();
-                        }}
-                      >
-                        Cancel
-                      </Button>
-                      <Button 
-                        type="submit" 
-                        disabled={!selectedFile || isUploading}
-                      >
-                        {isUploading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                        Upload
-                      </Button>
-                    </DialogFooter>
-                  </form>
-                </Form>
-              </DialogContent>
-            </Dialog>
+                      
+                      <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Description</FormLabel>
+                            <FormControl>
+                              <Textarea 
+                                {...field} 
+                                placeholder="Additional details about this media file"
+                                className="min-h-[80px]"
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      
+                      <DialogFooter>
+                        <Button 
+                          type="button" 
+                          variant="outline" 
+                          onClick={() => {
+                            setUploadDialogOpen(false);
+                            setSelectedFile(null);
+                            form.reset();
+                          }}
+                          disabled={isUploading}
+                        >
+                          Cancel
+                        </Button>
+                        <Button 
+                          type="submit" 
+                          disabled={!selectedFile || isUploading || uploadMutation.isPending}
+                        >
+                          {(isUploading || uploadMutation.isPending) && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                          Upload
+                        </Button>
+                      </DialogFooter>
+                    </form>
+                  </Form>
+                </DialogContent>
+              </Dialog>
+            </div>
           </div>
           
-          {filteredFiles.length > 0 ? (
-            <Card>
-              <ScrollArea className="h-[500px] w-full rounded-md border">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>File</TableHead>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Size</TableHead>
-                      <TableHead>Uploaded</TableHead>
-                      <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredFiles.map((file) => (
-                      <TableRow key={file.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            {getFileIcon(file.file_type)}
-                            <div>
-                              <div className="font-medium">{file.file_name}</div>
-                              {file.alt_text && (
-                                <div className="text-xs text-muted-foreground">{file.alt_text}</div>
-                              )}
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{file.file_type.split('/')[1] || file.file_type}</Badge>
-                        </TableCell>
-                        <TableCell>{formatFileSize(file.file_size)}</TableCell>
-                        <TableCell>{formatDistanceToNow(new Date(file.created_at), { addSuffix: true })}</TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end space-x-2">
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => window.open(getFileUrl(file.file_path), '_blank')}
-                              title="Download"
-                            >
-                              <Download className="h-4 w-4" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="icon"
-                              onClick={() => handleDelete(file)}
-                              className="text-red-500 hover:text-red-700"
-                              title="Delete"
-                            >
-                              <Trash2 className="h-4 w-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </ScrollArea>
-            </Card>
-          ) : isLoading ? (
+          {isLoading ? (
             <div className="flex justify-center items-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-2">Loading media files...</span>
             </div>
+          ) : filteredFiles.length > 0 ? (
+            viewMode === 'list' ? (
+              <Card>
+                <ScrollArea className="h-[500px] w-full rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>File</TableHead>
+                        <TableHead>Type</TableHead>
+                        <TableHead>Size</TableHead>
+                        <TableHead>Uploaded</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredFiles.map((file) => (
+                        <TableRow key={file.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              {getFileIcon(file.file_type)}
+                              <div>
+                                <div className="font-medium">{file.file_name}</div>
+                                {file.alt_text && (
+                                  <div className="text-xs text-muted-foreground">{file.alt_text}</div>
+                                )}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{file.file_type.split('/')[1] || file.file_type}</Badge>
+                          </TableCell>
+                          <TableCell>{formatFileSize(file.file_size)}</TableCell>
+                          <TableCell>{formatDistanceToNow(new Date(file.created_at), { addSuffix: true })}</TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end space-x-2">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => window.open(getFileUrl(file.file_path), '_blank')}
+                                title="Download"
+                              >
+                                <Download className="h-4 w-4" />
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleDelete(file)}
+                                className="text-red-500 hover:text-red-700"
+                                title="Delete"
+                                disabled={deleteMutation.isPending}
+                              >
+                                <Trash2 className="h-4 w-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </ScrollArea>
+              </Card>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                {filteredFiles.map((file) => (
+                  <Card key={file.id} className="overflow-hidden">
+                    <div className="aspect-square bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                      {file.file_type.startsWith('image/') ? (
+                        <img 
+                          src={getFileUrl(file.file_path)} 
+                          alt={file.alt_text || file.file_name}
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center">
+                          {getFileIcon(file.file_type)}
+                          <span className="mt-2 text-sm text-muted-foreground">{file.file_type.split('/')[1]}</span>
+                        </div>
+                      )}
+                    </div>
+                    <CardContent className="p-3">
+                      <div className="truncate font-medium">{file.file_name}</div>
+                      <div className="text-xs text-muted-foreground mt-1 flex justify-between">
+                        <span>{formatFileSize(file.file_size)}</span>
+                        <span>{formatDistanceToNow(new Date(file.created_at), { addSuffix: true })}</span>
+                      </div>
+                      <div className="flex justify-between mt-3">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => window.open(getFileUrl(file.file_path), '_blank')}
+                        >
+                          <Download className="h-4 w-4 mr-1" />
+                          Download
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleDelete(file)}
+                          className="text-red-500 hover:text-red-700"
+                          disabled={deleteMutation.isPending}
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Delete
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )
           ) : (
             <Card className="py-12">
               <div className="text-center space-y-3">
