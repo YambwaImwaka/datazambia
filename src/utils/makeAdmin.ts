@@ -20,7 +20,7 @@ export const makeAdmin = async (email: string) => {
       .from('profiles')
       .select('id')
       .eq('email', email)
-      .single();
+      .maybeSingle();
     
     if (userError) {
       // Fall back to checking auth.users (requires admin function)
