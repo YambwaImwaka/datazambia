@@ -15,11 +15,11 @@ import { toast } from 'sonner';
  */
 export const makeAdmin = async (email: string) => {
   try {
-    // First check if user exists
+    // First check if user exists - using a simpler query structure to avoid type recursion
     const { data: userData, error: userError } = await supabase
       .from('profiles')
-      .select('id')
       .eq('email', email)
+      .select('id')
       .maybeSingle();
     
     if (userError) {
@@ -38,7 +38,7 @@ export const makeAdmin = async (email: string) => {
       };
     }
     
-    // If we found the user in profiles, add the admin role
+    // If we found the user in profiles, add the admin role - simplified query to prevent type recursion
     const { error: roleError } = await supabase
       .from('user_roles')
       .insert({
