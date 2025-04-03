@@ -18,8 +18,8 @@ export const makeAdmin = async (email: string) => {
     // First check if user exists - using a simpler query structure to avoid type recursion
     const { data: userData, error: userError } = await supabase
       .from('profiles')
-      .eq('email', email)
       .select('id')
+      .eq('email', email)
       .maybeSingle();
     
     if (userError) {
