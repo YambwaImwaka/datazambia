@@ -28,7 +28,7 @@ const PageLayout: React.FC<PageLayoutProps> = ({
       <main className={cn("flex-grow py-4 md:py-12", bgColor)}>
         <div className={cn(
           fullWidth ? 'container-fluid px-3 md:px-4' : 'container mx-auto px-3 md:px-4',
-          'pt-16 md:pt-16', // Space for header, adjusted for mobile
+          'pt-20 md:pt-20', // Increased space for header on both mobile and desktop
           className
         )}>
           {children}

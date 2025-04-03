@@ -61,7 +61,7 @@ export const Hero = () => {
   };
 
   return (
-    <div className="relative min-h-[80vh] flex items-center justify-center overflow-hidden pt-16 md:pt-0">
+    <div className="relative min-h-[80vh] flex items-center justify-center overflow-hidden pt-20 md:pt-0">
       {/* Background with gradient and pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-zambia-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-950"></div>
       
@@ -80,7 +80,7 @@ export const Hero = () => {
       </div>
       
       <motion.div 
-        className="container relative z-10 px-4 py-12 md:py-24 mt-8 md:mt-0"
+        className="container relative z-10 px-4 py-6 md:py-24 mt-16 md:mt-0"
         initial="hidden"
         animate="visible"
         variants={containerVariants}
