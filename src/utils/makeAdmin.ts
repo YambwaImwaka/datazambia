@@ -16,11 +16,10 @@ import { toast } from 'sonner';
 export const makeAdmin = async (email: string) => {
   try {
     // First check if user exists - using a simpler query structure to avoid type recursion
-    const { data: userData, error: userError } = await supabase
+    const { data: userQuery, error: userError } = await supabase
       .from('profiles')
       .select('id')
-      .eq('email', email)
-      .maybeSingle();
+      .ilike('email', email);
     
     if (userError) {
       // Fall back to checking auth.users (requires admin function)
@@ -30,6 +29,8 @@ export const makeAdmin = async (email: string) => {
       
       return { success: true, message: `User ${email} has been granted admin privileges` };
     }
+
+    const userData = userQuery?.[0] || null;
     
     if (!userData) {
       return { 
