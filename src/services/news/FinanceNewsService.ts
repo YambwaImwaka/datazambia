@@ -30,7 +30,7 @@ export const fetchFinanceNews = async (
       {
         id: '1',
         title: 'Bank of Zambia Holds Interest Rate at 9.5% Amid Inflation Concerns',
-        summary: 'The central bank's monetary policy committee decided to maintain the current rate citing a need to balance economic growth with inflation control.',
+        summary: "The central bank's monetary policy committee decided to maintain the current rate citing a need to balance economic growth with inflation control.",
         url: 'https://example.com/boz-interest-rate',
         source: 'Zambia Financial Times',
         publishedAt: '2025-04-08T14:30:00Z',
@@ -41,7 +41,7 @@ export const fetchFinanceNews = async (
       {
         id: '2',
         title: 'Copper Prices Surge as Global Demand Increases',
-        summary: 'Zambia's main export commodity has seen a price increase of 7% over the past month as manufacturing rebounds in key markets.',
+        summary: "Zambia's main export commodity has seen a price increase of 7% over the past month as manufacturing rebounds in key markets.",
         url: 'https://example.com/copper-prices',
         source: 'Mining Weekly',
         publishedAt: '2025-04-07T09:15:00Z',
@@ -73,7 +73,7 @@ export const fetchFinanceNews = async (
       },
       {
         id: '5',
-        title: 'Zambia's GDP Growth Projected to Reach 4.5% in 2025',
+        title: "Zambia's GDP Growth Projected to Reach 4.5% in 2025",
         summary: 'International Monetary Fund raises growth forecast citing improved fiscal management and increased foreign investment.',
         url: 'https://example.com/gdp-forecast',
         source: 'African Economic Digest',
