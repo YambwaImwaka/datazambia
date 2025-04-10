@@ -2,7 +2,11 @@
 import { EconomicIndicator } from "@/services/economic/EconomicIndicatorService";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowUpRight, ArrowDownRight, TrendingUp, BarChart3, DollarSign, Calendar } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, TrendingUp, BarChart3, DollarSign, Calendar, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import DataExport from "@/components/ui/DataExport";
 
 interface EconomicIndicatorsSectionProps {
   economicIndicators: EconomicIndicator[] | null;
@@ -11,6 +15,8 @@ interface EconomicIndicatorsSectionProps {
 }
 
 export const EconomicIndicatorsSection = ({ economicIndicators, loading, isVisible }: EconomicIndicatorsSectionProps) => {
+  const [refreshing, setRefreshing] = useState(false);
+  const queryClient = useQueryClient();
   
   // Get appropriate icon based on indicator name
   const getIndicatorIcon = (name: string) => {
@@ -25,16 +31,61 @@ export const EconomicIndicatorsSection = ({ economicIndicators, loading, isVisib
     }
   };
 
+  const handleRefresh = () => {
+    setRefreshing(true);
+    queryClient.invalidateQueries({ queryKey: ['economicIndicators'] })
+      .finally(() => {
+        setTimeout(() => {
+          setRefreshing(false);
+        }, 1000);
+      });
+  };
+
+  // Prepare data for export
+  const getExportData = () => {
+    if (!economicIndicators) return [];
+    
+    return economicIndicators.map(indicator => ({
+      Indicator: indicator.name,
+      Value: indicator.value,
+      Change: indicator.change,
+      Direction: indicator.isPositive ? 'Positive' : 'Negative',
+      Description: indicator.description,
+      Source: indicator.source,
+      LastUpdated: indicator.lastUpdated
+    }));
+  };
+
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-        Economic Indicators
-      </h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+          Economic Indicators
+        </h2>
+        <div className="flex gap-2">
+          <DataExport 
+            data={getExportData()} 
+            fileName="zambia-economic-indicators"
+            label="Export Indicators"
+            disabled={loading || refreshing || !economicIndicators}
+          />
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1"
+            onClick={handleRefresh}
+            disabled={refreshing || loading}
+          >
+            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
+      </div>
       <p className="text-gray-600 dark:text-gray-300 mb-6">
         Key economic metrics and performance indicators for Zambia
       </p>
       
-      {loading ? (
+      {loading || refreshing ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {Array(7).fill(0).map((_, i) => (
             <Card key={`indicator-skeleton-${i}`} className="p-6">

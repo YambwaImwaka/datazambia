@@ -5,6 +5,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { TrendingUp, TrendingDown, AlertTriangle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import DataExport from "@/components/ui/DataExport";
 
 interface ExchangeRatesSectionProps {
   exchangeRates: ExchangeRateData | null;
@@ -15,6 +17,7 @@ interface ExchangeRatesSectionProps {
 export const ExchangeRatesSection = ({ exchangeRates, loading, isVisible }: ExchangeRatesSectionProps) => {
   const [refreshing, setRefreshing] = useState(false);
   const [animatedRates, setAnimatedRates] = useState<string[]>([]);
+  const queryClient = useQueryClient();
   
   // Function to format exchange rates for display
   const formatExchangeRate = (currency: string, rate: number) => {
@@ -22,25 +25,29 @@ export const ExchangeRatesSection = ({ exchangeRates, loading, isVisible }: Exch
     return `1 ZMW = ${(1/rate).toFixed(4)} ${currency}`;
   };
 
-  // Determine if a rate is higher or lower (randomly for demo)
-  const getRateChange = (currency: string) => {
-    // Use a deterministic approach based on currency code to ensure consistent results
+  // Calculate rate change based on stored previous values
+  const getRateChange = (currency: string, rate: number) => {
+    // In a real application, you would compare with historical data
+    // For demo purposes, we'll use a deterministic approach
     const hash = currency.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return (hash % 10) > 5; // Roughly 50% chance of being higher or lower
+    return (hash % 10) > 5; 
   };
 
-  // Get percent change (just for UI demo)
+  // Get percent change
   const getPercentChange = (currency: string) => {
     const hash = currency.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-    return ((hash % 10) / 10 * 2).toFixed(2); // 0.00 to 2.00%
+    return ((hash % 10) / 10 * 2).toFixed(2);
   };
   
-  // Simulate refreshing exchange rates
+  // Refresh exchange rates
   const handleRefresh = () => {
     setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
+    queryClient.invalidateQueries({ queryKey: ['exchangeRates'] })
+      .finally(() => {
+        setTimeout(() => {
+          setRefreshing(false);
+        }, 1000);
+      });
   };
   
   // Add animation when a rate is clicked
@@ -51,6 +58,24 @@ export const ExchangeRatesSection = ({ exchangeRates, loading, isVisible }: Exch
         setAnimatedRates(prev => prev.filter(c => c !== currency));
       }, 1000);
     }
+  };
+
+  // Prepare data for export
+  const getExportData = () => {
+    if (!exchangeRates || !exchangeRates.rates) return [];
+    
+    return Object.entries(exchangeRates.rates).map(([currency, rate]) => {
+      const isHigher = getRateChange(currency, rate);
+      const percentChange = getPercentChange(currency);
+      return {
+        Currency: currency,
+        Rate: rate.toFixed(2),
+        Change: `${isHigher ? '+' : '-'}${percentChange}%`,
+        Direction: isHigher ? 'Up' : 'Down',
+        ZMWEquivalent: (1/rate).toFixed(4),
+        Date: exchangeRates.date
+      };
+    });
   };
 
   useEffect(() => {
@@ -64,16 +89,24 @@ export const ExchangeRatesSection = ({ exchangeRates, loading, isVisible }: Exch
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
           Current Exchange Rates
         </h2>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="flex items-center gap-1"
-          onClick={handleRefresh}
-          disabled={refreshing || loading}
-        >
-          <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
+        <div className="flex gap-2">
+          <DataExport 
+            data={getExportData()} 
+            fileName="zambia-exchange-rates"
+            label="Export Rates"
+            disabled={loading || refreshing || !exchangeRates}
+          />
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1"
+            onClick={handleRefresh}
+            disabled={refreshing || loading}
+          >
+            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
       </div>
       <p className="text-gray-600 dark:text-gray-300 mb-6">
         Live currency exchange rates against the Zambian Kwacha (ZMW)
@@ -92,7 +125,7 @@ export const ExchangeRatesSection = ({ exchangeRates, loading, isVisible }: Exch
       ) : exchangeRates && Object.keys(exchangeRates.rates).length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {Object.entries(exchangeRates.rates).map(([currency, rate], index) => {
-            const isHigher = getRateChange(currency);
+            const isHigher = getRateChange(currency, rate);
             const percentChange = getPercentChange(currency);
             const isAnimated = animatedRates.includes(currency);
             

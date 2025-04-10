@@ -2,7 +2,11 @@
 import { CommodityPrice } from "@/services/commodities/CommodityService";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, RefreshCw } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
+import DataExport from "@/components/ui/DataExport";
 
 interface CommoditiesSectionProps {
   commodityPrices: CommodityPrice[] | null;
@@ -11,16 +15,63 @@ interface CommoditiesSectionProps {
 }
 
 export const CommoditiesSection = ({ commodityPrices, loading, isVisible }: CommoditiesSectionProps) => {
+  const [refreshing, setRefreshing] = useState(false);
+  const queryClient = useQueryClient();
+  
+  const handleRefresh = () => {
+    setRefreshing(true);
+    queryClient.invalidateQueries({ queryKey: ['commodities'] })
+      .finally(() => {
+        setTimeout(() => {
+          setRefreshing(false);
+        }, 1000);
+      });
+  };
+
+  // Prepare data for export
+  const getExportData = () => {
+    if (!commodityPrices) return [];
+    
+    return commodityPrices.map(commodity => ({
+      Commodity: commodity.name,
+      Price: commodity.price,
+      Unit: commodity.unit,
+      Change: commodity.change,
+      Direction: commodity.isPositive ? 'Up' : 'Down',
+      LastUpdated: new Date().toISOString()
+    }));
+  };
+
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
-        Commodity Prices
-      </h2>
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white">
+          Commodity Prices
+        </h2>
+        <div className="flex gap-2">
+          <DataExport 
+            data={getExportData()} 
+            fileName="zambia-commodity-prices"
+            label="Export Data"
+            disabled={loading || refreshing || !commodityPrices}
+          />
+          <Button 
+            variant="outline" 
+            size="sm" 
+            className="flex items-center gap-1"
+            onClick={handleRefresh}
+            disabled={refreshing || loading}
+          >
+            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
+        </div>
+      </div>
       <p className="text-gray-600 dark:text-gray-300 mb-6">
         Current market prices for Zambia's key export commodities
       </p>
       
-      {loading ? (
+      {loading || refreshing ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array(5).fill(0).map((_, i) => (
             <Card key={`commodity-skeleton-${i}`} className="p-6">
