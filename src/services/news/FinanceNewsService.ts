@@ -13,34 +13,43 @@ export interface NewsArticle {
   tags: string[];
 }
 
-// NewsAPI.org response interfaces
-interface NewsAPIArticle {
-  source: {
-    id: string | null;
-    name: string;
-  };
-  author: string | null;
+// Newsdata.io response interfaces
+interface NewsdataArticle {
   title: string;
+  link: string;
+  keywords?: string[];
+  creator?: string[];
+  video_url?: string;
   description: string;
-  url: string;
-  urlToImage: string | null;
-  publishedAt: string;
-  content: string;
+  content?: string;
+  pubDate: string;
+  image_url?: string;
+  source_id: string;
+  source_priority?: number;
+  country?: string[];
+  category?: string[];
+  language?: string;
 }
 
-interface NewsAPIResponse {
+interface NewsdataResponse {
   status: string;
   totalResults: number;
-  articles: NewsAPIArticle[];
+  results?: NewsdataArticle[];
+  nextPage?: string;
 }
 
-// API key for NewsAPI.org
-const NEWS_API_KEY = "d553c4cc492748779fa28fbae01d5110";
+// API key for Newsdata.io
+const NEWS_API_KEY = "pub_7965797176669c8b853f0647662bb7b33232d";
 
 /**
  * Get relevant tags from a news article title and content
  */
-const extractTags = (title: string, description: string): string[] => {
+const extractTags = (title: string, description: string, keywords?: string[]): string[] => {
+  // If article comes with keywords, use them first
+  if (keywords && keywords.length > 0) {
+    return keywords.slice(0, 3).map(k => k.toLowerCase());
+  }
+
   // Combined text for analysis
   const text = `${title} ${description}`.toLowerCase();
   
@@ -77,7 +86,28 @@ const extractTags = (title: string, description: string): string[] => {
 /**
  * Determine the category of a news article based on its content
  */
-const determineCategory = (title: string, description: string): 'economy' | 'markets' | 'business' | 'finance' | 'policy' => {
+const determineCategory = (title: string, description: string, apiCategories?: string[]): 'economy' | 'markets' | 'business' | 'finance' | 'policy' => {
+  // If the API provides categories, map them to our categories
+  if (apiCategories && apiCategories.length > 0) {
+    const categoryMap: Record<string, 'economy' | 'markets' | 'business' | 'finance' | 'policy'> = {
+      'business': 'business',
+      'economy': 'economy',
+      'finance': 'finance',
+      'markets': 'markets',
+      'money': 'finance',
+      'politics': 'policy',
+      'top': 'economy',
+      'world': 'economy'
+    };
+    
+    for (const apiCategory of apiCategories) {
+      const mappedCategory = categoryMap[apiCategory.toLowerCase()];
+      if (mappedCategory) {
+        return mappedCategory;
+      }
+    }
+  }
+  
   const text = `${title} ${description}`.toLowerCase();
   
   const categoryKeywords = {
@@ -120,21 +150,21 @@ const determineCategory = (title: string, description: string): 'economy' | 'mar
 };
 
 /**
- * Transform NewsAPI articles to our NewsArticle format
+ * Transform Newsdata.io articles to our NewsArticle format
  */
-const transformArticles = (articles: NewsAPIArticle[]): NewsArticle[] => {
+const transformArticles = (articles: NewsdataArticle[]): NewsArticle[] => {
   return articles.map((article, index) => {
-    const category = determineCategory(article.title, article.description || '');
-    const tags = extractTags(article.title, article.description || '');
+    const category = determineCategory(article.title, article.description || '', article.category);
+    const tags = extractTags(article.title, article.description || '', article.keywords);
     
     return {
       id: `${index}-${Date.now()}`, // Generate a unique ID
       title: article.title,
       summary: article.description || '',
-      url: article.url,
-      source: article.source.name,
-      publishedAt: article.publishedAt,
-      imageUrl: article.urlToImage || undefined,
+      url: article.link,
+      source: article.source_id || 'News Source',
+      publishedAt: article.pubDate,
+      imageUrl: article.image_url || undefined,
       category,
       tags
     };
@@ -142,7 +172,7 @@ const transformArticles = (articles: NewsAPIArticle[]): NewsArticle[] => {
 };
 
 /**
- * Fetch finance news articles from NewsAPI.org
+ * Fetch finance news articles from Newsdata.io
  * @param limit Number of articles to fetch
  * @param category Optional category filter
  */
@@ -151,36 +181,47 @@ export const fetchFinanceNews = async (
   category?: 'economy' | 'markets' | 'business' | 'finance' | 'policy'
 ): Promise<NewsArticle[]> => {
   try {
-    // Construct query based on category
-    let query = "zambia AND (finance OR economy OR business)";
+    // Map our categories to Newsdata.io categories
+    const categoryMapping: Record<string, string> = {
+      economy: 'economy',
+      markets: 'business',
+      business: 'business',
+      finance: 'business',
+      policy: 'politics'
+    };
+
+    // Construct the query parameters
+    let queryParams = new URLSearchParams({
+      apikey: NEWS_API_KEY,
+      q: 'zambia AND (finance OR economy OR business)',
+      language: 'en',
+      size: limit.toString(),
+      country: 'zm'
+    });
+    
     if (category) {
-      query += ` AND ${category}`;
+      queryParams.append('category', categoryMapping[category] || 'business');
     }
     
-    // Fetch news from NewsAPI.org
+    // Fetch news from Newsdata.io
     const response = await fetch(
-      `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=en&sortBy=publishedAt&pageSize=${limit}`,
-      {
-        headers: {
-          'X-Api-Key': NEWS_API_KEY
-        }
-      }
+      `https://newsdata.io/api/1/news?${queryParams.toString()}`
     );
     
     if (!response.ok) {
       throw new Error(`News API error: ${response.status}`);
     }
     
-    const data: NewsAPIResponse = await response.json();
+    const data: NewsdataResponse = await response.json();
     
-    if (data.status !== 'ok') {
-      throw new Error('Failed to fetch news data');
+    if (data.status !== 'success' || !data.results || data.results.length === 0) {
+      throw new Error('Failed to fetch news data or no results found');
     }
     
     // Transform articles to our format
-    let articles = transformArticles(data.articles);
+    let articles = transformArticles(data.results);
     
-    // Apply manual category filter if needed (NewsAPI doesn't categorize like we do)
+    // Apply manual category filter if needed
     if (category) {
       articles = articles.filter(article => article.category === category);
     }
