@@ -3,21 +3,20 @@
 // This prevents breaking changes while refactoring
 
 export { 
-  useExchangeRateData,
+  fetchExchangeRates,
   type ExchangeRateData 
 } from './exchange-rates/ExchangeRateService';
 
 export { 
-  useStockMarketData,
   type StockData 
 } from './stock-market/StockMarketService';
 
 export { 
-  useEconomicIndicators,
+  fetchEconomicIndicators,
   type EconomicIndicator 
 } from './economic/EconomicIndicatorService';
 
 export { 
-  useCommodityPrices,
+  fetchCommodityPrices,
   type CommodityPrice 
 } from './commodities/CommodityService';
