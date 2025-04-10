@@ -4,22 +4,37 @@ import { useQuery } from '@tanstack/react-query';
 import { fetchFinanceNews } from '@/services/news/FinanceNewsService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ExternalLink, Clock, Tag, Loader2 } from 'lucide-react';
+import { ExternalLink, Clock, Tag, Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { formatDistanceToNow } from 'date-fns';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { toast } from 'sonner';
 
 interface FinanceNewsSectionProps {
   isVisible: boolean;
 }
 
 const FinanceNewsSection: React.FC<FinanceNewsSectionProps> = ({ isVisible }) => {
-  const { data: news, isLoading, error } = useQuery({
+  const { 
+    data: news, 
+    isLoading, 
+    error, 
+    isError, 
+    refetch,
+    isRefetching
+  } = useQuery({
     queryKey: ['financeNews'],
     queryFn: () => fetchFinanceNews(3),
     enabled: isVisible,
     staleTime: 1000 * 60 * 15, // 15 minutes
+    retry: 2,
   });
+  
+  const handleRefresh = () => {
+    toast.info("Refreshing news data...");
+    refetch();
+  };
   
   if (isLoading) {
     return (
@@ -42,10 +57,31 @@ const FinanceNewsSection: React.FC<FinanceNewsSectionProps> = ({ isVisible }) =>
     );
   }
   
-  if (error) {
+  if (isError) {
     return (
-      <div className="text-center py-6">
-        <p className="text-red-500">Error loading finance news</p>
+      <div className="space-y-4">
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Error loading news</AlertTitle>
+          <AlertDescription>
+            {error instanceof Error ? error.message : "Failed to load financial news."}
+          </AlertDescription>
+        </Alert>
+        <div className="flex justify-center">
+          <Button variant="outline" onClick={handleRefresh} disabled={isRefetching}>
+            {isRefetching ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Refreshing...
+              </>
+            ) : (
+              <>
+                <RefreshCw className="mr-2 h-4 w-4" />
+                Try Again
+              </>
+            )}
+          </Button>
+        </div>
       </div>
     );
   }
@@ -54,12 +90,32 @@ const FinanceNewsSection: React.FC<FinanceNewsSectionProps> = ({ isVisible }) =>
     return (
       <div className="text-center py-6">
         <p className="text-muted-foreground">No news articles available at this time</p>
+        <Button variant="outline" size="sm" className="mt-2" onClick={handleRefresh} disabled={isRefetching}>
+          {isRefetching ? (
+            <>
+              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              Refreshing...
+            </>
+          ) : (
+            <>
+              <RefreshCw className="mr-2 h-4 w-4" />
+              Refresh
+            </>
+          )}
+        </Button>
       </div>
     );
   }
   
   return (
     <div className="space-y-4">
+      {isRefetching && (
+        <div className="mb-2 px-2 py-1 text-xs flex items-center justify-end text-muted-foreground">
+          <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+          Updating news...
+        </div>
+      )}
+      
       {news.map((article) => (
         <div key={article.id} className="flex flex-col md:flex-row gap-4 pb-4 border-b last:border-b-0">
           {article.imageUrl && (
@@ -68,6 +124,10 @@ const FinanceNewsSection: React.FC<FinanceNewsSectionProps> = ({ isVisible }) =>
                 src={article.imageUrl} 
                 alt={article.title} 
                 className="w-full h-24 md:h-full object-cover rounded-md" 
+                onError={(e) => {
+                  // Fallback image if the source fails to load
+                  e.currentTarget.src = 'https://placehold.co/600x400/png?text=News';
+                }}
               />
             </div>
           )}
@@ -105,7 +165,18 @@ const FinanceNewsSection: React.FC<FinanceNewsSectionProps> = ({ isVisible }) =>
         </div>
       ))}
       
-      <div className="flex justify-end pt-2">
+      <div className="flex justify-between items-center pt-2">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          onClick={handleRefresh}
+          disabled={isRefetching}
+          className="text-muted-foreground"
+        >
+          <RefreshCw className="mr-2 h-3 w-3" />
+          Refresh
+        </Button>
+        
         <Button variant="outline" size="sm">
           View All Finance News
         </Button>
