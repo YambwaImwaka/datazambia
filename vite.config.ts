@@ -40,5 +40,9 @@ export default defineConfig(({ mode }) => ({
         },
       },
     },
+    // Ensure the build is compatible with hosting environments like cPanel
+    assetsDir: 'assets',
+    // Enable this for cPanel subdirectory installations if needed
+    // base: '/subfolder/', // Uncomment and modify if deploying to a subfolder
   },
 }));

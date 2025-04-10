@@ -34,9 +34,8 @@ interface NewsAPIResponse {
   articles: NewsAPIArticle[];
 }
 
-// API key for NewsAPI.org - in production this should be stored in environment variables
-// This is a placeholder, you'll need to replace it with your own API key
-const NEWS_API_KEY = "YOUR_NEWS_API_KEY";
+// API key for NewsAPI.org
+const NEWS_API_KEY = "d553c4cc492748779fa28fbae01d5110";
 
 /**
  * Get relevant tags from a news article title and content
@@ -152,12 +151,6 @@ export const fetchFinanceNews = async (
   category?: 'economy' | 'markets' | 'business' | 'finance' | 'policy'
 ): Promise<NewsArticle[]> => {
   try {
-    // Use real API data in production
-    if (NEWS_API_KEY === "YOUR_NEWS_API_KEY") {
-      console.warn('Using fallback mock data: Please replace NEWS_API_KEY with a valid API key');
-      return fetchMockNews(limit, category);
-    }
-    
     // Construct query based on category
     let query = "zambia AND (finance OR economy OR business)";
     if (category) {
