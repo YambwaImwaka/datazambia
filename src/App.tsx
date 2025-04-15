@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import ProvinceProfile from "./pages/ProvinceProfile";
 import ProvincesList from "./pages/ProvincesList";
 import Explore from "./pages/Explore";
+import Finance from "./pages/Finance";
 import About from "./pages/About";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
@@ -48,6 +49,7 @@ const App = () => {
                 <Route path="/provinces" element={<ProvincesList />} />
                 <Route path="/explore" element={<Explore />} />
                 <Route path="/explore/:categoryId" element={<Explore />} />
+                <Route path="/finance" element={<Finance />} />
                 <Route path="/about" element={<About />} />
                 
                 {/* Auth routes - accessible only when NOT logged in */}

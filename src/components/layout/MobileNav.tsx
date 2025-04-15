@@ -41,7 +41,7 @@ const MobileNav = () => {
     },
     { 
       label: 'Admin', 
-      href: '/admin/users', 
+      href: '/admin/dashboard', 
       icon: <User className="h-5 w-5" />,
       authRequired: true,
       adminRequired: true
