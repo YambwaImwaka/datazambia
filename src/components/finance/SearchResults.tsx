@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ExchangeRateData } from '@/services/FinanceService';
 import { CommodityPrice } from '@/services/FinanceService';
 import { EconomicIndicator } from '@/services/FinanceService';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface SearchResultsProps {
   query: string;
@@ -27,6 +28,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
 }) => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
   
   // Mutation to add to watchlist
   const addMutation = useMutation({
@@ -113,9 +115,9 @@ const SearchResults: React.FC<SearchResultsProps> = ({
   if (allResults.length === 0) {
     return (
       <Card>
-        <CardContent className="py-6 text-center">
+        <CardContent className="py-4 sm:py-6 text-center">
           <p className="text-muted-foreground">No results found for "{query}"</p>
-          <p className="text-sm text-muted-foreground mt-2">
+          <p className="text-xs sm:text-sm text-muted-foreground mt-2">
             Try using different keywords or check our finance categories
           </p>
         </CardContent>
@@ -123,32 +125,39 @@ const SearchResults: React.FC<SearchResultsProps> = ({
     );
   }
   
+  // Get grid column configuration based on screen size
+  const getGridCols = () => {
+    if (isMobile) return "grid-cols-1";
+    return "grid-cols-1 md:grid-cols-2 lg:grid-cols-3";
+  };
+  
   return (
     <div className="space-y-4">
       <Card>
-        <CardHeader className="pb-2">
-          <CardTitle className="text-lg">Search Results</CardTitle>
-          <CardDescription>
+        <CardHeader className="pb-2 px-3 sm:px-6 pt-3 sm:pt-6">
+          <CardTitle className="text-base sm:text-lg">Search Results</CardTitle>
+          <CardDescription className="text-xs sm:text-sm">
             Found {allResults.length} results for "{query}"
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-3 sm:px-6 pb-3 sm:pb-6">
           <div className="space-y-4">
             {matchingCurrencies.length > 0 && (
               <div>
-                <h3 className="font-medium mb-2">Currencies</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <h3 className="font-medium text-sm sm:text-base mb-2">Currencies</h3>
+                <div className={`grid ${getGridCols()} gap-2 sm:gap-4`}>
                   {matchingCurrencies.map(currency => (
-                    <div key={currency.id} className="border rounded-md p-3 flex justify-between items-center">
+                    <div key={currency.id} className="border rounded-md p-2 sm:p-3 flex justify-between items-center">
                       <div>
-                        <div className="font-medium">{currency.name}</div>
-                        <div className="text-sm">{currency.value} ZMW</div>
+                        <div className="font-medium text-sm sm:text-base">{currency.name}</div>
+                        <div className="text-xs sm:text-sm">{currency.value} ZMW</div>
                       </div>
                       <Button 
                         variant="ghost" 
                         size="sm" 
                         onClick={() => handleAddToWatchlist(currency)}
                         disabled={addMutation.isPending}
+                        className="h-8 w-8 p-0"
                       >
                         <BookmarkPlus className="h-4 w-4" />
                       </Button>
@@ -160,13 +169,13 @@ const SearchResults: React.FC<SearchResultsProps> = ({
             
             {matchingCommodities.length > 0 && (
               <div>
-                <h3 className="font-medium mb-2">Commodities</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <h3 className="font-medium text-sm sm:text-base mb-2">Commodities</h3>
+                <div className={`grid ${getGridCols()} gap-2 sm:gap-4`}>
                   {matchingCommodities.map(commodity => (
-                    <div key={commodity.id} className="border rounded-md p-3 flex justify-between items-center">
+                    <div key={commodity.id} className="border rounded-md p-2 sm:p-3 flex justify-between items-center">
                       <div>
-                        <div className="font-medium">{commodity.name}</div>
-                        <div className="text-sm">
+                        <div className="font-medium text-sm sm:text-base">{commodity.name}</div>
+                        <div className="text-xs sm:text-sm">
                           {commodity.value} 
                           {commodity.change && (
                             <span className={commodity.isPositive ? 'text-green-600' : 'text-red-600'}>
@@ -180,6 +189,7 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                         size="sm" 
                         onClick={() => handleAddToWatchlist(commodity)}
                         disabled={addMutation.isPending}
+                        className="h-8 w-8 p-0"
                       >
                         <BookmarkPlus className="h-4 w-4" />
                       </Button>
@@ -191,16 +201,16 @@ const SearchResults: React.FC<SearchResultsProps> = ({
             
             {matchingIndicators.length > 0 && (
               <div>
-                <h3 className="font-medium mb-2">Economic Indicators</h3>
+                <h3 className="font-medium text-sm sm:text-base mb-2">Economic Indicators</h3>
                 {matchingIndicators.map(indicator => (
-                  <div key={indicator.id} className="border rounded-md p-3 mb-3 last:mb-0">
+                  <div key={indicator.id} className="border rounded-md p-2 sm:p-3 mb-2 sm:mb-3 last:mb-0">
                     <div className="flex justify-between items-start">
                       <div>
-                        <div className="font-medium">{indicator.name}</div>
+                        <div className="font-medium text-sm sm:text-base">{indicator.name}</div>
                         <div className="flex items-center gap-2">
-                          <span className="text-lg font-semibold">{indicator.value}</span>
+                          <span className="text-base sm:text-lg font-semibold">{indicator.value}</span>
                           {indicator.change && (
-                            <span className={`text-sm ${indicator.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                            <span className={`text-xs sm:text-sm ${indicator.isPositive ? 'text-green-600' : 'text-red-600'}`}>
                               {indicator.change}
                             </span>
                           )}
@@ -211,15 +221,16 @@ const SearchResults: React.FC<SearchResultsProps> = ({
                         size="sm" 
                         onClick={() => handleAddToWatchlist(indicator)}
                         disabled={addMutation.isPending}
+                        className="h-8 w-8 p-0"
                       >
                         <BookmarkPlus className="h-4 w-4" />
                       </Button>
                     </div>
                     {indicator.description && (
-                      <p className="text-sm text-muted-foreground mt-2">{indicator.description}</p>
+                      <p className="text-xs sm:text-sm text-muted-foreground mt-2">{indicator.description}</p>
                     )}
                     {indicator.source && (
-                      <div className="text-xs text-muted-foreground mt-2">
+                      <div className="text-xs text-muted-foreground mt-1 sm:mt-2">
                         Source: {indicator.source}
                       </div>
                     )}

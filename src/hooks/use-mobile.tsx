@@ -19,15 +19,31 @@ export function useBreakpoints() {
   const isTablet = useMediaQuery("(min-width: 641px) and (max-width: 1023px)"); // md-lg
   const isDesktop = useMediaQuery("(min-width: 1024px)"); // lg+
   const isLargeDesktop = useMediaQuery("(min-width: 1280px)"); // xl+
+  const isPortrait = useMediaQuery("(orientation: portrait)");
+  const isLandscape = useMediaQuery("(orientation: landscape)");
   
   return {
     isMobile,
     isTablet,
     isDesktop,
     isLargeDesktop,
+    isPortrait,
+    isLandscape,
     // Helper for common patterns
     isMobileOrTablet: isMobile || isTablet,
   };
+}
+
+/**
+ * Hook that returns the current device type based on screen size
+ * @returns The current device type as a string
+ */
+export function useDeviceType(): "mobile" | "tablet" | "desktop" {
+  const { isMobile, isTablet } = useBreakpoints();
+  
+  if (isMobile) return "mobile";
+  if (isTablet) return "tablet";
+  return "desktop";
 }
 
 export default useIsMobile;

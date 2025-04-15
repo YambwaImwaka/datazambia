@@ -45,4 +45,17 @@ export default defineConfig(({ mode }) => ({
     // Enable this for cPanel subdirectory installations if needed
     // base: '/subfolder/', // Uncomment and modify if deploying to a subfolder
   },
+  // Add optimizations for mobile
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react-router-dom']
+  },
+  // Add PWA asset generation optimization
+  experimental: {
+    renderBuiltUrl(filename, { hostType }) {
+      if (hostType === 'css' || hostType === 'html') {
+        return { relative: true };
+      }
+      return { relative: true };
+    }
+  }
 }));

@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { VariantProps, cva } from 'class-variance-authority';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const cardVariants = cva(
   "transition-all duration-200 h-full",
@@ -32,7 +33,7 @@ const cardVariants = cva(
         md: "p-3 md:p-4",
         lg: "p-4 md:p-6",
         none: "p-0",
-        responsive: "p-2 sm:p-3 md:p-4 lg:p-6",
+        responsive: "p-3 sm:p-4 md:p-5 lg:p-6",
       }
     },
     defaultVariants: {
@@ -77,6 +78,8 @@ const ResponsiveCard = React.forwardRef<HTMLDivElement, ResponsiveCardProps>(
     isLoading = false,
     ...props
   }, ref) => {
+    const isMobile = useIsMobile();
+    
     return (
       <Card 
         ref={ref} 
@@ -84,20 +87,24 @@ const ResponsiveCard = React.forwardRef<HTMLDivElement, ResponsiveCardProps>(
         {...props}
       >
         {(title || description) && (
-          <CardHeader className={cn("flex flex-col space-y-1.5 p-3 md:p-4", headerClassName)}>
+          <CardHeader className={cn("flex flex-col space-y-1 p-3 sm:p-4", headerClassName)}>
             {title && (
-              <CardTitle className={cn("text-lg md:text-xl font-semibold", titleClassName)}>
+              <CardTitle className={cn(
+                "font-semibold", 
+                isMobile ? "text-base" : "text-lg md:text-xl", 
+                titleClassName
+              )}>
                 {isLoading ? (
-                  <div className="h-6 md:h-7 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+                  <div className="h-5 sm:h-6 md:h-7 w-3/4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
                 ) : (
                   title
                 )}
               </CardTitle>
             )}
             {description && (
-              <CardDescription className={cn("text-sm", descriptionClassName)}>
+              <CardDescription className={cn(isMobile ? "text-xs" : "text-sm", descriptionClassName)}>
                 {isLoading ? (
-                  <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse mt-2"></div>
+                  <div className="h-3 sm:h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse mt-1 sm:mt-2"></div>
                 ) : (
                   description
                 )}
@@ -106,12 +113,12 @@ const ResponsiveCard = React.forwardRef<HTMLDivElement, ResponsiveCardProps>(
           </CardHeader>
         )}
         
-        <CardContent className={cn("pt-0 p-3 md:p-4", contentClassName)}>
+        <CardContent className={cn("pt-0 p-3 sm:p-4", contentClassName)}>
           {isLoading ? (
-            <div className="space-y-3">
-              <div className="h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-              <div className="h-4 w-5/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
-              <div className="h-4 w-4/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+            <div className="space-y-2 sm:space-y-3">
+              <div className="h-3 sm:h-4 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-3 sm:h-4 w-5/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-3 sm:h-4 w-4/6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
             </div>
           ) : (
             <div className={cn(innerClassName)}>{children}</div>
@@ -119,9 +126,9 @@ const ResponsiveCard = React.forwardRef<HTMLDivElement, ResponsiveCardProps>(
         </CardContent>
         
         {footer && (
-          <CardFooter className={cn("p-3 md:p-4", footerClassName)}>
+          <CardFooter className={cn("p-3 sm:p-4", footerClassName)}>
             {isLoading ? (
-              <div className="h-9 md:h-10 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-8 sm:h-9 md:h-10 w-full bg-gray-200 dark:bg-gray-700 rounded animate-pulse"></div>
             ) : (
               footer
             )}

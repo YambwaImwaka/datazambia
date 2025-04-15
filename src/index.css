@@ -87,6 +87,24 @@
   }
   body {
     @apply bg-background text-foreground;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  /* Improve touch targets on mobile */
+  @media (max-width: 768px) {
+    button, a, [role="button"] {
+      @apply min-h-9 min-w-9;
+    }
+    
+    /* Improve form controls on mobile */
+    input, select, textarea {
+      @apply text-base; /* Prevent zoom on iOS */
+    }
+  }
+  
+  /* Prevent content from being hidden under fixed headers on anchor navigation */
+  html {
+    scroll-padding-top: 5rem;
   }
 }
 
@@ -117,4 +135,36 @@
 
 .dark .shadow-elevated {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+}
+
+/* Mobile-specific optimizations */
+@media (max-width: 640px) {
+  .mobile-compact-text {
+    font-size: 0.9rem;
+  }
+  
+  .mobile-compact-heading {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+  }
+  
+  .mobile-no-padding {
+    padding: 0 !important;
+  }
+  
+  .mobile-reduced-padding {
+    padding: 0.5rem !important;
+  }
+}
+
+/* Optimize card layout for mobile */
+@media (max-width: 640px) {
+  .card-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)) !important;
+    gap: 0.5rem !important;
+  }
+  
+  .card-compact {
+    padding: 0.75rem !important;
+  }
 }
