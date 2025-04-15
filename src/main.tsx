@@ -1,6 +1,7 @@
 
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import App from './App.tsx';
 import './index.css';
 
@@ -8,7 +9,9 @@ import './index.css';
 const basePath = window.__BASE_PATH__ || '/';
 
 createRoot(document.getElementById("root")!).render(
-  <BrowserRouter basename={basePath}>
-    <App />
-  </BrowserRouter>
+  <HelmetProvider>
+    <BrowserRouter basename={basePath}>
+      <App />
+    </BrowserRouter>
+  </HelmetProvider>
 );

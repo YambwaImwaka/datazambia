@@ -18,6 +18,15 @@ const Explore = () => {
     setCurrentCategory(categoryId);
   }, [categoryId]);
 
+  // Get current category details for SEO
+  const currentCategoryDetails = dataCategories.find(cat => cat.id === currentCategory);
+  const pageTitle = currentCategoryDetails 
+    ? `${currentCategoryDetails.name} Data | Zambia Insight`
+    : "Explore Zambian Provinces & Data";
+  const pageDescription = currentCategoryDetails
+    ? currentCategoryDetails.description
+    : "Discover comprehensive data and insights across Zambia's provinces. Explore economic indicators, agriculture, health, and more.";
+
   // Determine which dashboard to show based on the category
   const renderDashboard = () => {
     if (currentCategory === "agriculture") {
@@ -157,7 +166,11 @@ const Explore = () => {
   }
 
   return (
-    <PageLayout>
+    <PageLayout
+      title={pageTitle}
+      description={pageDescription}
+      canonicalUrl={`https://datazambia.com/explore${currentCategory ? `/${currentCategory}` : ''}`}
+    >
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           {currentCategory 
