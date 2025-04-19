@@ -11,7 +11,8 @@ export interface ExchangeRateData {
  * Fetch exchange rates against Zambian Kwacha (ZMW) using Finnhub.io API
  */
 export const fetchExchangeRates = async (): Promise<ExchangeRateData> => {
-  const FINNHUB_API_KEY = import.meta.env.VITE_FINNHUB_API_KEY;
+  // Directly hardcoding the API key as requested by the user
+  const FINNHUB_API_KEY = "cvlk1npr01qj3umdsk00cvlk1npr01qj3umdsk0g";
   const base = "ZMW";
 
   if (!FINNHUB_API_KEY) {
@@ -63,3 +64,4 @@ export const fetchExchangeRates = async (): Promise<ExchangeRateData> => {
     throw error;
   }
 };
+
