@@ -13,92 +13,101 @@ export interface EconomicIndicator {
 
 /**
  * Fetch economic indicators for Zambia
+ * Currently returns real latest data statically from JSON provided by user.
+ * Future: could extend to fetch from APIs or scrape from source links.
  */
 export const fetchEconomicIndicators = async (): Promise<EconomicIndicator[]> => {
   try {
-    // In a real app, this would fetch from a database or API
-    // For now, we'll return realistic mock data
-    
+    // Real data mapped from user JSON, with inferred fields and static mock for description & lastUpdated
+    // Note: Links are included in descriptions appended to source for now.
     const indicators: EconomicIndicator[] = [
       {
-        name: "GDP Growth Rate",
-        value: "4.2%",
-        change: "+1.3%",
+        name: "Nominal GDP (2023)",
+        value: "$29.2 billion",
+        change: "-", // No change info given, default "-"
         isPositive: true,
-        description: "Annual GDP growth based on constant local currency. Shows economic expansion or contraction.",
-        source: "World Bank",
-        lastUpdated: "Jun 2024"
+        description: "Nominal Gross Domestic Product for the year 2023.",
+        source: "World Bank (https://data.worldbank.org/country/zambia)",
+        lastUpdated: "2023"
       },
       {
-        name: "Inflation Rate",
-        value: "7.8%",
-        change: "-2.3%",
+        name: "GDP Growth Rate (2023)",
+        value: "4.7%", // converted 0.047 to percent string
+        change: "-", // no change info given
         isPositive: true,
-        description: "Consumer price inflation, annual percentage change. Measures cost of living increases.",
-        source: "Bank of Zambia",
-        lastUpdated: "Jul 2024"
+        description: "GDP Growth Rate for the year 2023.",
+        source: "IMF (https://www.imf.org/en/Countries/ZMB)",
+        lastUpdated: "2023"
       },
       {
-        name: "Unemployment Rate",
-        value: "20.3%",
-        change: "-2.0%",
+        name: "GDP Per Capita (2023)",
+        value: "$1,480",
+        change: "-",
         isPositive: true,
-        description: "Percentage of labor force that is unemployed but actively seeking employment.",
-        source: "Zambia Statistics Agency",
+        description: "GDP per capita data for 2023.",
+        source: "World Bank (https://data.worldbank.org/indicator/NY.GDP.PCAP.CD)",
+        lastUpdated: "2023"
+      },
+      {
+        name: "Inflation Rate (May 2024)",
+        value: "13.8%", // converted 0.138 to percent string
+        change: "-",
+        isPositive: false, // inflation increasing generally negative, but no trend given
+        description: "Inflation rate measured by ZamStats as of May 2024.",
+        source: "ZamStats",
         lastUpdated: "May 2024"
       },
       {
-        name: "Foreign Reserves",
-        value: "$2.8B",
-        change: "+12.0%",
-        isPositive: true,
-        description: "Foreign currency reserves held by the Bank of Zambia, in USD billions.",
+        name: "Unemployment Rate (2023)",
+        value: "12.4%", // 0.124 percent converted
+        change: "-",
+        isPositive: false, // high unemployment is generally negative
+        description: "Unemployment rate estimated by ILO for 2023.",
+        source: "ILO (https://www.ilo.org/ilostat/)",
+        lastUpdated: "2023"
+      },
+      {
+        name: "National Debt-to-GDP (2023)",
+        value: "71.3%", // 0.713 converted to percent for readability
+        change: "-",
+        isPositive: false, // higher debt-to-gdp ratio generally negative
+        description: "Debt to GDP ratio for Zambia in 2023.",
         source: "Bank of Zambia",
-        lastUpdated: "Jul 2024"
+        lastUpdated: "2023"
       },
       {
-        name: "Interest Rate",
-        value: "9.5%",
-        change: "-0.5%",
+        name: "Exchange Rate (April 2025)",
+        value: "1 USD = 28.5 ZMW",
+        change: "-",
         isPositive: true,
-        description: "Central bank policy interest rate, used to manage monetary policy.",
-        source: "Bank of Zambia",
-        lastUpdated: "Jul 2024"
+        description: "Exchange rate as of April 2025",
+        source: "Bank of Zambia (https://www.boz.zm/financial-markets/exchange-rates)",
+        lastUpdated: "April 2025"
       },
       {
-        name: "External Debt",
-        value: "$12.6B",
-        change: "+3.2%",
-        isPositive: false,
-        description: "Total external debt stock in USD billions.",
-        source: "Ministry of Finance",
-        lastUpdated: "Jun 2024"
-      },
-      {
-        name: "Fiscal Deficit",
-        value: "-5.7%",
-        change: "+0.8%",
+        name: "Foreign Reserves (2024)",
+        value: "$3.1 billion",
+        change: "-",
         isPositive: true,
-        description: "Fiscal deficit as percentage of GDP. Negative value indicates deficit.",
-        source: "Ministry of Finance",
-        lastUpdated: "Jun 2024"
+        description: "Foreign currency reserves held by the Bank of Zambia for 2024.",
+        source: "Bank of Zambia (https://www.boz.zm/financial-markets/exchange-rates)",
+        lastUpdated: "2024"
+      },
+      {
+        name: "Current Account Balance (2023)",
+        value: "-$1.2 billion",
+        change: "-",
+        isPositive: false, // Negative current account balance generally negative
+        description: "Current account balance for 2023 as reported by IMF.",
+        source: "IMF (https://www.imf.org/en/Publications/WEO)",
+        lastUpdated: "2023"
       }
     ];
-    
+
     return indicators;
-    
-    // In a real application with a database:
-    // const { data, error } = await supabase
-    //   .from('economic_indicators')
-    //   .select('*')
-    //   .eq('type', 'current')
-    //   .order('priority', { ascending: true });
-    //
-    // if (error) throw error;
-    // return data;
-    
   } catch (error) {
-    console.error('Error fetching economic indicators:', error);
+    console.error("Error fetching economic indicators:", error);
     throw error;
   }
 };
+
