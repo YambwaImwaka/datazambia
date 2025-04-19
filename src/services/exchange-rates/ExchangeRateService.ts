@@ -8,45 +8,56 @@ export interface ExchangeRateData {
 }
 
 /**
- * Fetch exchange rates against Zambian Kwacha (ZMW)
+ * Fetch exchange rates against Zambian Kwacha (ZMW) using Finnhub.io API
  */
 export const fetchExchangeRates = async (): Promise<ExchangeRateData> => {
+  const FINNHUB_API_KEY = import.meta.env.VITE_FINNHUB_API_KEY;
+  const base = "ZMW";
+
+  if (!FINNHUB_API_KEY) {
+    throw new Error("Finnhub API key is not set in environment variables.");
+  }
+
   try {
-    // In a real app, this would make an API call to a real exchange rate service
-    // For now, we'll return more accurate mock data based on recent rates
-    
-    // Generate accurate exchange rate data (as of April 2025)
-    return {
-      base: "ZMW",
-      date: new Date().toISOString().split('T')[0],
-      rates: {
-        "USD": 21.43,      // More accurate USD to ZMW rate
-        "EUR": 23.15,      // More accurate EUR to ZMW rate
-        "GBP": 27.31,      // More accurate GBP to ZMW rate
-        "CNY": 2.95,       // More accurate CNY to ZMW rate
-        "ZAR": 1.18,       // More accurate ZAR to ZMW rate
-        "JPY": 0.14,       // More accurate JPY to ZMW rate
-        "AUD": 14.25,      // More accurate AUD to ZMW rate
-        "CAD": 15.78,      // More accurate CAD to ZMW rate
-        "CHF": 23.87,      // More accurate CHF to ZMW rate
-        "SGD": 15.92       // More accurate SGD to ZMW rate
+    // Finnhub provides currency exchange rates as individual pairs
+    // We'll fetch a selection of commonly used currencies vs ZMW
+
+    const currencies = [
+      "USD", "EUR", "GBP", "CNY", "ZAR", "JPY", "AUD", "CAD", "CHF", "SGD"
+    ];
+
+    const rates: Record<string, number> = {};
+
+    // Fetch each currency pair one-by-one
+    // Finnhub endpoint example: https://finnhub.io/api/v1/forex/rates?base=ZMW&token=API_KEY
+    // However, Finnhub’s forex/rates endpoint returns all available pairs keyed by currency symbol
+    const url = `https://finnhub.io/api/v1/forex/rates?base=${base}&token=${FINNHUB_API_KEY}`;
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Failed to fetch exchange rates: ${response.status} - ${errorText}`);
+    }
+
+    const result = await response.json();
+
+    if (!result || !result.rates) {
+      throw new Error("Invalid response format from Finnhub");
+    }
+
+    // Extract the rates for our desired currencies
+    for (const currency of currencies) {
+      if (result.rates[currency]) {
+        rates[currency] = result.rates[currency];
       }
+    }
+
+    return {
+      base,
+      date: new Date().toISOString().split('T')[0],
+      rates
     };
-    
-    // In a real application with an actual API:
-    // const response = await fetch('https://api.exchangerate.host/latest?base=ZMW');
-    // return await response.json();
-    
-    // Or if using a database:
-    // const { data, error } = await supabase
-    //   .from('exchange_rates')
-    //   .select('*')
-    //   .order('date', { ascending: false })
-    //   .limit(1);
-    //
-    // if (error) throw error;
-    // return data[0];
-    
+
   } catch (error) {
     console.error('Error fetching exchange rates:', error);
     throw error;
