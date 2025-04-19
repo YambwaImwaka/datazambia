@@ -8,101 +8,139 @@ export interface EconomicIndicator {
   isPositive: boolean;
   description: string;
   source: string;
+  sourceLink?: string;
   lastUpdated: string;
 }
 
 /**
- * Fetch economic indicators for Zambia
- * Currently returns real latest data statically from JSON provided by user.
- * Future: could extend to fetch from APIs or scrape from source links.
+ * Fetch economic indicators with real data and source links.
+ * The function uses the provided static JSON data and enriches it with 
+ * descriptions and processing such as formatting values and setting positivity.
  */
 export const fetchEconomicIndicators = async (): Promise<EconomicIndicator[]> => {
   try {
-    // Real data mapped from user JSON, with inferred fields and static mock for description & lastUpdated
-    // Note: Links are included in descriptions appended to source for now.
-    const indicators: EconomicIndicator[] = [
+    // Data loaded from user's provided JSON with added descriptions and logic
+    
+    const rawIndicators = [
       {
-        name: "Nominal GDP (2023)",
+        indicator: "Nominal GDP (2023)",
         value: "$29.2 billion",
-        change: "-", // No change info given, default "-"
-        isPositive: true,
-        description: "Nominal Gross Domestic Product for the year 2023.",
-        source: "World Bank (https://data.worldbank.org/country/zambia)",
-        lastUpdated: "2023"
+        source: "World Bank",
+        link: "https://data.worldbank.org/country/zambia"
       },
       {
-        name: "GDP Growth Rate (2023)",
-        value: "4.7%", // converted 0.047 to percent string
-        change: "-", // no change info given
-        isPositive: true,
-        description: "GDP Growth Rate for the year 2023.",
-        source: "IMF (https://www.imf.org/en/Countries/ZMB)",
-        lastUpdated: "2023"
+        indicator: "GDP Growth Rate (2023)",
+        value: "0.047",
+        source: "IMF",
+        link: "https://www.imf.org/en/Countries/ZMB"
       },
       {
-        name: "GDP Per Capita (2023)",
+        indicator: "GDP Per Capita (2023)",
         value: "$1,480",
-        change: "-",
-        isPositive: true,
-        description: "GDP per capita data for 2023.",
-        source: "World Bank (https://data.worldbank.org/indicator/NY.GDP.PCAP.CD)",
-        lastUpdated: "2023"
+        source: "World Bank",
+        link: "https://data.worldbank.org/indicator/NY.GDP.PCAP.CD"
       },
       {
-        name: "Inflation Rate (May 2024)",
-        value: "13.8%", // converted 0.138 to percent string
-        change: "-",
-        isPositive: false, // inflation increasing generally negative, but no trend given
-        description: "Inflation rate measured by ZamStats as of May 2024.",
+        indicator: "Inflation Rate (May 2024)",
+        value: "0.138",
         source: "ZamStats",
-        lastUpdated: "May 2024"
+        link: "ZamStats"
       },
       {
-        name: "Unemployment Rate (2023)",
-        value: "12.4%", // 0.124 percent converted
-        change: "-",
-        isPositive: false, // high unemployment is generally negative
-        description: "Unemployment rate estimated by ILO for 2023.",
-        source: "ILO (https://www.ilo.org/ilostat/)",
-        lastUpdated: "2023"
+        indicator: "Unemployment Rate (2023)",
+        value: "0.124",
+        source: "ILO",
+        link: "https://www.ilo.org/ilostat/"
       },
       {
-        name: "National Debt-to-GDP (2023)",
-        value: "71.3%", // 0.713 converted to percent for readability
-        change: "-",
-        isPositive: false, // higher debt-to-gdp ratio generally negative
-        description: "Debt to GDP ratio for Zambia in 2023.",
+        indicator: "National Debt-to-GDP (2023)",
+        value: "0.713",
         source: "Bank of Zambia",
-        lastUpdated: "2023"
+        link: "Bank of Zambia"
       },
       {
-        name: "Exchange Rate (April 2025)",
+        indicator: "Exchange Rate (April 2025)",
         value: "1 USD = 28.5 ZMW",
-        change: "-",
-        isPositive: true,
-        description: "Exchange rate as of April 2025",
-        source: "Bank of Zambia (https://www.boz.zm/financial-markets/exchange-rates)",
-        lastUpdated: "April 2025"
+        source: "BoZ",
+        link: "https://www.boz.zm/financial-markets/exchange-rates"
       },
       {
-        name: "Foreign Reserves (2024)",
+        indicator: "Foreign Reserves (2024)",
         value: "$3.1 billion",
-        change: "-",
-        isPositive: true,
-        description: "Foreign currency reserves held by the Bank of Zambia for 2024.",
-        source: "Bank of Zambia (https://www.boz.zm/financial-markets/exchange-rates)",
-        lastUpdated: "2024"
+        source: "BoZ",
+        link: "https://www.boz.zm/financial-markets/exchange-rates"
       },
       {
-        name: "Current Account Balance (2023)",
+        indicator: "Current Account Balance (2023)",
         value: "-$1.2 billion",
-        change: "-",
-        isPositive: false, // Negative current account balance generally negative
-        description: "Current account balance for 2023 as reported by IMF.",
-        source: "IMF (https://www.imf.org/en/Publications/WEO)",
-        lastUpdated: "2023"
+        source: "IMF",
+        link: "https://www.imf.org/en/Publications/WEO"
       }
     ];
+
+    // Helper to convert decimal strings to percents if applicable
+    const toPercentString = (val: string) => {
+      const num = parseFloat(val);
+      if (isNaN(num)) return val;
+      return `${(num * 100).toFixed(1)}%`;
+    };
+
+    // Helper to determine if a value change is positive or negative (heuristic)
+    const isPositiveIndicator = (name: string, value: string): boolean => {
+      if (name.includes('Inflation') || name.includes('Unemployment') || name.includes('Debt') || name.includes('Deficit') || name.includes('Current Account')) {
+        // These higher values are generally negative except negative numbers indicating surplus are positive
+        return !(parseFloat(value.replace(/[^-\d.]/g, '')) > 0);
+      }
+      // For other indicators, higher is generally positive
+      return true;
+    };
+
+    // Process and enrich indicators with descriptions, formatted values, positivity etc.
+    const indicators: EconomicIndicator[] = rawIndicators.map(item => {
+      let formattedValue = item.value;
+      if (item.indicator.includes('Rate') || item.indicator.includes('Inflation') || item.indicator.includes('Unemployment') || item.indicator.includes('Debt')) {
+        // Convert decimal to percent string where provided as decimal
+        if (!formattedValue.includes('%')) {
+          formattedValue = toPercentString(formattedValue);
+        }
+      }
+
+      // Description can be generated from the indicator string
+      const descMap: Record<string,string> = {
+        "Nominal GDP (2023)": "Nominal Gross Domestic Product for the year 2023.",
+        "GDP Growth Rate (2023)": "GDP Growth Rate for the year 2023.",
+        "GDP Per Capita (2023)": "GDP per capita data for 2023.",
+        "Inflation Rate (May 2024)": "Inflation rate measured by ZamStats as of May 2024.",
+        "Unemployment Rate (2023)": "Unemployment rate estimated by ILO for 2023.",
+        "National Debt-to-GDP (2023)": "Debt to GDP ratio for Zambia in 2023.",
+        "Exchange Rate (April 2025)": "Exchange rate as of April 2025.",
+        "Foreign Reserves (2024)": "Foreign currency reserves held by the Bank of Zambia for 2024.",
+        "Current Account Balance (2023)": "Current account balance for 2023 as reported by IMF."
+      };
+
+      const lastUpdatedMap: Record<string,string> = {
+        "Nominal GDP (2023)": "2023",
+        "GDP Growth Rate (2023)": "2023",
+        "GDP Per Capita (2023)": "2023",
+        "Inflation Rate (May 2024)": "May 2024",
+        "Unemployment Rate (2023)": "2023",
+        "National Debt-to-GDP (2023)": "2023",
+        "Exchange Rate (April 2025)": "April 2025",
+        "Foreign Reserves (2024)": "2024",
+        "Current Account Balance (2023)": "2023"
+      };
+
+      return {
+        name: item.indicator,
+        value: formattedValue,
+        change: "-", // No change info available
+        isPositive: isPositiveIndicator(item.indicator, formattedValue),
+        description: descMap[item.indicator] || "",
+        source: item.source || "",
+        sourceLink: item.link || "",
+        lastUpdated: lastUpdatedMap[item.indicator] || ""
+      };
+    });
 
     return indicators;
   } catch (error) {
@@ -110,4 +148,3 @@ export const fetchEconomicIndicators = async (): Promise<EconomicIndicator[]> =>
     throw error;
   }
 };
-

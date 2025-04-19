@@ -1,22 +1,39 @@
 
-import { useState, useEffect, useRef } from "react";
-import { ArrowRight, TrendingUp, TrendingDown, LineChart, PieChart, BarChart2 } from "lucide-react";
+import React, { useEffect, useState, useRef } from "react";
+import { ArrowRight, BarChart2, TrendingUp, LineChart, PieChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataCard } from "@/components/ui/DataCard";
-import { keyMetrics } from "@/utils/data";
-import { useInView } from "framer-motion";
-import { motion } from "framer-motion";
+import { motion, useInView } from "framer-motion";
+import { fetchEconomicIndicators, EconomicIndicator } from "@/services/economic/EconomicIndicatorService";
 
 export const KeyMetrics = () => {
+  const [indicators, setIndicators] = useState<EconomicIndicator[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [isVisible, setIsVisible] = useState(false);
+
   const containerRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(containerRef, { once: true, amount: 0.2 });
-  
+  const isInView = useInView(containerRef, { once: true, amount: 0.3 });
+
   useEffect(() => {
     if (isInView) {
       setIsVisible(true);
     }
   }, [isInView]);
+
+  useEffect(() => {
+    const loadIndicators = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchEconomicIndicators();
+        setIndicators(data);
+      } catch (err) {
+        console.error("Failed to load economic indicators:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    loadIndicators();
+  }, []);
 
   const fadeInUpVariants = {
     hidden: { opacity: 0, y: 20 },
@@ -32,12 +49,12 @@ export const KeyMetrics = () => {
   };
 
   return (
-    <section 
-      className="py-24 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950" 
+    <section
+      className="py-24 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-950 relative"
       ref={containerRef}
     >
       <div className="container mx-auto px-4">
-        <motion.div 
+        <motion.div
           className="max-w-4xl mx-auto text-center mb-16"
           initial={{ opacity: 0, y: 20 }}
           animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
@@ -57,43 +74,44 @@ export const KeyMetrics = () => {
             highlighting trends and patterns across different sectors.
           </p>
         </motion.div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {keyMetrics.map((metric, index) => (
-            <motion.div
-              key={metric.id}
-              custom={index}
-              initial="hidden"
-              animate={isVisible ? "visible" : "hidden"}
-              variants={fadeInUpVariants}
-            >
-              <DataCard
-                title={metric.title}
-                value={metric.value}
-                change={metric.change}
-                isPositive={metric.isPositive}
-                description={metric.description}
-                index={index}
-              />
-            </motion.div>
-          ))}
-        </div>
-        
-        <motion.div 
-          className="text-center mt-16"
-          initial={{ opacity: 0, y: 20 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
-        >
-          <Button 
-            variant="outline" 
-            className="h-12 px-8 border-zambia-300 hover:border-zambia-500 text-zambia-600 hover:text-zambia-700 dark:border-zambia-700 dark:text-zambia-400 dark:hover:border-zambia-500 dark:hover:text-zambia-300 rounded-full shadow-md hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1"
-          >
-            View All Metrics
-            <ArrowRight size={18} className="ml-2" />
-          </Button>
-        </motion.div>
-        
+
+        {loading ? (
+          <p className="text-center text-gray-500 dark:text-gray-400">Loading key metrics...</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {indicators.map((indicator, index) => (
+              <motion.div
+                key={indicator.name}
+                custom={index}
+                initial="hidden"
+                animate={isVisible ? "visible" : "hidden"}
+                variants={fadeInUpVariants}
+              >
+                <DataCard
+                  title={indicator.name}
+                  value={indicator.value}
+                  change={indicator.change}
+                  isPositive={indicator.isPositive}
+                  description={indicator.description}
+                  index={index}
+                  source={indicator.sourceLink ? (
+                    <a
+                      href={indicator.sourceLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:text-zambia-700"
+                      onClick={e => e.stopPropagation()}
+                    >
+                      {indicator.source}
+                    </a>
+                  ) : indicator.source}
+                  lastUpdated={indicator.lastUpdated}
+                />
+              </motion.div>
+            ))}
+          </div>
+        )}
+
         {/* Visual elements */}
         <div className="absolute left-0 opacity-10 dark:opacity-5 pointer-events-none">
           <TrendingUp className="h-64 w-64 text-zambia-500 -rotate-12" />
