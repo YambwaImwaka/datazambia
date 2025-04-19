@@ -1,4 +1,3 @@
-
 import { supabase } from "@/integrations/supabase/client";
 
 export interface ExchangeRateData {
@@ -8,31 +7,20 @@ export interface ExchangeRateData {
 }
 
 /**
- * Fetch exchange rates against Zambian Kwacha (ZMW) using Finnhub.io API
+ * Fetch exchange rates against Zambian Kwacha (ZMW) using ExchangeRate-API
  */
 export const fetchExchangeRates = async (): Promise<ExchangeRateData> => {
-  // Directly hardcoding the API key as requested by the user
-  const FINNHUB_API_KEY = "cvlk1npr01qj3umdsk00cvlk1npr01qj3umdsk0g";
+  // Use the provided API key for ExchangeRate-API.com
+  const API_KEY = "ecaef261eb208cf1dbcbfd59";
   const base = "ZMW";
 
-  if (!FINNHUB_API_KEY) {
-    throw new Error("Finnhub API key is not set in environment variables.");
+  if (!API_KEY) {
+    throw new Error("Exchange Rate API key is not set.");
   }
 
   try {
-    // Finnhub provides currency exchange rates as individual pairs
-    // We'll fetch a selection of commonly used currencies vs ZMW
-
-    const currencies = [
-      "USD", "EUR", "GBP", "CNY", "ZAR", "JPY", "AUD", "CAD", "CHF", "SGD"
-    ];
-
-    const rates: Record<string, number> = {};
-
-    // Fetch each currency pair one-by-one
-    // Finnhub endpoint example: https://finnhub.io/api/v1/forex/rates?base=ZMW&token=API_KEY
-    // However, Finnhub’s forex/rates endpoint returns all available pairs keyed by currency symbol
-    const url = `https://finnhub.io/api/v1/forex/rates?base=${base}&token=${FINNHUB_API_KEY}`;
+    // Example URL: https://v6.exchangerate-api.com/v6/ecaef261eb208cf1dbcbfd59/latest/ZMW
+    const url = `https://v6.exchangerate-api.com/v6/${API_KEY}/latest/${base}`;
     const response = await fetch(url);
 
     if (!response.ok) {
@@ -42,26 +30,30 @@ export const fetchExchangeRates = async (): Promise<ExchangeRateData> => {
 
     const result = await response.json();
 
-    if (!result || !result.rates) {
-      throw new Error("Invalid response format from Finnhub");
+    if (result.result !== "success" || !result.conversion_rates) {
+      throw new Error("Invalid response format from ExchangeRate-API");
     }
 
-    // Extract the rates for our desired currencies
+    // Use specified currencies to keep consistent
+    const currencies = [
+      "USD", "EUR", "GBP", "CNY", "ZAR", "JPY", "AUD", "CAD", "CHF", "SGD"
+    ];
+
+    const rates: Record<string, number> = {};
+
     for (const currency of currencies) {
-      if (result.rates[currency]) {
-        rates[currency] = result.rates[currency];
+      if (result.conversion_rates[currency]) {
+        rates[currency] = result.conversion_rates[currency];
       }
     }
 
     return {
       base,
-      date: new Date().toISOString().split('T')[0],
+      date: result.time_last_update_utc || new Date().toISOString().split('T')[0],
       rates
     };
-
   } catch (error) {
     console.error('Error fetching exchange rates:', error);
     throw error;
   }
 };
-
