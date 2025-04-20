@@ -8,37 +8,24 @@ import KeyMetrics from "@/components/home/KeyMetrics";
 import FeaturedProvinces from "@/components/home/FeaturedProvinces";
 import LineChart from "@/components/charts/LineChart";
 import WeatherSection from "@/components/home/WeatherSection";
-import { historicalData, provinces } from "@/utils/data";
+import { provinces } from "@/utils/data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
-import { fetchDevelopmentIndicator, WORLD_BANK_INDICATORS } from "@/services/DataService";
-import { useQuery } from "@tanstack/react-query";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("overview");
-  
-  const localGdpData = historicalData.gdp.map(item => ({
-    year: item.year,
-    value: item.value
-  }));
-  
-  const localPopulationData = historicalData.population.map(item => ({
-    year: item.year,
-    value: item.value
-  }));
-  
   const [isDataLoading, setIsDataLoading] = useState(true);
-  
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsDataLoading(false);
     }, 800);
-    
+
     return () => clearTimeout(timer);
   }, []);
-  
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -46,16 +33,16 @@ const Index = () => {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      
+
       <main className="flex-grow">
         <Hero />
-        
+
         <WeatherSection />
-        
+
         <KeyMetrics />
-        
+
         <FeaturedProvinces />
-        
+
         <section className="py-20 bg-white dark:bg-gray-900">
           <div className="container mx-auto px-4">
             <div className="max-w-4xl mx-auto text-center mb-12">
@@ -66,99 +53,47 @@ const Index = () => {
                 Explore Zambia's development through various indicators and metrics
               </p>
             </div>
-            
-            <Tabs 
-              defaultValue="overview" 
-              className="w-full" 
+
+            <Tabs
+              defaultValue="overview"
+              className="w-full"
               onValueChange={setActiveTab}
             >
               <div className="flex justify-center mb-8">
                 <TabsList className="bg-gray-100 dark:bg-gray-800 p-1">
-                  <TabsTrigger 
-                    value="overview" 
+                  <TabsTrigger
+                    value="overview"
                     className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700"
                   >
                     Overview
                   </TabsTrigger>
-                  <TabsTrigger 
-                    value="economic" 
+                  <TabsTrigger
+                    value="economic"
                     className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700"
                   >
                     Economic
                   </TabsTrigger>
-                  <TabsTrigger 
-                    value="social" 
+                  <TabsTrigger
+                    value="social"
                     className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700"
                   >
                     Social
                   </TabsTrigger>
-                  <TabsTrigger 
-                    value="environmental" 
+                  <TabsTrigger
+                    value="environmental"
                     className="data-[state=active]:bg-white dark:data-[state=active]:bg-gray-700"
                   >
                     Environmental
                   </TabsTrigger>
                 </TabsList>
               </div>
-              
+
               <TabsContent value="overview" className="mt-0">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                  <Card className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-subtle border border-gray-200 dark:border-gray-700">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                      Population Growth
-                    </h3>
-                    {isDataLoading ? (
-                      <Skeleton className="w-full h-[300px]" />
-                    ) : (
-                      <LineChart
-                        data={localPopulationData}
-                        lines={[
-                          { dataKey: "value", name: "Annual Growth (%)", color: "#0ea5e9" }
-                        ]}
-                        xAxisKey="year"
-                        height={300}
-                      />
-                    )}
-                    <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                      Source: Zambia Statistics Agency
-                    </div>
-                  </Card>
-                  
-                  <Card className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-subtle border border-gray-200 dark:border-gray-700">
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
-                      GDP Per Capita
-                    </h3>
-                    {isDataLoading ? (
-                      <Skeleton className="w-full h-[300px]" />
-                    ) : (
-                      <LineChart
-                        data={localGdpData}
-                        lines={[
-                          { dataKey: "value", name: "USD", color: "#10b981" }
-                        ]}
-                        xAxisKey="year"
-                        height={300}
-                      />
-                    )}
-                    <div className="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                      Source: Zambia Statistics Agency
-                    </div>
-                  </Card>
-                </div>
-                
-                <div className="mt-8 text-center">
-                  <Link to="/explore">
-                    <Button
-                      variant="outline" 
-                      className="h-11 px-6 border-zambia-300 hover:border-zambia-500 text-zambia-600 hover:text-zambia-700 rounded-full shadow-subtle hover:shadow-elevated transform transition-all duration-300 hover:-translate-y-1"
-                    >
-                      Explore More Data
-                      <ArrowRight size={16} className="ml-2" />
-                    </Button>
-                  </Link>
+                <div className="text-center text-gray-500 dark:text-gray-400 py-16">
+                  Data visualization coming soon.
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="economic" className="mt-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   <Card className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
@@ -176,7 +111,7 @@ const Index = () => {
                       <ChevronRight size={16} className="ml-1" />
                     </Link>
                   </Card>
-                  
+
                   <Card className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center mb-4">
                       <Globe className="h-6 w-6 text-zambia-500 mr-2" />
@@ -192,7 +127,7 @@ const Index = () => {
                       <ChevronRight size={16} className="ml-1" />
                     </Link>
                   </Card>
-                  
+
                   <Card className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
                     <div className="flex items-center mb-4">
                       <Database className="h-6 w-6 text-zambia-500 mr-2" />
@@ -210,7 +145,7 @@ const Index = () => {
                   </Card>
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="social" className="mt-0">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   <Card className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
@@ -242,7 +177,7 @@ const Index = () => {
                       </Link>
                     </div>
                   </Card>
-                  
+
                   <Card className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                       Healthcare Indicators
@@ -274,7 +209,7 @@ const Index = () => {
                   </Card>
                 </div>
               </TabsContent>
-              
+
               <TabsContent value="environmental" className="mt-0">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                   <Card className="col-span-1 lg:col-span-2 bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
@@ -308,7 +243,7 @@ const Index = () => {
                       </div>
                     </div>
                   </Card>
-                  
+
                   <Card className="bg-white dark:bg-gray-800 rounded-xl p-6 shadow-md border border-gray-200 dark:border-gray-700">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
                       Sustainable Development
@@ -343,7 +278,7 @@ const Index = () => {
             </Tabs>
           </div>
         </section>
-        
+
         <section className="py-16 bg-gray-50 dark:bg-gray-800">
           <div className="container mx-auto px-4">
             <div className="max-w-6xl mx-auto">
@@ -357,7 +292,7 @@ const Index = () => {
                   </p>
                 </div>
                 <Link to="/provinces">
-                  <Button 
+                  <Button
                     className="h-11 px-6 bg-zambia-600 hover:bg-zambia-700 text-white rounded-full shadow-subtle hover:shadow-elevated transform transition-all duration-300 hover:-translate-y-1"
                   >
                     View All Provinces
@@ -365,14 +300,14 @@ const Index = () => {
                   </Button>
                 </Link>
               </div>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {provinces.slice(0, 4).map(province => (
                   <Link key={province.id} to={`/province/${province.id}`}>
                     <Card className="h-full overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
                       <div className="relative h-48">
-                        <img 
-                          src={province.image} 
+                        <img
+                          src={province.image}
                           alt={province.name}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />
@@ -382,14 +317,14 @@ const Index = () => {
                           <p className="text-sm text-white/80">Capital: {province.capital}</p>
                         </div>
                       </div>
-                      
+
                       <CardContent className="p-4">
                         <div className="grid grid-cols-2 gap-2">
                           <div className="text-center p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
                             <p className="text-xs text-gray-500 dark:text-gray-400">Population</p>
                             <p className="text-sm font-bold text-gray-900 dark:text-white">{province.population}M</p>
                           </div>
-                          
+
                           <div className="text-center p-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
                             <p className="text-xs text-gray-500 dark:text-gray-400">GDP</p>
                             <p className="text-sm font-bold text-gray-900 dark:text-white">${province.gdp}B</p>
@@ -403,7 +338,7 @@ const Index = () => {
             </div>
           </div>
         </section>
-        
+
         <section className="py-20 bg-gradient-to-r from-zambia-600 to-blue-700 text-white">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl md:text-4xl font-bold mb-6">
@@ -413,13 +348,13 @@ const Index = () => {
               Dive into comprehensive datasets, interactive visualizations, and insightful analyses
             </p>
             <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-              <Link 
+              <Link
                 to="/explore"
                 className="inline-flex items-center justify-center h-12 px-8 bg-white text-zambia-600 font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 Start Exploring
               </Link>
-              <Link 
+              <Link
                 to="/about"
                 className="inline-flex items-center justify-center h-12 px-8 bg-transparent border-2 border-white text-white font-medium rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
               >
@@ -429,7 +364,7 @@ const Index = () => {
           </div>
         </section>
       </main>
-      
+
       <Footer />
     </div>
   );

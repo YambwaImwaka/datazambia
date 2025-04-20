@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState, useRef } from "react";
-import { ArrowRight, BarChart2, TrendingUp, LineChart, PieChart } from "lucide-react";
+import { ArrowRight, BarChart2, TrendingUp, LineChart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DataCard } from "@/components/ui/DataCard";
 import { motion, useInView } from "framer-motion";
@@ -94,17 +94,8 @@ export const KeyMetrics = () => {
                   isPositive={indicator.isPositive}
                   description={indicator.description}
                   index={index}
-                  source={indicator.sourceLink ? (
-                    <a
-                      href={indicator.sourceLink}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="underline hover:text-zambia-700"
-                      onClick={e => e.stopPropagation()}
-                    >
-                      {indicator.source}
-                    </a>
-                  ) : indicator.source}
+                  source={indicator.source}
+                  sourceLink={indicator.sourceLink}
                   lastUpdated={indicator.lastUpdated}
                 />
               </motion.div>

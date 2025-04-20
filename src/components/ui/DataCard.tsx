@@ -16,6 +16,7 @@ interface DataCardProps {
   icon?: ReactElement;
   lastUpdated?: string;
   source?: string;
+  sourceLink?: string;
 }
 
 export const DataCard = ({ 
@@ -28,7 +29,8 @@ export const DataCard = ({
   index = 0,
   icon,
   lastUpdated,
-  source
+  source,
+  sourceLink
 }: DataCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -102,7 +104,16 @@ export const DataCard = ({
           {(lastUpdated || source) && (
             <div className="mt-3 pt-2 border-t border-gray-100 dark:border-gray-700 text-xs text-gray-500 dark:text-gray-400">
               {lastUpdated && <p>Last updated: {lastUpdated}</p>}
-              {source && <p className="mt-0.5">Source: {source}</p>}
+              {source && sourceLink ? (
+                <p className="mt-0.5">
+                  Source:{" "}
+                  <a href={sourceLink} target="_blank" rel="noopener noreferrer" className="underline hover:text-zambia-700">
+                    {source}
+                  </a>
+                </p>
+              ) : (
+                source && <p className="mt-0.5">Source: {source}</p>
+              )}
             </div>
           )}
         </div>
