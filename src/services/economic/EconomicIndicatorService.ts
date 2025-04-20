@@ -16,8 +16,7 @@ export interface EconomicIndicator {
  */
 export const fetchEconomicIndicators = async (): Promise<EconomicIndicator[]> => {
   try {
-    // Full updated data (your large JSON) embedded here
-    // For convenience, this is static data in this service currently, but could be fetched via API later.
+    // Updated rawData replaced with the latest JSON dataset as provided by user
     const rawData = {
       "Macroeconomic_Overview": {
         "Nominal_GDP_2023": {
