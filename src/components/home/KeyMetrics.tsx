@@ -1,7 +1,6 @@
 
 import React, { useEffect, useState, useRef } from "react";
-import { ArrowRight, BarChart2, TrendingUp, LineChart } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { BarChart2, TrendingUp, LineChart } from "lucide-react";
 import { DataCard } from "@/components/ui/DataCard";
 import { motion, useInView } from "framer-motion";
 import { fetchEconomicIndicators, EconomicIndicator } from "@/services/economic/EconomicIndicatorService";
@@ -89,7 +88,7 @@ export const KeyMetrics = () => {
               >
                 <DataCard
                   title={indicator.name}
-                  value={indicator.value}
+                  value={typeof indicator.value === 'string' ? indicator.value : String(indicator.value)}
                   change={indicator.change}
                   isPositive={indicator.isPositive}
                   description={indicator.description}
@@ -116,3 +115,4 @@ export const KeyMetrics = () => {
 };
 
 export default KeyMetrics;
+
