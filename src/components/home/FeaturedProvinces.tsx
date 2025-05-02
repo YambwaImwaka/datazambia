@@ -1,7 +1,6 @@
-
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, MapPin, Users, DollarSign, Building, Tree } from "lucide-react";
+import { ArrowRight, MapPin, Users, DollarSign, Building, Trees } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { provinces } from "@/utils/data";

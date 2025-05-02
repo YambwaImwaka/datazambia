@@ -3,7 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Mail, CheckCircle, MapPin, Tree } from "lucide-react";
+import { Mail, CheckCircle, MapPin, Trees } from "lucide-react";
 import { toast } from "sonner";
 
 const EmailSignup = () => {
@@ -81,7 +81,7 @@ const EmailSignup = () => {
             animate={{ y: [0, -20, 0], opacity: [0.2, 0.6, 0.2] }}
             transition={{ duration: 6, repeat: Infinity, repeatType: "reverse", delay: 1 }}
           >
-            <Tree size={40} className="text-green-500" />
+            <Trees size={40} className="text-green-500" />
           </motion.div>
         </div>
         
@@ -204,7 +204,7 @@ const EmailSignup = () => {
           
           <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 rounded-lg shadow-sm border border-gray-100 dark:border-gray-700 flex items-start">
             <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full mr-3">
-              <Tree size={18} className="text-green-600 dark:text-green-400" />
+              <Trees size={18} className="text-green-600 dark:text-green-400" />
             </div>
             <div>
               <h3 className="text-sm font-medium text-gray-900 dark:text-white mb-1">Development Updates</h3>
