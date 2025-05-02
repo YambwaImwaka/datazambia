@@ -40,97 +40,49 @@ const Education: React.FC = () => {
 
   // Transform literacy data for line chart
   const literacyData = [
-    {
-      name: "2020",
-      value: edStats.Literacy_Access.Adult_Literacy_Rate_percent["2020"],
-    },
-    {
-      name: "2021",
-      value: edStats.Literacy_Access.Adult_Literacy_Rate_percent["2021"],
-    },
-    {
-      name: "2022",
-      value: edStats.Literacy_Access.Adult_Literacy_Rate_percent["2022"],
-    },
-    {
-      name: "2023",
-      value: edStats.Literacy_Access.Adult_Literacy_Rate_percent["2023"],
-    },
-    {
-      name: "2024",
-      value: parseFloat(edStats.Literacy_Access.Adult_Literacy_Rate_percent["2024"].replace("*", "")),
+    { name: "2020", value: edStats.Literacy_Access.Adult_Literacy_Rate_percent["2020"] },
+    { name: "2021", value: edStats.Literacy_Access.Adult_Literacy_Rate_percent["2021"] },
+    { name: "2022", value: edStats.Literacy_Access.Adult_Literacy_Rate_percent["2022"] },
+    { name: "2023", value: edStats.Literacy_Access.Adult_Literacy_Rate_percent["2023"] },
+    { 
+      name: "2024", 
+      value: parseFloat(edStats.Literacy_Access.Adult_Literacy_Rate_percent["2024"].replace("*", ""))
     },
   ];
 
   // Transform primary enrollment data for line chart
   const primaryEnrollmentData = [
-    {
-      name: "2020",
-      value: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2020"],
-    },
-    {
-      name: "2021",
-      value: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2021"],
-    },
-    {
-      name: "2022",
-      value: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2022"],
-    },
-    {
-      name: "2023",
-      value: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2023"],
-    },
-    {
-      name: "2024",
-      value: parseFloat(edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2024"].replace("*", "")),
+    { name: "2020", value: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2020"] },
+    { name: "2021", value: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2021"] },
+    { name: "2022", value: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2022"] },
+    { name: "2023", value: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2023"] },
+    { 
+      name: "2024", 
+      value: parseFloat(edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2024"].replace("*", ""))
     },
   ];
 
   // Transform secondary enrollment data for line chart
   const secondaryEnrollmentData = [
-    {
-      name: "2020",
-      value: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2020"],
-    },
-    {
-      name: "2021",
-      value: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2021"],
-    },
-    {
-      name: "2022",
-      value: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2022"],
-    },
-    {
-      name: "2023",
-      value: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2023"],
-    },
-    {
-      name: "2024",
-      value: parseFloat(edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2024"].replace("*", "")),
+    { name: "2020", value: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2020"] },
+    { name: "2021", value: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2021"] },
+    { name: "2022", value: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2022"] },
+    { name: "2023", value: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2023"] },
+    { 
+      name: "2024", 
+      value: parseFloat(edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2024"].replace("*", ""))
     },
   ];
 
   // Transform tertiary enrollment data for line chart
   const tertiaryEnrollmentData = [
-    {
-      name: "2020",
-      value: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2020"],
-    },
-    {
-      name: "2021",
-      value: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2021"],
-    },
-    {
-      name: "2022",
-      value: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2022"],
-    },
-    {
-      name: "2023",
-      value: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2023"],
-    },
-    {
-      name: "2024",
-      value: parseFloat(edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2024"].replace("*", "")),
+    { name: "2020", value: edStats.Literacy_Access.Tertiary_Enrollment_Rate_percent["2020"] },
+    { name: "2021", value: edStats.Literacy_Access.Tertiary_Enrollment_Rate_percent["2021"] },
+    { name: "2022", value: edStats.Literacy_Access.Tertiary_Enrollment_Rate_percent["2022"] },
+    { name: "2023", value: edStats.Literacy_Access.Tertiary_Enrollment_Rate_percent["2023"] },
+    { 
+      name: "2024", 
+      value: parseFloat(edStats.Literacy_Access.Tertiary_Enrollment_Rate_percent["2024"].replace("*", ""))
     },
   ];
 
@@ -140,31 +92,31 @@ const Education: React.FC = () => {
       name: "2020",
       primary: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2020"],
       secondary: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2020"],
-      tertiary: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2020"],
+      tertiary: edStats.Literacy_Access.Tertiary_Enrollment_Rate_percent["2020"],
     },
     {
       name: "2021",
       primary: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2021"],
       secondary: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2021"],
-      tertiary: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2021"],
+      tertiary: edStats.Literacy_Access.Tertiary_Enrollment_Rate_percent["2021"],
     },
     {
       name: "2022",
       primary: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2022"],
       secondary: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2022"],
-      tertiary: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2022"],
+      tertiary: edStats.Literacy_Access.Tertiary_Enrollment_Rate_percent["2022"],
     },
     {
       name: "2023",
       primary: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2023"],
       secondary: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2023"],
-      tertiary: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2023"],
+      tertiary: edStats.Literacy_Access.Tertiary_Enrollment_Rate_percent["2023"],
     },
     {
       name: "2024",
       primary: parseFloat(edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2024"].replace("*", "")),
       secondary: parseFloat(edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2024"].replace("*", "")),
-      tertiary: parseFloat(edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2024"].replace("*", "")),
+      tertiary: parseFloat(edStats.Literacy_Access.Tertiary_Enrollment_Rate_percent["2024"].replace("*", "")),
     },
   ];
 
@@ -251,7 +203,7 @@ const Education: React.FC = () => {
                   </CardHeader>
                   <CardContent className="pt-4">
                     <div className="text-2xl font-bold">
-                      1:{edStats.Teachers_Training.Primary_Teacher_Student_Ratio["2024"]}
+                      1:{edStats.Teachers_Training.Teacher_Student_Ratio_Primary["2024"]}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       Primary school ratio in 2024
@@ -336,12 +288,12 @@ const Education: React.FC = () => {
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-blue-500 h-2.5 rounded-full"
-                          style={{ width: `${edStats.Literacy_Access.Urban_Literacy_Rate_percent["2024"]}%` }}
+                          style={{ width: `${edStats.Regional_Differences.Urban_Literacy_Rate["2024"]}%` }}
                         ></div>
                       </div>
                       <div className="flex justify-between text-xs mt-1">
                         <span>0%</span>
-                        <span className="font-medium">{edStats.Literacy_Access.Urban_Literacy_Rate_percent["2024"]}%</span>
+                        <span className="font-medium">{edStats.Regional_Differences.Urban_Literacy_Rate["2024"]}%</span>
                         <span>100%</span>
                       </div>
                     </div>
@@ -351,12 +303,12 @@ const Education: React.FC = () => {
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-green-500 h-2.5 rounded-full"
-                          style={{ width: `${edStats.Literacy_Access.Rural_Literacy_Rate_percent["2024"]}%` }}
+                          style={{ width: `${edStats.Regional_Differences.Rural_Literacy_Rate["2024"]}%` }}
                         ></div>
                       </div>
                       <div className="flex justify-between text-xs mt-1">
                         <span>0%</span>
-                        <span className="font-medium">{edStats.Literacy_Access.Rural_Literacy_Rate_percent["2024"]}%</span>
+                        <span className="font-medium">{edStats.Regional_Differences.Rural_Literacy_Rate["2024"]}%</span>
                         <span>100%</span>
                       </div>
                     </div>
@@ -364,8 +316,8 @@ const Education: React.FC = () => {
                     <div className="pt-4">
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         The urban-rural literacy gap stands at {(
-                          edStats.Literacy_Access.Urban_Literacy_Rate_percent["2024"] -
-                          edStats.Literacy_Access.Rural_Literacy_Rate_percent["2024"]
+                          edStats.Regional_Differences.Urban_Literacy_Rate["2024"] -
+                          edStats.Regional_Differences.Rural_Literacy_Rate["2024"]
                         ).toFixed(1)}%, highlighting regional educational disparities.
                       </p>
                     </div>
@@ -384,12 +336,12 @@ const Education: React.FC = () => {
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-blue-500 h-2.5 rounded-full"
-                          style={{ width: `${edStats.Gender_Parity.Male_Literacy_Rate_percent["2024"]}%` }}
+                          style={{ width: `${edStats.Gender_Statistics.Male_Literacy_Rate["2024"]}%` }}
                         ></div>
                       </div>
                       <div className="flex justify-between text-xs mt-1">
                         <span>0%</span>
-                        <span className="font-medium">{edStats.Gender_Parity.Male_Literacy_Rate_percent["2024"]}%</span>
+                        <span className="font-medium">{edStats.Gender_Statistics.Male_Literacy_Rate["2024"]}%</span>
                         <span>100%</span>
                       </div>
                     </div>
@@ -399,12 +351,12 @@ const Education: React.FC = () => {
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-purple-500 h-2.5 rounded-full"
-                          style={{ width: `${edStats.Gender_Parity.Female_Literacy_Rate_percent["2024"]}%` }}
+                          style={{ width: `${edStats.Gender_Statistics.Female_Literacy_Rate["2024"]}%` }}
                         ></div>
                       </div>
                       <div className="flex justify-between text-xs mt-1">
                         <span>0%</span>
-                        <span className="font-medium">{edStats.Gender_Parity.Female_Literacy_Rate_percent["2024"]}%</span>
+                        <span className="font-medium">{edStats.Gender_Statistics.Female_Literacy_Rate["2024"]}%</span>
                         <span>100%</span>
                       </div>
                     </div>
@@ -412,8 +364,8 @@ const Education: React.FC = () => {
                     <div className="pt-4">
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         The gender literacy gap stands at {(
-                          edStats.Gender_Parity.Male_Literacy_Rate_percent["2024"] -
-                          edStats.Gender_Parity.Female_Literacy_Rate_percent["2024"]
+                          edStats.Gender_Statistics.Male_Literacy_Rate["2024"] -
+                          edStats.Gender_Statistics.Female_Literacy_Rate["2024"]
                         ).toFixed(1)}%, with ongoing initiatives to close this gap.
                       </p>
                     </div>
@@ -478,12 +430,12 @@ const Education: React.FC = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <h3 className="text-sm font-medium">Primary School Gender Parity Index</h3>
-                      <span className="text-sm font-medium">{edStats.Gender_Parity.Primary_School_Gender_Parity_Index["2024"]}</span>
+                      <span className="text-sm font-medium">{edStats.Gender_Statistics.Primary_Gender_Parity_Index["2024"]}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                       <div
                         className="bg-blue-500 h-2.5 rounded-full"
-                        style={{ width: `${(edStats.Gender_Parity.Primary_School_Gender_Parity_Index["2024"] / 2) * 100}%` }}
+                        style={{ width: `${(edStats.Gender_Statistics.Primary_Gender_Parity_Index["2024"] / 2) * 100}%` }}
                       ></div>
                     </div>
                     <div className="flex justify-between text-xs mt-1">
@@ -496,12 +448,12 @@ const Education: React.FC = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <h3 className="text-sm font-medium">Secondary School Gender Parity Index</h3>
-                      <span className="text-sm font-medium">{edStats.Gender_Parity.Secondary_School_Gender_Parity_Index["2024"]}</span>
+                      <span className="text-sm font-medium">{edStats.Gender_Statistics.Secondary_Gender_Parity_Index["2024"]}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                       <div
                         className="bg-green-500 h-2.5 rounded-full"
-                        style={{ width: `${(edStats.Gender_Parity.Secondary_School_Gender_Parity_Index["2024"] / 2) * 100}%` }}
+                        style={{ width: `${(edStats.Gender_Statistics.Secondary_Gender_Parity_Index["2024"] / 2) * 100}%` }}
                       ></div>
                     </div>
                     <div className="flex justify-between text-xs mt-1">
@@ -514,12 +466,12 @@ const Education: React.FC = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <h3 className="text-sm font-medium">Tertiary Education Gender Parity Index</h3>
-                      <span className="text-sm font-medium">{edStats.Gender_Parity.Tertiary_Education_Gender_Parity_Index["2024"]}</span>
+                      <span className="text-sm font-medium">{edStats.Gender_Statistics.Tertiary_Gender_Parity_Index["2024"]}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                       <div
                         className="bg-purple-500 h-2.5 rounded-full"
-                        style={{ width: `${(edStats.Gender_Parity.Tertiary_Education_Gender_Parity_Index["2024"] / 2) * 100}%` }}
+                        style={{ width: `${(edStats.Gender_Statistics.Tertiary_Gender_Parity_Index["2024"] / 2) * 100}%` }}
                       ></div>
                     </div>
                     <div className="flex justify-between text-xs mt-1">
@@ -552,7 +504,7 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Primary Schools</h3>
-                        <span className="text-sm font-medium">{edStats.Educational_Infrastructure.Number_of_Primary_Schools["2024"].toLocaleString()}</span>
+                        <span className="text-sm font-medium">{edStats.Infrastructure.Number_of_Primary_Schools["2024"].toLocaleString()}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
@@ -565,12 +517,12 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Secondary Schools</h3>
-                        <span className="text-sm font-medium">{edStats.Educational_Infrastructure.Number_of_Secondary_Schools["2024"].toLocaleString()}</span>
+                        <span className="text-sm font-medium">{edStats.Infrastructure.Number_of_Secondary_Schools["2024"].toLocaleString()}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-green-500 h-2.5 rounded-full"
-                          style={{ width: `${(edStats.Educational_Infrastructure.Number_of_Secondary_Schools["2024"] / edStats.Educational_Infrastructure.Number_of_Primary_Schools["2024"]) * 100}%` }}
+                          style={{ width: `${(edStats.Infrastructure.Number_of_Secondary_Schools["2024"] / edStats.Infrastructure.Number_of_Primary_Schools["2024"]) * 100}%` }}
                         ></div>
                       </div>
                     </div>
@@ -578,12 +530,12 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Universities & Colleges</h3>
-                        <span className="text-sm font-medium">{edStats.Educational_Infrastructure.Number_of_Universities_and_Colleges["2024"]}</span>
+                        <span className="text-sm font-medium">{edStats.Infrastructure.Number_of_Universities_and_Colleges["2024"]}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-purple-500 h-2.5 rounded-full"
-                          style={{ width: `${(edStats.Educational_Infrastructure.Number_of_Universities_and_Colleges["2024"] / edStats.Educational_Infrastructure.Number_of_Primary_Schools["2024"]) * 100}%` }}
+                          style={{ width: `${(edStats.Infrastructure.Number_of_Universities_and_Colleges["2024"] / edStats.Infrastructure.Number_of_Primary_Schools["2024"]) * 100}%` }}
                         ></div>
                       </div>
                     </div>
@@ -591,12 +543,12 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Vocational Training Centers</h3>
-                        <span className="text-sm font-medium">{edStats.Educational_Infrastructure.Number_of_Vocational_Training_Centers["2024"]}</span>
+                        <span className="text-sm font-medium">{edStats.Infrastructure.Number_of_Vocational_Training_Centers["2024"]}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-yellow-500 h-2.5 rounded-full"
-                          style={{ width: `${(edStats.Educational_Infrastructure.Number_of_Vocational_Training_Centers["2024"] / edStats.Educational_Infrastructure.Number_of_Primary_Schools["2024"]) * 100}%` }}
+                          style={{ width: `${(edStats.Infrastructure.Number_of_Vocational_Training_Centers["2024"] / edStats.Infrastructure.Number_of_Primary_Schools["2024"]) * 100}%` }}
                         ></div>
                       </div>
                     </div>
@@ -613,12 +565,12 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Primary Teacher-Student Ratio</h3>
-                        <span className="text-sm font-medium">1:{edStats.Teachers_Training.Primary_Teacher_Student_Ratio["2024"]}</span>
+                        <span className="text-sm font-medium">1:{edStats.Teachers_Training.Teacher_Student_Ratio_Primary["2024"]}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-blue-500 h-2.5 rounded-full"
-                          style={{ width: `${(1 / edStats.Teachers_Training.Primary_Teacher_Student_Ratio["2024"]) * 1000}%` }}
+                          style={{ width: `${(1 / edStats.Teachers_Training.Teacher_Student_Ratio_Primary["2024"]) * 1000}%` }}
                         ></div>
                       </div>
                     </div>
@@ -626,12 +578,12 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Secondary Teacher-Student Ratio</h3>
-                        <span className="text-sm font-medium">1:{edStats.Teachers_Training.Secondary_Teacher_Student_Ratio["2024"]}</span>
+                        <span className="text-sm font-medium">1:{edStats.Teachers_Training.Teacher_Student_Ratio_Secondary["2024"]}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-green-500 h-2.5 rounded-full"
-                          style={{ width: `${(1 / edStats.Teachers_Training.Secondary_Teacher_Student_Ratio["2024"]) * 1000}%` }}
+                          style={{ width: `${(1 / edStats.Teachers_Training.Teacher_Student_Ratio_Secondary["2024"]) * 1000}%` }}
                         ></div>
                       </div>
                     </div>
@@ -675,12 +627,12 @@ const Education: React.FC = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <h3 className="text-sm font-medium">Education Budget as % of GDP</h3>
-                      <span className="text-sm font-medium">{edStats.Education_Funding.Education_Budget_as_Percent_of_GDP["2024"]}%</span>
+                      <span className="text-sm font-medium">{edStats.Funding.Education_Budget_as_Percent_of_GDP["2024"]}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                       <div
                         className="bg-blue-500 h-2.5 rounded-full"
-                        style={{ width: `${edStats.Education_Funding.Education_Budget_as_Percent_of_GDP["2024"] * 10}%` }}
+                        style={{ width: `${edStats.Funding.Education_Budget_as_Percent_of_GDP["2024"] * 10}%` }}
                       ></div>
                     </div>
                   </div>
@@ -688,12 +640,12 @@ const Education: React.FC = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <h3 className="text-sm font-medium">Education Budget as % of National Budget</h3>
-                      <span className="text-sm font-medium">{edStats.Education_Funding.Education_Budget_as_Percent_of_National_Budget["2024"]}%</span>
+                      <span className="text-sm font-medium">{edStats.Funding.Education_Budget_as_Percent_of_National_Budget["2024"]}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                       <div
                         className="bg-green-500 h-2.5 rounded-full"
-                        style={{ width: `${edStats.Education_Funding.Education_Budget_as_Percent_of_National_Budget["2024"]}%` }}
+                        style={{ width: `${edStats.Funding.Education_Budget_as_Percent_of_National_Budget["2024"]}%` }}
                       ></div>
                     </div>
                   </div>
