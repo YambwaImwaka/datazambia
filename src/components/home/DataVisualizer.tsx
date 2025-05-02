@@ -76,41 +76,43 @@ export const DataVisualizer = () => {
           </CardHeader>
           <CardContent className="p-6">
             <div className="h-[400px]">
-              <TabsContent value="population" className="m-0 h-full">
-                <LineChart 
-                  data={populationData}
-                  xAxisKey="name"
-                  lines={[{ dataKey: "value", name: "Population", color: "#3b82f6" }]}
-                  animation={true}
-                />
-                <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                  Population in Millions (2010-2025)
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="gdp" className="m-0 h-full">
-                <LineChart 
-                  data={gdpData}
-                  xAxisKey="name"
-                  lines={[{ dataKey: "value", name: "GDP", color: "#10b981" }]}
-                  animation={true}
-                />
-                <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                  GDP in Billion USD (2010-2025)
-                </div>
-              </TabsContent>
-              
-              <TabsContent value="inflation" className="m-0 h-full">
-                <LineChart 
-                  data={inflationData}
-                  xAxisKey="name"
-                  lines={[{ dataKey: "value", name: "Inflation", color: "#ef4444" }]}
-                  animation={true}
-                />
-                <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
-                  Inflation Rate (%) (2010-2025)
-                </div>
-              </TabsContent>
+              <Tabs value={activeMetric}>
+                <TabsContent value="population" className="m-0 h-full">
+                  <LineChart 
+                    data={populationData}
+                    xAxisKey="name"
+                    lines={[{ dataKey: "value", name: "Population", color: "#3b82f6" }]}
+                    animation={true}
+                  />
+                  <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                    Population in Millions (2010-2025)
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="gdp" className="m-0 h-full">
+                  <LineChart 
+                    data={gdpData}
+                    xAxisKey="name"
+                    lines={[{ dataKey: "value", name: "GDP", color: "#10b981" }]}
+                    animation={true}
+                  />
+                  <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                    GDP in Billion USD (2010-2025)
+                  </div>
+                </TabsContent>
+                
+                <TabsContent value="inflation" className="m-0 h-full">
+                  <LineChart 
+                    data={inflationData}
+                    xAxisKey="name"
+                    lines={[{ dataKey: "value", name: "Inflation", color: "#ef4444" }]}
+                    animation={true}
+                  />
+                  <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
+                    Inflation Rate (%) (2010-2025)
+                  </div>
+                </TabsContent>
+              </Tabs>
             </div>
           </CardContent>
         </Card>
