@@ -1,3 +1,4 @@
+
 import { useEffect, useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Landmark, ChevronRight, Database, Globe, MessageCircle, Brain } from "lucide-react";
@@ -604,4 +605,51 @@ const Index = () => {
               Dive into comprehensive datasets, interactive visualizations, and insightful analyses
             </motion.p>
             <motion.div 
-              className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x
+              className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              <Link to="/provinces">
+                <Button 
+                  className="px-8 py-6 bg-white hover:bg-gray-100 text-zambia-600 rounded-xl shadow-md hover:shadow-xl transform transition-transform hover:-translate-y-1 text-lg font-medium"
+                >
+                  View All Provinces
+                  <ArrowRight size={20} className="ml-2" />
+                </Button>
+              </Link>
+              <Link to="/explore">
+                <Button 
+                  variant="outline"
+                  className="px-8 py-6 border-white hover:bg-white/10 text-white rounded-xl shadow-md hover:shadow-xl transform transition-transform hover:-translate-y-1 text-lg font-medium"
+                >
+                  Explore All Data
+                  <Database size={20} className="ml-2" />
+                </Button>
+              </Link>
+            </motion.div>
+          </div>
+        </motion.section>
+      </main>
+
+      <Footer />
+      
+      {showChatbot && (
+        <div className="fixed bottom-4 right-4 z-50 w-96">
+          <AIChatbot />
+        </div>
+      )}
+      
+      <button
+        onClick={() => setShowChatbot(!showChatbot)}
+        className="fixed bottom-6 right-6 z-40 w-14 h-14 rounded-full bg-gradient-to-r from-zambia-600 to-blue-600 text-white flex items-center justify-center shadow-lg hover:shadow-xl transform hover:scale-105 transition-all"
+        aria-label={showChatbot ? "Close chatbot" : "Open chatbot"}
+      >
+        <MessageCircle size={24} />
+      </button>
+    </div>
+  );
+};
+
+export default Index;
