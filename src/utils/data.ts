@@ -697,3 +697,136 @@ export const agricultureMetrics = {
     { province: "North-Western", cattle: 195.8, goats: 216.4, pigs: 162.7, poultry: 1043.2 }
   ]
 };
+
+// Education statistics data
+export const educationStatistics = {
+  "Zambia_Education_Statistics_2020_2024": {
+    "Literacy_Access": {
+      "Adult_Literacy_Rate_percent": {
+        "2020": 85.1,
+        "2021": 85.7,
+        "2022": 86.2,
+        "2023": 86.7,
+        "2024": "87.0*",
+        "source": "UNESCO"
+      },
+      "Youth_Literacy_Rate_15_24_percent": {
+        "2020": 88.5,
+        "2021": 88.8,
+        "2022": 89,
+        "2023": 89.2,
+        "2024": "89.5*",
+        "source": "UNESCO"
+      },
+      "Primary_School_Enrollment_Rate_percent": {
+        "2020": 90.3,
+        "2021": 91,
+        "2022": 91.8,
+        "2023": 92.5,
+        "2024": "93.0*",
+        "source": "World Bank"
+      },
+      "Secondary_School_Enrollment_Rate_percent": {
+        "2020": 44.2,
+        "2021": 45.5,
+        "2022": 46.7,
+        "2023": 47.8,
+        "2024": "48.5*",
+        "source": "World Bank"
+      }
+    },
+    "Gender_Parity": {
+      "Gender_Parity_Index_Primary": {
+        "2020": 1.01,
+        "2021": 1.01,
+        "2022": 1.02,
+        "2023": 1.02,
+        "2024": "1.02*",
+        "source": "MoE Zambia"
+      },
+      "Gender_Parity_Index_Secondary": {
+        "2020": 0.95,
+        "2021": 0.96,
+        "2022": 0.97,
+        "2023": 0.97,
+        "2024": "0.98*",
+        "source": "MoE Zambia"
+      }
+    },
+    "Infrastructure": {
+      "Number_of_Primary_Schools": {
+        "2020": 8450,
+        "2021": 8580,
+        "2022": 8650,
+        "2023": 8742,
+        "2024": "8,800*",
+        "source": "ZamStats"
+      },
+      "Percent_of_Schools_with_Electricity": {
+        "2020": 28.5,
+        "2021": 30.1,
+        "2022": 31.5,
+        "2023": 32.4,
+        "2024": "33.0*",
+        "source": "RDA"
+      }
+    },
+    "Teachers_Training": {
+      "Pupil_Teacher_Ratio_Primary": {
+        "2020": "2 days, 0:01:00",
+        "2021": "1 day, 23:01:00",
+        "2022": "1 day, 22:01:00",
+        "2023": "1 day, 21:01:00",
+        "2024": "44:1*",
+        "source": "World Bank",
+        "note": "Inconsistent format for pre-2024 data"
+      },
+      "Percent_of_Trained_Primary_Teachers": {
+        "2020": 75,
+        "2021": 76.2,
+        "2022": 77.4,
+        "2023": 78.5,
+        "2024": "79.0*",
+        "source": "MoE Zambia"
+      }
+    },
+    "Budget_Investment": {
+      "Education_Budget_percent_of_GDP": {
+        "2020": 3.5,
+        "2021": 3.6,
+        "2022": 3.7,
+        "2023": 3.8,
+        "2024": "4.0*",
+        "source": "World Bank"
+      },
+      "Education_Budget_USD_billions": {
+        "2020": 0.9,
+        "2021": 1,
+        "2022": 1.05,
+        "2023": 1.1,
+        "2024": "1.2*",
+        "source": "MoF Zambia"
+      }
+    },
+    "Higher_Education": {
+      "University_Enrollment_Rate_percent": {
+        "2020": 7.2,
+        "2021": 7.6,
+        "2022": 8,
+        "2023": 8.5,
+        "2024": "9.0*",
+        "source": "HEA"
+      }
+    },
+    "Challenges": {
+      "Out_of_School_Children_Primary_millions": {
+        "2020": 0.82,
+        "2021": 0.79,
+        "2022": 0.76,
+        "2023": 0.75,
+        "2024": "0.73*",
+        "source": "UNESCO"
+      }
+    }
+  }
+};

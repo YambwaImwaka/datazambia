@@ -53,8 +53,8 @@ const Index = () => {
   const pupilTeacherRatioData = teacherData.Pupil_Teacher_Ratio_Primary;
 
   const getPupilTeacherRatioNote = () => {
-    // Check if the note property exists before accessing it
-    if ('note' in pupilTeacherRatioData) {
+    // Check if pupilTeacherRatioData is an object and if it has a note property
+    if (pupilTeacherRatioData && typeof pupilTeacherRatioData === 'object' && 'note' in pupilTeacherRatioData) {
       return pupilTeacherRatioData.note;
     }
     return "";
