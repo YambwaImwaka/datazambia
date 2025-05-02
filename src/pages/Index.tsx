@@ -10,6 +10,7 @@ import SectorTiles from "@/components/home/SectorTiles";
 import FeaturedInsights from "@/components/home/FeaturedInsights";
 import DataHighlights from "@/components/home/DataHighlights";
 import FeaturedProvinces from "@/components/home/FeaturedProvinces";
+import AIChatbot from "@/components/ai/AIChatbot";
 import { educationStatistics } from "@/utils/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Book, LineChart, ArrowUpRight } from "lucide-react";
@@ -188,6 +189,7 @@ const Index: React.FC = () => {
       </motion.section>
       
       <EmailSignup />
+      <AIChatbot />
     </PageLayout>
   );
 };

@@ -3,7 +3,14 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Bot, User, Loader2 } from "lucide-react";
+import { Send, Bot, User, Loader2, X } from "lucide-react";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger 
+} from "@/components/ui/dialog";
 
 interface Message {
   id: string;
@@ -23,6 +30,7 @@ const AIChatbot = () => {
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -97,103 +105,129 @@ const AIChatbot = () => {
     return "I don't have specific information about that yet. I can answer questions about Zambia's GDP, population, health statistics, mining, and other economic indicators.";
   };
 
+  // Component for floating chat button
+  const FloatingChatButton = () => (
+    <Button
+      onClick={() => setIsOpen(true)} 
+      className="fixed bottom-6 right-6 rounded-full w-16 h-16 shadow-lg bg-zambia-600 hover:bg-zambia-700 text-white p-0 z-50 flex items-center justify-center"
+    >
+      <Bot size={24} />
+    </Button>
+  );
+
   return (
-    <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col h-[500px]">
-      <div className="bg-gradient-to-r from-zambia-600 to-blue-600 p-4 text-white flex items-center gap-3">
-        <div className="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm">
-          <Bot size={16} />
-        </div>
-        <div>
-          <h3 className="font-semibold">Zambia Data AI Assistant</h3>
-          <p className="text-xs text-white/80">Ask about Zambia's statistics and data</p>
-        </div>
-      </div>
+    <>
+      <FloatingChatButton />
       
-      <div className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-800/50">
-        <AnimatePresence>
-          {messages.map((message) => (
-            <motion.div
-              key={message.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className={`flex mb-4 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div className="flex gap-2">
-                {message.sender === 'bot' && (
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-zambia-500 to-blue-500 flex items-center justify-center text-white flex-shrink-0 mt-1">
-                    <Bot size={16} />
-                  </div>
-                )}
-                <div
-                  className={`max-w-[80%] p-3 rounded-xl ${
-                    message.sender === 'user'
-                      ? 'bg-zambia-100 dark:bg-zambia-900/50 text-gray-800 dark:text-white rounded-tr-none'
-                      : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-white shadow-sm rounded-tl-none'
-                  }`}
-                >
-                  {message.text}
-                  <div className={`text-xs mt-1 ${message.sender === 'user' ? 'text-gray-500' : 'text-gray-400'}`}>
-                    {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                  </div>
-                </div>
-                {message.sender === 'user' && (
-                  <div className="w-8 h-8 rounded-full bg-zambia-600 flex items-center justify-center text-white flex-shrink-0 mt-1">
-                    <User size={14} />
-                  </div>
-                )}
+      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+        <DialogContent className="p-0 w-full sm:max-w-md max-h-[80vh] border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
+          <DialogHeader className="bg-gradient-to-r from-zambia-600 to-blue-600 p-4 text-white">
+            <div className="flex items-center gap-3">
+              <div className="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm">
+                <Bot size={16} />
               </div>
-            </motion.div>
-          ))}
+              <div className="flex-1">
+                <DialogTitle className="font-semibold">Zambia Data AI Assistant</DialogTitle>
+                <p className="text-xs text-white/80">Ask about Zambia's statistics and data</p>
+              </div>
+              <Button 
+                variant="ghost" 
+                size="icon" 
+                onClick={() => setIsOpen(false)} 
+                className="rounded-full h-8 w-8 bg-white/10 hover:bg-white/20 text-white"
+              >
+                <X size={16} />
+              </Button>
+            </div>
+          </DialogHeader>
           
-          {isTyping && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="flex mb-4 justify-start"
-            >
-              <div className="flex gap-2">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-r from-zambia-500 to-blue-500 flex items-center justify-center text-white flex-shrink-0 mt-1">
-                  <Bot size={16} />
-                </div>
-                <div className="p-3 rounded-xl bg-white dark:bg-gray-700 text-gray-800 dark:text-white shadow-sm rounded-tl-none min-w-[60px]">
-                  <div className="flex gap-1 items-center">
-                    <div className="h-2 w-2 bg-gray-300 dark:bg-gray-500 rounded-full animate-pulse" />
-                    <div className="h-2 w-2 bg-gray-300 dark:bg-gray-500 rounded-full animate-pulse delay-100" />
-                    <div className="h-2 w-2 bg-gray-300 dark:bg-gray-500 rounded-full animate-pulse delay-200" />
+          <div className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-800/50 max-h-[calc(80vh-140px)]">
+            <AnimatePresence>
+              {messages.map((message) => (
+                <motion.div
+                  key={message.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className={`flex mb-4 ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                >
+                  <div className="flex gap-2">
+                    {message.sender === 'bot' && (
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-zambia-500 to-blue-500 flex items-center justify-center text-white flex-shrink-0 mt-1">
+                        <Bot size={16} />
+                      </div>
+                    )}
+                    <div
+                      className={`max-w-[80%] p-3 rounded-xl ${
+                        message.sender === 'user'
+                          ? 'bg-zambia-100 dark:bg-zambia-900/50 text-gray-800 dark:text-white rounded-tr-none'
+                          : 'bg-white dark:bg-gray-700 text-gray-800 dark:text-white shadow-sm rounded-tl-none'
+                      }`}
+                    >
+                      {message.text}
+                      <div className={`text-xs mt-1 ${message.sender === 'user' ? 'text-gray-500' : 'text-gray-400'}`}>
+                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </div>
+                    </div>
+                    {message.sender === 'user' && (
+                      <div className="w-8 h-8 rounded-full bg-zambia-600 flex items-center justify-center text-white flex-shrink-0 mt-1">
+                        <User size={14} />
+                      </div>
+                    )}
                   </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-          <div ref={messagesEndRef} />
-        </AnimatePresence>
-      </div>
-      
-      <form onSubmit={handleSendMessage} className="p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
-        <div className="flex gap-2">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about Zambia's data..."
-            className="flex-grow"
-            disabled={isTyping}
-          />
-          <Button 
-            type="submit" 
-            size="icon" 
-            className="bg-zambia-600 hover:bg-zambia-700 text-white"
-            disabled={isTyping || !input.trim()}
-          >
-            {isTyping ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
-          </Button>
-        </div>
-        <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-          This is a demo. In a full implementation, this would connect to an AI service.
-        </p>
-      </form>
-    </div>
+                </motion.div>
+              ))}
+              
+              {isTyping && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="flex mb-4 justify-start"
+                >
+                  <div className="flex gap-2">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-zambia-500 to-blue-500 flex items-center justify-center text-white flex-shrink-0 mt-1">
+                      <Bot size={16} />
+                    </div>
+                    <div className="p-3 rounded-xl bg-white dark:bg-gray-700 text-gray-800 dark:text-white shadow-sm rounded-tl-none min-w-[60px]">
+                      <div className="flex gap-1 items-center">
+                        <div className="h-2 w-2 bg-gray-300 dark:bg-gray-500 rounded-full animate-pulse" />
+                        <div className="h-2 w-2 bg-gray-300 dark:bg-gray-500 rounded-full animate-pulse delay-100" />
+                        <div className="h-2 w-2 bg-gray-300 dark:bg-gray-500 rounded-full animate-pulse delay-200" />
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+              <div ref={messagesEndRef} />
+            </AnimatePresence>
+          </div>
+          
+          <form onSubmit={handleSendMessage} className="p-3 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+            <div className="flex gap-2">
+              <Input
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Ask about Zambia's data..."
+                className="flex-grow"
+                disabled={isTyping}
+              />
+              <Button 
+                type="submit" 
+                size="icon" 
+                className="bg-zambia-600 hover:bg-zambia-700 text-white"
+                disabled={isTyping || !input.trim()}
+              >
+                {isTyping ? <Loader2 size={18} className="animate-spin" /> : <Send size={18} />}
+              </Button>
+            </div>
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
+              This is a demo. In a full implementation, this would connect to an AI service.
+            </p>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
