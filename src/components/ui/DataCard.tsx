@@ -83,8 +83,7 @@ export const DataCard = ({
       animate={isVisible ? "visible" : "hidden"}
       variants={entryAnimation}
       whileHover="hover"
-      whileTap={{ scale: 0.98 }}
-      animate="rest"
+      initial="rest"
       variants={hoverAnimation}
       className="h-full"
     >
