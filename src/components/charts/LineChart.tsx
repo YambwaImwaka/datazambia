@@ -13,27 +13,33 @@ import {
 
 interface LineProps {
   dataKey: string;
-  name: string;
+  name?: string;
   color: string;
   strokeDasharray?: string;
 }
 
 interface LineChartProps {
   data: any[];
-  lines: LineProps[];
+  lines?: LineProps[];
   xAxisKey: string;
+  lineKey?: string; // Added for backward compatibility
+  strokeColor?: string; // Added for backward compatibility
   height?: number;
   showGrid?: boolean;
   showLegend?: boolean;
+  animation?: boolean;
 }
 
 export const LineChart: React.FC<LineChartProps> = ({
   data,
   lines,
   xAxisKey,
+  lineKey,
+  strokeColor,
   height = 400,
   showGrid = true,
-  showLegend = true
+  showLegend = true,
+  animation = true
 }) => {
   if (!data || data.length === 0) {
     return (
@@ -42,6 +48,9 @@ export const LineChart: React.FC<LineChartProps> = ({
       </div>
     );
   }
+
+  // Handle both new API with lines array and old API with single lineKey and strokeColor
+  const lineConfigs = lines || (lineKey ? [{ dataKey: lineKey, color: strokeColor || "#3b82f6", name: lineKey }] : []);
 
   return (
     <ResponsiveContainer width="100%" height={height}>
@@ -77,16 +86,17 @@ export const LineChart: React.FC<LineChartProps> = ({
             wrapperStyle={{ paddingTop: "20px" }}
           />
         )}
-        {lines.map((line, index) => (
+        {lineConfigs.map((line, index) => (
           <Line
             key={index}
             type="monotone"
             dataKey={line.dataKey}
-            name={line.name}
+            name={line.name || line.dataKey}
             stroke={line.color}
             strokeWidth={2}
             activeDot={{ r: 6 }}
             strokeDasharray={line.strokeDasharray}
+            isAnimationActive={animation}
           />
         ))}
       </RechartsLineChart>

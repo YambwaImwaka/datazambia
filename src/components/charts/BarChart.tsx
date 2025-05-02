@@ -9,7 +9,6 @@ import {
   Tooltip,
   ResponsiveContainer,
   Legend,
-  Cell,
 } from "recharts";
 import { cn } from "@/lib/utils";
 
@@ -20,10 +19,14 @@ interface BarChartProps {
     name: string;
     color: string;
   }>;
+  keys?: string[]; // For compatibility with Education.tsx
+  indexBy?: string; // For compatibility with Education.tsx
+  colors?: string[]; // For compatibility with Education.tsx
+  legends?: string[]; // For compatibility with Education.tsx
+  title?: string;
   xAxisKey: string;
   xAxisLabel?: string;
   yAxisLabel?: string;
-  title?: string;
   className?: string;
   height?: number;
   layout?: "vertical" | "horizontal";
@@ -59,6 +62,10 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 export const BarChart = ({
   data,
   bars,
+  keys,
+  indexBy,
+  colors,
+  legends,
   xAxisKey,
   xAxisLabel,
   yAxisLabel,
@@ -71,6 +78,14 @@ export const BarChart = ({
 }: BarChartProps) => {
   const chartRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
+
+  // Handle both APIs - convert old format (keys, indexBy, colors) to new format (bars) if needed
+  const barsConfig = bars || 
+    (keys ? keys.map((key, index) => ({
+      dataKey: key,
+      name: legends ? legends[index] : key,
+      color: colors ? colors[index] : `hsl(${index * 60}, 70%, 50%)`,
+    })) : []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -90,6 +105,9 @@ export const BarChart = ({
     return () => observer.disconnect();
   }, []);
 
+  // If using the keys/indexBy format, override xAxisKey
+  const effectiveXAxisKey = indexBy || xAxisKey;
+
   return (
     <div 
       ref={chartRef}
@@ -106,7 +124,7 @@ export const BarChart = ({
         >
           {showGrid && <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />}
           <XAxis
-            dataKey={layout === "horizontal" ? xAxisKey : undefined}
+            dataKey={layout === "horizontal" ? effectiveXAxisKey : undefined}
             type={layout === "horizontal" ? "category" : "number"}
             tick={{ fontSize: 12, fill: "#6b7280" }}
             axisLine={{ stroke: "#d1d5db" }}
@@ -123,7 +141,7 @@ export const BarChart = ({
             }
           />
           <YAxis
-            dataKey={layout === "vertical" ? xAxisKey : undefined}
+            dataKey={layout === "vertical" ? effectiveXAxisKey : undefined}
             type={layout === "vertical" ? "category" : "number"}
             tick={{ fontSize: 12, fill: "#6b7280" }}
             axisLine={{ stroke: "#d1d5db" }}
@@ -141,7 +159,7 @@ export const BarChart = ({
           />
           <Tooltip content={<CustomTooltip />} />
           <Legend />
-          {bars.map((bar, index) => (
+          {barsConfig.map((bar, index) => (
             <Bar
               key={`bar-${index}`}
               dataKey={bar.dataKey}

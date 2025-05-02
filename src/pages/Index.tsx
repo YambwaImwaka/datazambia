@@ -21,8 +21,9 @@ const Index: React.FC = () => {
   // Education statistics highlight
   const edStats = educationStatistics.Zambia_Education_Statistics_2020_2024;
   
+  // Safely check if a note property exists in an object
   const getNote = (dataObj: Record<string, any>): string | null => {
-    return 'note' in dataObj ? dataObj.note : null;
+    return dataObj && 'note' in dataObj ? dataObj.note : null;
   };
 
   return (

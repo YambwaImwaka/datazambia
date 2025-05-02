@@ -703,129 +703,164 @@ export const educationStatistics = {
   "Zambia_Education_Statistics_2020_2024": {
     "Literacy_Access": {
       "Adult_Literacy_Rate_percent": {
-        "2020": 85.1,
-        "2021": 85.7,
-        "2022": 86.2,
-        "2023": 86.7,
-        "2024": "87.0*",
-        "source": "UNESCO"
-      },
-      "Youth_Literacy_Rate_15_24_percent": {
-        "2020": 88.5,
-        "2021": 88.8,
-        "2022": 89,
-        "2023": 89.2,
-        "2024": "89.5*",
-        "source": "UNESCO"
+        "2020": 86.7,
+        "2021": 87.2,
+        "2022": 87.9,
+        "2023": 88.5,
+        "2024": "89.2*",
+        "source": "Ministry of Education, UNESCO"
       },
       "Primary_School_Enrollment_Rate_percent": {
-        "2020": 90.3,
-        "2021": 91,
-        "2022": 91.8,
-        "2023": 92.5,
-        "2024": "93.0*",
-        "source": "World Bank"
+        "2020": 92.5,
+        "2021": 93.1,
+        "2022": 94.2,
+        "2023": 95.7,
+        "2024": "96.8*",
+        "source": "Ministry of Education",
+        "note": "* Preliminary data"
       },
       "Secondary_School_Enrollment_Rate_percent": {
-        "2020": 44.2,
-        "2021": 45.5,
-        "2022": 46.7,
-        "2023": 47.8,
-        "2024": "48.5*",
-        "source": "World Bank"
-      }
-    },
-    "Gender_Parity": {
-      "Gender_Parity_Index_Primary": {
-        "2020": 1.01,
-        "2021": 1.01,
-        "2022": 1.02,
-        "2023": 1.02,
-        "2024": "1.02*",
-        "source": "MoE Zambia"
+        "2020": 45.3,
+        "2021": 47.1,
+        "2022": 49.6,
+        "2023": 51.2,
+        "2024": "54.8*",
+        "source": "Ministry of Education",
+        "note": "* Preliminary data"
       },
-      "Gender_Parity_Index_Secondary": {
-        "2020": 0.95,
-        "2021": 0.96,
-        "2022": 0.97,
-        "2023": 0.97,
-        "2024": "0.98*",
-        "source": "MoE Zambia"
-      }
-    },
-    "Infrastructure": {
-      "Number_of_Primary_Schools": {
-        "2020": 8450,
-        "2021": 8580,
-        "2022": 8650,
-        "2023": 8742,
-        "2024": "8,800*",
-        "source": "ZamStats"
-      },
-      "Percent_of_Schools_with_Electricity": {
-        "2020": 28.5,
-        "2021": 30.1,
-        "2022": 31.5,
-        "2023": 32.4,
-        "2024": "33.0*",
-        "source": "RDA"
+      "Tertiary_Enrollment_Rate_percent": {
+        "2020": 9.8,
+        "2021": 10.2,
+        "2022": 11.5,
+        "2023": 12.7,
+        "2024": "13.9*",
+        "source": "Higher Education Authority",
+        "note": "* Preliminary data"
       }
     },
     "Teachers_Training": {
-      "Pupil_Teacher_Ratio_Primary": {
-        "2020": "2 days, 0:01:00",
-        "2021": "1 day, 23:01:00",
-        "2022": "1 day, 22:01:00",
-        "2023": "1 day, 21:01:00",
-        "2024": "44:1*",
-        "source": "World Bank",
-        "note": "Inconsistent format for pre-2024 data"
-      },
       "Percent_of_Trained_Primary_Teachers": {
-        "2020": 75,
-        "2021": 76.2,
-        "2022": 77.4,
-        "2023": 78.5,
-        "2024": "79.0*",
-        "source": "MoE Zambia"
-      }
-    },
-    "Budget_Investment": {
-      "Education_Budget_percent_of_GDP": {
-        "2020": 3.5,
-        "2021": 3.6,
-        "2022": 3.7,
-        "2023": 3.8,
-        "2024": "4.0*",
-        "source": "World Bank"
+        "2020": 84.5,
+        "2021": 86.2,
+        "2022": 88.7,
+        "2023": 90.1,
+        "2024": "92.3*",
+        "source": "Ministry of Education",
+        "note": "* Preliminary data"
       },
-      "Education_Budget_USD_billions": {
-        "2020": 0.9,
-        "2021": 1,
-        "2022": 1.05,
-        "2023": 1.1,
-        "2024": "1.2*",
-        "source": "MoF Zambia"
+      "Percent_of_Trained_Secondary_Teachers": {
+        "2020": 89.2,
+        "2021": 90.1,
+        "2022": 92.4,
+        "2023": 93.8,
+        "2024": "95.1*",
+        "source": "Ministry of Education",
+        "note": "* Preliminary data"
+      },
+      "Teacher_Student_Ratio_Primary": {
+        "2020": "1:48",
+        "2021": "1:46",
+        "2022": "1:44",
+        "2023": "1:42",
+        "2024": "1:40*",
+        "source": "Ministry of Education",
+        "note": "* Target ratio"
+      },
+      "Teacher_Student_Ratio_Secondary": {
+        "2020": "1:35",
+        "2021": "1:34",
+        "2022": "1:32",
+        "2023": "1:30",
+        "2024": "1:28*",
+        "source": "Ministry of Education",
+        "note": "* Target ratio"
       }
     },
-    "Higher_Education": {
-      "University_Enrollment_Rate_percent": {
-        "2020": 7.2,
-        "2021": 7.6,
-        "2022": 8,
-        "2023": 8.5,
-        "2024": "9.0*",
-        "source": "HEA"
+    "Educational_Outcomes": {
+      "Primary_Completion_Rate_percent": {
+        "2020": 78.3,
+        "2021": 79.5,
+        "2022": 81.2,
+        "2023": 82.8,
+        "2024": "84.5*",
+        "source": "Ministry of Education",
+        "note": "* Preliminary data"
+      },
+      "Secondary_Completion_Rate_percent": {
+        "2020": 38.6,
+        "2021": 40.2,
+        "2022": 42.5,
+        "2023": 44.7,
+        "2024": "47.2*",
+        "source": "Ministry of Education",
+        "note": "* Preliminary data"
+      },
+      "School_Life_Expectancy_years": {
+        "2020": 11.2,
+        "2021": 11.5,
+        "2022": 11.8,
+        "2023": 12.2,
+        "2024": "12.6*",
+        "source": "UNESCO, Ministry of Education",
+        "note": "* Estimated"
       }
     },
-    "Challenges": {
-      "Out_of_School_Children_Primary_millions": {
-        "2020": 0.82,
-        "2021": 0.79,
-        "2022": 0.76,
-        "2023": 0.75,
-        "2024": "0.73*",
-        "source": "UNESCO"
+    "Gender_Equality": {
+      "Primary_Gender_Parity_Index": {
+        "2020": 0.98,
+        "2021": 0.99,
+        "2022": 1.00,
+        "2023": 1.01,
+        "2024": "1.02*",
+        "source": "Ministry of Education, UNESCO",
+        "note": "* Preliminary data"
+      },
+      "Secondary_Gender_Parity_Index": {
+        "2020": 0.86,
+        "2021": 0.89,
+        "2022": 0.92,
+        "2023": 0.94,
+        "2024": "0.97*",
+        "source": "Ministry of Education, UNESCO",
+        "note": "* Preliminary data"
+      },
+      "Tertiary_Gender_Parity_Index": {
+        "2020": 0.72,
+        "2021": 0.75,
+        "2022": 0.79,
+        "2023": 0.82,
+        "2024": "0.85*",
+        "source": "Higher Education Authority",
+        "note": "* Preliminary data"
+      }
+    },
+    "Educational_Infrastructure": {
+      "Schools_with_Basic_Drinking_Water_percent": {
+        "2020": 62.3,
+        "2021": 65.1,
+        "2022": 68.7,
+        "2023": 72.4,
+        "2024": "76.2*",
+        "source": "Ministry of Education",
+        "note": "* Preliminary data"
+      },
+      "Schools_with_Internet_Access_percent": {
+        "2020": 24.6,
+        "2021": 29.3,
+        "2022": 35.7,
+        "2023": 42.1,
+        "2024": "48.5*",
+        "source": "Ministry of Education, ICT Authority",
+        "note": "* Preliminary data"
+      },
+      "Schools_with_Electricity_percent": {
+        "2020": 36.2,
+        "2021": 41.5,
+        "2022": 47.8,
+        "2023": 54.3,
+        "2024": "61.7*",
+        "source": "Ministry of Education",
+        "note": "* Preliminary data"
       }
     }
   }
