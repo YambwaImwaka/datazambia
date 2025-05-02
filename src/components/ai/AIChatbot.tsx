@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -8,8 +7,7 @@ import {
   Dialog, 
   DialogContent, 
   DialogHeader, 
-  DialogTitle, 
-  DialogTrigger 
+  DialogTitle 
 } from "@/components/ui/dialog";
 
 interface Message {
@@ -41,7 +39,7 @@ const AIChatbot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!input.trim()) return;
@@ -58,51 +56,43 @@ const AIChatbot = () => {
     setInput("");
     setIsTyping(true);
     
-    // Simulate AI response based on user input
-    setTimeout(() => {
-      const botResponse = generateBotResponse(input);
+    try {
+      // Hardcoded OpenAI API call
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer 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` // Replace with your actual API key
+        },
+        body: JSON.stringify({
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "system", content: "You are a helpful assistant providing data about Zambia." },
+            { role: "user", content: input }
+          ],
+          max_tokens: 100
+        })
+      });
+
+      const data = await response.json();
+      const botMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        text: data.choices?.[0]?.message?.content || "I'm sorry, I couldn't understand that.",
+        sender: "bot",
+        timestamp: new Date()
+      };
+
+      setMessages(prev => [...prev, botMessage]);
+    } catch (error) {
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
-        text: botResponse,
+        text: "There was an error processing your request. Please try again later.",
         sender: "bot",
         timestamp: new Date()
       }]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
-  };
-  
-  const generateBotResponse = (query: string): string => {
-    const normalizedQuery = query.toLowerCase();
-    
-    if (normalizedQuery.includes("gdp") || normalizedQuery.includes("economic growth")) {
-      return "Zambia's nominal GDP in 2023 was $29.2 billion with a growth rate of 4.7%, according to the World Bank and IMF data.";
     }
-    
-    if (normalizedQuery.includes("inflation")) {
-      return "The inflation rate in Zambia as of May 2024 was 13.8%, as reported by ZamStats.";
-    }
-    
-    if (normalizedQuery.includes("population") || normalizedQuery.includes("people")) {
-      return "Zambia's population in 2024 is estimated at 20.9 million, according to UN data.";
-    }
-    
-    if (normalizedQuery.includes("copper") || normalizedQuery.includes("mining")) {
-      return "Copper production in 2023 was 763,000 metric tons, accounting for 70% of Zambia's exports. Copper reserves are estimated at 20 million tons.";
-    }
-    
-    if (normalizedQuery.includes("health") || normalizedQuery.includes("life expectancy")) {
-      return "Life expectancy in Zambia has increased to 64.0 years in 2024. The maternal mortality ratio has declined to 210 per 100,000 births.";
-    }
-    
-    if (normalizedQuery.includes("hiv") || normalizedQuery.includes("aids")) {
-      return "HIV prevalence among adults (15-49 years) in Zambia was 11.1% in 2023, showing a decreasing trend. PMTCT coverage has increased to 90% in 2024.";
-    }
-    
-    if (normalizedQuery.includes("malaria")) {
-      return "There were approximately 5.3 million malaria cases in Zambia in 2024. ITN (Insecticide-Treated Net) coverage is at 63%.";
-    }
-    
-    return "I don't have specific information about that yet. I can answer questions about Zambia's GDP, population, health statistics, mining, and other economic indicators.";
   };
 
   // Component for floating chat button
@@ -222,7 +212,7 @@ const AIChatbot = () => {
               </Button>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-              This is a demo. In a full implementation, this would connect to an AI service.
+              Powered by OpenAI
             </p>
           </form>
         </DialogContent>
