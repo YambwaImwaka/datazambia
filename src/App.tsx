@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import ProvinceProfile from "./pages/ProvinceProfile";
 import ProvincesList from "./pages/ProvincesList";
 import Explore from "./pages/Explore";
+import Education from "./pages/explore/Education";
 import Finance from "./pages/Finance";
 import About from "./pages/About";
 import SignIn from "./pages/auth/SignIn";
@@ -49,6 +50,7 @@ const App = () => {
                 <Route path="/provinces" element={<ProvincesList />} />
                 <Route path="/explore" element={<Explore />} />
                 <Route path="/explore/:categoryId" element={<Explore />} />
+                <Route path="/explore/education" element={<Education />} />
                 <Route path="/finance" element={<Finance />} />
                 <Route path="/about" element={<About />} />
                 

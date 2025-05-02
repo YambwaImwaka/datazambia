@@ -80,8 +80,7 @@ export const DataVisualizer = () => {
                 <LineChart 
                   data={populationData}
                   xAxisKey="name"
-                  lineKey="value"
-                  strokeColor="#3b82f6"
+                  lines={[{ dataKey: "value", name: "Population", color: "#3b82f6" }]}
                   animation={true}
                 />
                 <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
@@ -93,8 +92,7 @@ export const DataVisualizer = () => {
                 <LineChart 
                   data={gdpData}
                   xAxisKey="name"
-                  lineKey="value"
-                  strokeColor="#10b981"
+                  lines={[{ dataKey: "value", name: "GDP", color: "#10b981" }]}
                   animation={true}
                 />
                 <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">
@@ -106,8 +104,7 @@ export const DataVisualizer = () => {
                 <LineChart 
                   data={inflationData}
                   xAxisKey="name"
-                  lineKey="value"
-                  strokeColor="#ef4444"
+                  lines={[{ dataKey: "value", name: "Inflation", color: "#ef4444" }]}
                   animation={true}
                 />
                 <div className="mt-4 text-center text-sm text-gray-500 dark:text-gray-400">

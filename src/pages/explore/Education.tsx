@@ -1,369 +1,720 @@
 
-import React, { useState } from "react";
-import { Helmet } from "react-helmet-async";
+import React, { useState, useEffect } from "react";
 import PageLayout from "@/components/layout/PageLayout";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Helmet } from "react-helmet-async";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import { Book, LineChart as LineChartIcon, BarChart3, GraduationCap } from "lucide-react";
 import { LineChart } from "@/components/charts/LineChart";
 import { BarChart } from "@/components/charts/BarChart";
-import { Button } from "@/components/ui/button";
-import { Download, Filter, Book, GraduationCap, School, Users, ChevronDown } from "lucide-react";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger 
-} from "@/components/ui/dropdown-menu";
-import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
 import { educationStatistics } from "@/utils/data";
 
-const Education = () => {
+const Education: React.FC = () => {
   const [activeTab, setActiveTab] = useState("overview");
-  const [activeYear, setActiveYear] = useState("2024");
-  const isInView = useInView(document.documentElement);
+  const [isVisible, setIsVisible] = useState(false);
+
+  // Extract the Zambia education statistics data
+  const edStats = educationStatistics.Zambia_Education_Statistics_2020_2024;
   
-  // Format education statistics for charts
-  const educationStats = educationStatistics.Zambia_Education_Statistics_2020_2024;
-  
-  // Prepare data for line charts
-  const prepareTimeSeriesData = (metricPath: string[]) => {
-    let currentObj = educationStats;
-    for (const key of metricPath.slice(0, -1)) {
-      if (currentObj[key]) {
-        currentObj = currentObj[key];
-      } else {
-        return [];
-      }
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    // Use refs properly with useRef
+    const sectionEl = document.getElementById("education-section");
+    if (sectionEl) {
+      observer.observe(sectionEl);
     }
-    
-    const finalKey = metricPath[metricPath.length - 1];
-    if (!currentObj[finalKey]) return [];
-    
-    const yearData = currentObj[finalKey];
-    
-    return Object.keys(yearData)
-      .filter(year => !isNaN(parseInt(year)))
-      .map(year => ({
-        name: year,
-        value: typeof yearData[year] === 'string' ? 
-          parseFloat(yearData[year].replace('%', '').replace('*', '')) : 
-          yearData[year]
-      }));
-  };
-  
-  const literacyData = prepareTimeSeriesData(['Literacy_Access', 'Adult_Literacy_Rate_percent']);
-  const primaryEnrollmentData = prepareTimeSeriesData(['Literacy_Access', 'Primary_School_Enrollment_Rate_percent']);
-  const secondaryEnrollmentData = prepareTimeSeriesData(['Literacy_Access', 'Secondary_School_Enrollment_Rate_percent']);
-  const tertiaryEnrollmentData = prepareTimeSeriesData(['Literacy_Access', 'Tertiary_Enrollment_Rate_percent']);
-  
-  // Prepare enrollment by gender data
-  const enrollmentByGenderData = [
+
+    return () => observer.disconnect();
+  }, []);
+
+  // Transform literacy data for line chart
+  const literacyData = [
     {
-      name: '2020',
-      primary: educationStats.Gender_Equality.Primary_Gender_Parity_Index['2020'],
-      secondary: educationStats.Gender_Equality.Secondary_Gender_Parity_Index['2020'],
-      tertiary: educationStats.Gender_Equality.Tertiary_Gender_Parity_Index['2020'],
+      name: "2020",
+      value: edStats.Literacy_Access.Adult_Literacy_Rate_percent["2020"],
     },
     {
-      name: '2021',
-      primary: educationStats.Gender_Equality.Primary_Gender_Parity_Index['2021'],
-      secondary: educationStats.Gender_Equality.Secondary_Gender_Parity_Index['2021'],
-      tertiary: educationStats.Gender_Equality.Tertiary_Gender_Parity_Index['2021'],
+      name: "2021",
+      value: edStats.Literacy_Access.Adult_Literacy_Rate_percent["2021"],
     },
     {
-      name: '2022',
-      primary: educationStats.Gender_Equality.Primary_Gender_Parity_Index['2022'],
-      secondary: educationStats.Gender_Equality.Secondary_Gender_Parity_Index['2022'],
-      tertiary: educationStats.Gender_Equality.Tertiary_Gender_Parity_Index['2022'],
+      name: "2022",
+      value: edStats.Literacy_Access.Adult_Literacy_Rate_percent["2022"],
     },
     {
-      name: '2023',
-      primary: educationStats.Gender_Equality.Primary_Gender_Parity_Index['2023'],
-      secondary: educationStats.Gender_Equality.Secondary_Gender_Parity_Index['2023'],
-      tertiary: educationStats.Gender_Equality.Tertiary_Gender_Parity_Index['2023'],
+      name: "2023",
+      value: edStats.Literacy_Access.Adult_Literacy_Rate_percent["2023"],
     },
     {
-      name: '2024',
-      primary: parseFloat(educationStats.Gender_Equality.Primary_Gender_Parity_Index['2024'].replace('*', '')),
-      secondary: parseFloat(educationStats.Gender_Equality.Secondary_Gender_Parity_Index['2024'].replace('*', '')),
-      tertiary: parseFloat(educationStats.Gender_Equality.Tertiary_Gender_Parity_Index['2024'].replace('*', '')),
+      name: "2024",
+      value: parseFloat(edStats.Literacy_Access.Adult_Literacy_Rate_percent["2024"].replace("*", "")),
     },
   ];
-  
-  const getChangeValue = (dataset: any, metric: string) => {
-    if (!dataset || dataset.length < 2) return 0;
-    
-    const currentValue = dataset.find((item: any) => item.name === '2024')?.value || 0;
-    const previousValue = dataset.find((item: any) => item.name === '2020')?.value || 0;
-    
-    // Only perform calculation if both values are numbers
-    if (typeof currentValue === 'number' && typeof previousValue === 'number') {
-      return currentValue - previousValue;
-    }
-    return 0;
-  };
+
+  // Transform primary enrollment data for line chart
+  const primaryEnrollmentData = [
+    {
+      name: "2020",
+      value: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2020"],
+    },
+    {
+      name: "2021",
+      value: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2021"],
+    },
+    {
+      name: "2022",
+      value: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2022"],
+    },
+    {
+      name: "2023",
+      value: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2023"],
+    },
+    {
+      name: "2024",
+      value: parseFloat(edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2024"].replace("*", "")),
+    },
+  ];
+
+  // Transform secondary enrollment data for line chart
+  const secondaryEnrollmentData = [
+    {
+      name: "2020",
+      value: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2020"],
+    },
+    {
+      name: "2021",
+      value: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2021"],
+    },
+    {
+      name: "2022",
+      value: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2022"],
+    },
+    {
+      name: "2023",
+      value: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2023"],
+    },
+    {
+      name: "2024",
+      value: parseFloat(edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2024"].replace("*", "")),
+    },
+  ];
+
+  // Transform tertiary enrollment data for line chart
+  const tertiaryEnrollmentData = [
+    {
+      name: "2020",
+      value: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2020"],
+    },
+    {
+      name: "2021",
+      value: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2021"],
+    },
+    {
+      name: "2022",
+      value: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2022"],
+    },
+    {
+      name: "2023",
+      value: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2023"],
+    },
+    {
+      name: "2024",
+      value: parseFloat(edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2024"].replace("*", "")),
+    },
+  ];
+
+  // Create data for the enrollment comparison bar chart
+  const enrollmentComparisonData = [
+    {
+      name: "2020",
+      primary: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2020"],
+      secondary: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2020"],
+      tertiary: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2020"],
+    },
+    {
+      name: "2021",
+      primary: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2021"],
+      secondary: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2021"],
+      tertiary: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2021"],
+    },
+    {
+      name: "2022",
+      primary: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2022"],
+      secondary: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2022"],
+      tertiary: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2022"],
+    },
+    {
+      name: "2023",
+      primary: edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2023"],
+      secondary: edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2023"],
+      tertiary: edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2023"],
+    },
+    {
+      name: "2024",
+      primary: parseFloat(edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2024"].replace("*", "")),
+      secondary: parseFloat(edStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent["2024"].replace("*", "")),
+      tertiary: parseFloat(edStats.Literacy_Access.Tertiary_Education_Enrollment_percent["2024"].replace("*", "")),
+    },
+  ];
 
   return (
     <PageLayout>
       <Helmet>
         <title>Education Data | Zambia Data Hub</title>
-        <meta name="description" content="Explore Zambia's education statistics, trends, and key indicators related to literacy, enrollment, teacher training and more." />
+        <meta
+          name="description"
+          content="Explore comprehensive education statistics and trends in Zambia, including literacy rates, enrollment, gender parity, and educational institutions data."
+        />
       </Helmet>
-      
-      {/* Hero Section */}
-      <section className="py-12 md:py-20 bg-gradient-to-r from-amber-50 to-amber-100 dark:from-amber-900/20 dark:to-amber-800/10">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl">
-            <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-200/60 dark:bg-amber-800/30 text-amber-800 dark:text-amber-300 mb-6">
-              <Book className="w-4 h-4 mr-2" />
-              <span>Educational Insights</span>
-            </div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900 dark:text-white">
-              Education Data Explorer
-            </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8 max-w-3xl">
-              Explore Zambia's progress in education through comprehensive data on literacy, 
-              enrollment rates, student-teacher ratios, and educational outcomes.
-            </p>
-            
-            <div className="flex flex-wrap gap-4">
-              <Button
-                className="bg-amber-600 hover:bg-amber-700 text-white font-medium px-6"
-              >
-                <GraduationCap className="w-4 h-4 mr-2" />
-                Enrollment Statistics
-              </Button>
-              <Button
-                variant="outline"
-                className="font-medium border-amber-600 text-amber-700 dark:text-amber-400 dark:border-amber-500"
-              >
-                <School className="w-4 h-4 mr-2" />
-                Education Quality Metrics
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="font-medium">
-                    <Download className="w-4 h-4 mr-2" />
-                    Download Data
-                    <ChevronDown className="w-4 h-4 ml-2" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent>
-                  <DropdownMenuItem>Excel (.xlsx)</DropdownMenuItem>
-                  <DropdownMenuItem>CSV</DropdownMenuItem>
-                  <DropdownMenuItem>PDF Report</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
+
+      <div className="container mx-auto px-4 py-8">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2">Zambia Education Statistics</h1>
+          <p className="text-gray-600 dark:text-gray-300 max-w-3xl">
+            Comprehensive data on literacy rates, school enrollments, educational
+            infrastructure, and gender parity across Zambia's education sector.
+          </p>
         </div>
-      </section>
-      
-      {/* Main Content */}
-      <section className="py-16 bg-white dark:bg-gray-900">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-                Education Statistics
-              </h2>
-              <p className="text-gray-600 dark:text-gray-300">
-                Explore key education metrics and trends from 2020-2024
-              </p>
-            </div>
-            
-            <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="flex items-center gap-1">
-                <Filter className="h-4 w-4" />
-                Filter
-              </Button>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" size="sm">
-                    Year: {activeYear} <ChevronDown className="h-3 w-3 ml-1" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setActiveYear("2020")}>2020</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setActiveYear("2021")}>2021</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setActiveYear("2022")}>2022</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setActiveYear("2023")}>2023</DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => setActiveYear("2024")}>2024</DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </div>
-          </div>
-          
-          <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="w-full md:w-auto grid grid-cols-2 md:flex md:space-x-1">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="enrollment">Enrollment</TabsTrigger>
-              <TabsTrigger value="gender">Gender Equality</TabsTrigger>
-              <TabsTrigger value="quality">Education Quality</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="overview" className="space-y-6">
+
+        {/* Main Navigation */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
+          <TabsList className="bg-gray-100 dark:bg-gray-800 p-1 rounded-lg">
+            <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="literacy">Literacy</TabsTrigger>
+            <TabsTrigger value="enrollment">Enrollment</TabsTrigger>
+            <TabsTrigger value="infrastructure">Infrastructure</TabsTrigger>
+          </TabsList>
+
+          {/* Overview Tab Content */}
+          <TabsContent value="overview" className="space-y-8">
+            <section>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Card className="bg-white dark:bg-gray-800">
-                  <CardHeader className="pb-3 pt-6">
-                    <CardTitle className="flex justify-between">
-                      <span className="text-lg font-medium">Adult Literacy Rate</span>
-                      <Book className="h-5 w-5 text-blue-500" />
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-3xl font-bold mb-1">{educationStats.Literacy_Access.Adult_Literacy_Rate_percent[activeYear]}%</div>
-                    <div className={`text-sm ${getChangeValue(literacyData, 'literacy') >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {getChangeValue(literacyData, 'literacy') >= 0 ? '+' : ''}{getChangeValue(literacyData, 'literacy').toFixed(1)}% since 2020
+                <Card>
+                  <CardHeader className="bg-blue-50 dark:bg-blue-900/20 pb-2">
+                    <div className="flex justify-between items-center">
+                      <CardTitle className="text-sm font-medium">
+                        Adult Literacy Rate
+                      </CardTitle>
+                      <Book className="h-4 w-4 text-blue-500" />
                     </div>
+                  </CardHeader>
+                  <CardContent className="pt-4">
+                    <div className="text-2xl font-bold">
+                      {edStats.Literacy_Access.Adult_Literacy_Rate_percent["2024"]}%
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {(parseFloat(edStats.Literacy_Access.Adult_Literacy_Rate_percent["2024"].replace("*", "")) - 
+                       edStats.Literacy_Access.Adult_Literacy_Rate_percent["2020"]).toFixed(1)}% increase since 2020
+                    </p>
                   </CardContent>
                 </Card>
                 
-                <Card className="bg-white dark:bg-gray-800">
-                  <CardHeader className="pb-3 pt-6">
-                    <CardTitle className="flex justify-between">
-                      <span className="text-lg font-medium">Primary Enrollment</span>
-                      <School className="h-5 w-5 text-green-500" />
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-3xl font-bold mb-1">{educationStats.Literacy_Access.Primary_School_Enrollment_Rate_percent[activeYear]}%</div>
-                    <div className={`text-sm ${getChangeValue(primaryEnrollmentData, 'primary') >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {getChangeValue(primaryEnrollmentData, 'primary') >= 0 ? '+' : ''}{getChangeValue(primaryEnrollmentData, 'primary').toFixed(1)}% since 2020
+                <Card>
+                  <CardHeader className="bg-green-50 dark:bg-green-900/20 pb-2">
+                    <div className="flex justify-between items-center">
+                      <CardTitle className="text-sm font-medium">
+                        Primary Enrollment
+                      </CardTitle>
+                      <GraduationCap className="h-4 w-4 text-green-500" />
                     </div>
+                  </CardHeader>
+                  <CardContent className="pt-4">
+                    <div className="text-2xl font-bold">
+                      {edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2024"]}%
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {(parseFloat(edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2024"].replace("*", "")) - 
+                       edStats.Literacy_Access.Primary_School_Enrollment_Rate_percent["2020"]).toFixed(1)}% increase since 2020
+                    </p>
                   </CardContent>
                 </Card>
                 
-                <Card className="bg-white dark:bg-gray-800">
-                  <CardHeader className="pb-3 pt-6">
-                    <CardTitle className="flex justify-between">
-                      <span className="text-lg font-medium">Secondary Enrollment</span>
-                      <GraduationCap className="h-5 w-5 text-purple-500" />
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-3xl font-bold mb-1">{educationStats.Literacy_Access.Secondary_School_Enrollment_Rate_percent[activeYear]}%</div>
-                    <div className={`text-sm ${getChangeValue(secondaryEnrollmentData, 'secondary') >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {getChangeValue(secondaryEnrollmentData, 'secondary') >= 0 ? '+' : ''}{getChangeValue(secondaryEnrollmentData, 'secondary').toFixed(1)}% since 2020
+                <Card>
+                  <CardHeader className="bg-purple-50 dark:bg-purple-900/20 pb-2">
+                    <div className="flex justify-between items-center">
+                      <CardTitle className="text-sm font-medium">
+                        Teacher-Student Ratio
+                      </CardTitle>
+                      <Book className="h-4 w-4 text-purple-500" />
                     </div>
+                  </CardHeader>
+                  <CardContent className="pt-4">
+                    <div className="text-2xl font-bold">
+                      1:{edStats.Teachers_Training.Primary_Teacher_Student_Ratio["2024"]}
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Primary school ratio in 2024
+                    </p>
                   </CardContent>
                 </Card>
                 
-                <Card className="bg-white dark:bg-gray-800">
-                  <CardHeader className="pb-3 pt-6">
-                    <CardTitle className="flex justify-between">
-                      <span className="text-lg font-medium">Tertiary Enrollment</span>
-                      <Users className="h-5 w-5 text-orange-500" />
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="text-3xl font-bold mb-1">{educationStats.Literacy_Access.Tertiary_Enrollment_Rate_percent[activeYear]}%</div>
-                    <div className={`text-sm ${getChangeValue(tertiaryEnrollmentData, 'tertiary') >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                      {getChangeValue(tertiaryEnrollmentData, 'tertiary') >= 0 ? '+' : ''}{getChangeValue(tertiaryEnrollmentData, 'tertiary').toFixed(1)}% since 2020
+                <Card>
+                  <CardHeader className="bg-amber-50 dark:bg-amber-900/20 pb-2">
+                    <div className="flex justify-between items-center">
+                      <CardTitle className="text-sm font-medium">
+                        Trained Teachers
+                      </CardTitle>
+                      <GraduationCap className="h-4 w-4 text-amber-500" />
                     </div>
+                  </CardHeader>
+                  <CardContent className="pt-4">
+                    <div className="text-2xl font-bold">
+                      {edStats.Teachers_Training.Percent_of_Trained_Primary_Teachers["2024"]}%
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Of primary teachers are trained
+                    </p>
                   </CardContent>
                 </Card>
               </div>
-              
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Literacy & Enrollment Trends</CardTitle>
-                  </CardHeader>
-                  <CardContent className="h-[400px]">
-                    <LineChart 
-                      data={literacyData}
-                      xAxisKey="name"
-                      lineKey="value"
-                      strokeColor="#3b82f6"
-                      animation={true}
-                    />
-                    <div className="mt-2 text-center text-sm text-gray-500">Adult Literacy Rate (%) 2020-2024</div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Primary School Enrollment</CardTitle>
-                  </CardHeader>
-                  <CardContent className="h-[400px]">
-                    <LineChart 
-                      data={primaryEnrollmentData}
-                      xAxisKey="name"
-                      lineKey="value"
-                      strokeColor="#10b981"
-                      animation={true}
-                    />
-                    <div className="mt-2 text-center text-sm text-gray-500">Primary School Enrollment Rate (%) 2020-2024</div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Secondary School Enrollment</CardTitle>
-                  </CardHeader>
-                  <CardContent className="h-[400px]">
-                    <LineChart 
-                      data={secondaryEnrollmentData}
-                      xAxisKey="name"
-                      lineKey="value"
-                      strokeColor="#8b5cf6"
-                      animation={true}
-                    />
-                    <div className="mt-2 text-center text-sm text-gray-500">Secondary School Enrollment Rate (%) 2020-2024</div>
-                  </CardContent>
-                </Card>
-                
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Tertiary Enrollment</CardTitle>
-                  </CardHeader>
-                  <CardContent className="h-[400px]">
-                    <LineChart 
-                      data={tertiaryEnrollmentData}
-                      xAxisKey="name"
-                      lineKey="value"
-                      strokeColor="#f97316"
-                      animation={true}
-                    />
-                    <div className="mt-2 text-center text-sm text-gray-500">Tertiary Enrollment Rate (%) 2020-2024</div>
-                  </CardContent>
-                </Card>
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="gender" className="space-y-6">
+            </section>
+
+            <section id="education-section">
               <Card>
                 <CardHeader>
-                  <CardTitle>Gender Parity Index by Education Level</CardTitle>
+                  <CardTitle>Enrollment Trends Comparison</CardTitle>
                 </CardHeader>
-                <CardContent className="h-[500px]">
-                  <BarChart 
-                    data={enrollmentByGenderData}
-                    xAxisKey="name"
+                <CardContent>
+                  <BarChart
+                    data={enrollmentComparisonData}
                     bars={[
-                      { dataKey: "primary", name: "Primary", color: "#3b82f6" },
-                      { dataKey: "secondary", name: "Secondary", color: "#8b5cf6" },
-                      { dataKey: "tertiary", name: "Tertiary", color: "#f97316" }
+                      { dataKey: "primary", name: "Primary School", color: "#4ade80" },
+                      { dataKey: "secondary", name: "Secondary School", color: "#3b82f6" },
+                      { dataKey: "tertiary", name: "Tertiary Education", color: "#8b5cf6" }
                     ]}
-                    title="Gender Parity Index (Female to Male Ratio)"
-                    height={440}
+                    xAxisKey="name"
+                    title="Education Enrollment by Level (%)"
+                    height={350}
                   />
                 </CardContent>
               </Card>
-            </TabsContent>
-            
-            <TabsContent value="enrollment" className="space-y-6">
-              <p className="text-gray-600 dark:text-gray-300 italic">Enrollment data view coming soon...</p>
-            </TabsContent>
-            
-            <TabsContent value="quality" className="space-y-6">
-              <p className="text-gray-600 dark:text-gray-300 italic">Education quality metrics coming soon...</p>
-            </TabsContent>
-          </Tabs>
+            </section>
+          </TabsContent>
+
+          {/* Literacy Tab Content */}
+          <TabsContent value="literacy" className="space-y-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={isVisible ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5 }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle>Adult Literacy Rate (2020-2024)</CardTitle>
+                </CardHeader>
+                <CardContent className="h-[400px]">
+                  <LineChart
+                    data={literacyData}
+                    lines={[{ dataKey: "value", name: "Literacy Rate (%)", color: "#3b82f6" }]}
+                    xAxisKey="name"
+                    animation={true}
+                  />
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Urban vs Rural Literacy</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-sm font-medium mb-2">Urban Literacy Rate (2024)</h3>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                          className="bg-blue-500 h-2.5 rounded-full"
+                          style={{ width: `${edStats.Literacy_Access.Urban_Literacy_Rate_percent["2024"]}%` }}
+                        ></div>
+                      </div>
+                      <div className="flex justify-between text-xs mt-1">
+                        <span>0%</span>
+                        <span className="font-medium">{edStats.Literacy_Access.Urban_Literacy_Rate_percent["2024"]}%</span>
+                        <span>100%</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-medium mb-2">Rural Literacy Rate (2024)</h3>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                          className="bg-green-500 h-2.5 rounded-full"
+                          style={{ width: `${edStats.Literacy_Access.Rural_Literacy_Rate_percent["2024"]}%` }}
+                        ></div>
+                      </div>
+                      <div className="flex justify-between text-xs mt-1">
+                        <span>0%</span>
+                        <span className="font-medium">{edStats.Literacy_Access.Rural_Literacy_Rate_percent["2024"]}%</span>
+                        <span>100%</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-4">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        The urban-rural literacy gap stands at {(
+                          edStats.Literacy_Access.Urban_Literacy_Rate_percent["2024"] -
+                          edStats.Literacy_Access.Rural_Literacy_Rate_percent["2024"]
+                        ).toFixed(1)}%, highlighting regional educational disparities.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Gender-based Literacy</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    <div>
+                      <h3 className="text-sm font-medium mb-2">Male Literacy Rate (2024)</h3>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                          className="bg-blue-500 h-2.5 rounded-full"
+                          style={{ width: `${edStats.Gender_Parity.Male_Literacy_Rate_percent["2024"]}%` }}
+                        ></div>
+                      </div>
+                      <div className="flex justify-between text-xs mt-1">
+                        <span>0%</span>
+                        <span className="font-medium">{edStats.Gender_Parity.Male_Literacy_Rate_percent["2024"]}%</span>
+                        <span>100%</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <h3 className="text-sm font-medium mb-2">Female Literacy Rate (2024)</h3>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                          className="bg-purple-500 h-2.5 rounded-full"
+                          style={{ width: `${edStats.Gender_Parity.Female_Literacy_Rate_percent["2024"]}%` }}
+                        ></div>
+                      </div>
+                      <div className="flex justify-between text-xs mt-1">
+                        <span>0%</span>
+                        <span className="font-medium">{edStats.Gender_Parity.Female_Literacy_Rate_percent["2024"]}%</span>
+                        <span>100%</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-4">
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        The gender literacy gap stands at {(
+                          edStats.Gender_Parity.Male_Literacy_Rate_percent["2024"] -
+                          edStats.Gender_Parity.Female_Literacy_Rate_percent["2024"]
+                        ).toFixed(1)}%, with ongoing initiatives to close this gap.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
+
+          {/* Enrollment Tab Content */}
+          <TabsContent value="enrollment" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Primary School Enrollment</CardTitle>
+                </CardHeader>
+                <CardContent className="h-[300px]">
+                  <LineChart
+                    data={primaryEnrollmentData}
+                    lines={[{ dataKey: "value", name: "Enrollment Rate (%)", color: "#4ade80" }]}
+                    xAxisKey="name"
+                    animation={true}
+                  />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Secondary School Enrollment</CardTitle>
+                </CardHeader>
+                <CardContent className="h-[300px]">
+                  <LineChart
+                    data={secondaryEnrollmentData}
+                    lines={[{ dataKey: "value", name: "Enrollment Rate (%)", color: "#3b82f6" }]}
+                    xAxisKey="name"
+                    animation={true}
+                  />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Tertiary Education Enrollment</CardTitle>
+                </CardHeader>
+                <CardContent className="h-[300px]">
+                  <LineChart
+                    data={tertiaryEnrollmentData}
+                    lines={[{ dataKey: "value", name: "Enrollment Rate (%)", color: "#8b5cf6" }]}
+                    xAxisKey="name"
+                    animation={true}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Gender Parity in Education (2024)</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-6">
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <h3 className="text-sm font-medium">Primary School Gender Parity Index</h3>
+                      <span className="text-sm font-medium">{edStats.Gender_Parity.Primary_School_Gender_Parity_Index["2024"]}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                      <div
+                        className="bg-blue-500 h-2.5 rounded-full"
+                        style={{ width: `${(edStats.Gender_Parity.Primary_School_Gender_Parity_Index["2024"] / 2) * 100}%` }}
+                      ></div>
+                    </div>
+                    <div className="flex justify-between text-xs mt-1">
+                      <span>0</span>
+                      <span>1.0 (perfect parity)</span>
+                      <span>2.0</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <h3 className="text-sm font-medium">Secondary School Gender Parity Index</h3>
+                      <span className="text-sm font-medium">{edStats.Gender_Parity.Secondary_School_Gender_Parity_Index["2024"]}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                      <div
+                        className="bg-green-500 h-2.5 rounded-full"
+                        style={{ width: `${(edStats.Gender_Parity.Secondary_School_Gender_Parity_Index["2024"] / 2) * 100}%` }}
+                      ></div>
+                    </div>
+                    <div className="flex justify-between text-xs mt-1">
+                      <span>0</span>
+                      <span>1.0 (perfect parity)</span>
+                      <span>2.0</span>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <h3 className="text-sm font-medium">Tertiary Education Gender Parity Index</h3>
+                      <span className="text-sm font-medium">{edStats.Gender_Parity.Tertiary_Education_Gender_Parity_Index["2024"]}</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                      <div
+                        className="bg-purple-500 h-2.5 rounded-full"
+                        style={{ width: `${(edStats.Gender_Parity.Tertiary_Education_Gender_Parity_Index["2024"] / 2) * 100}%` }}
+                      ></div>
+                    </div>
+                    <div className="flex justify-between text-xs mt-1">
+                      <span>0</span>
+                      <span>1.0 (perfect parity)</span>
+                      <span>2.0</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-md mt-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <strong>Note:</strong> A gender parity index of 1 indicates perfect equality between genders.
+                      Values below 1 indicate a disparity favoring males, while values above 1 indicate a disparity favoring females.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Infrastructure Tab Content */}
+          <TabsContent value="infrastructure" className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Educational Institutions</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <h3 className="text-sm font-medium">Primary Schools</h3>
+                        <span className="text-sm font-medium">{edStats.Educational_Infrastructure.Number_of_Primary_Schools["2024"].toLocaleString()}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                          className="bg-blue-500 h-2.5 rounded-full"
+                          style={{ width: "100%" }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <h3 className="text-sm font-medium">Secondary Schools</h3>
+                        <span className="text-sm font-medium">{edStats.Educational_Infrastructure.Number_of_Secondary_Schools["2024"].toLocaleString()}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                          className="bg-green-500 h-2.5 rounded-full"
+                          style={{ width: `${(edStats.Educational_Infrastructure.Number_of_Secondary_Schools["2024"] / edStats.Educational_Infrastructure.Number_of_Primary_Schools["2024"]) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <h3 className="text-sm font-medium">Universities & Colleges</h3>
+                        <span className="text-sm font-medium">{edStats.Educational_Infrastructure.Number_of_Universities_and_Colleges["2024"]}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                          className="bg-purple-500 h-2.5 rounded-full"
+                          style={{ width: `${(edStats.Educational_Infrastructure.Number_of_Universities_and_Colleges["2024"] / edStats.Educational_Infrastructure.Number_of_Primary_Schools["2024"]) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <h3 className="text-sm font-medium">Vocational Training Centers</h3>
+                        <span className="text-sm font-medium">{edStats.Educational_Infrastructure.Number_of_Vocational_Training_Centers["2024"]}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                          className="bg-yellow-500 h-2.5 rounded-full"
+                          style={{ width: `${(edStats.Educational_Infrastructure.Number_of_Vocational_Training_Centers["2024"] / edStats.Educational_Infrastructure.Number_of_Primary_Schools["2024"]) * 100}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Teacher Statistics</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <h3 className="text-sm font-medium">Primary Teacher-Student Ratio</h3>
+                        <span className="text-sm font-medium">1:{edStats.Teachers_Training.Primary_Teacher_Student_Ratio["2024"]}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                          className="bg-blue-500 h-2.5 rounded-full"
+                          style={{ width: `${(1 / edStats.Teachers_Training.Primary_Teacher_Student_Ratio["2024"]) * 1000}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <h3 className="text-sm font-medium">Secondary Teacher-Student Ratio</h3>
+                        <span className="text-sm font-medium">1:{edStats.Teachers_Training.Secondary_Teacher_Student_Ratio["2024"]}</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                          className="bg-green-500 h-2.5 rounded-full"
+                          style={{ width: `${(1 / edStats.Teachers_Training.Secondary_Teacher_Student_Ratio["2024"]) * 1000}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <h3 className="text-sm font-medium">Trained Primary Teachers</h3>
+                        <span className="text-sm font-medium">{edStats.Teachers_Training.Percent_of_Trained_Primary_Teachers["2024"]}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                          className="bg-purple-500 h-2.5 rounded-full"
+                          style={{ width: `${parseFloat(edStats.Teachers_Training.Percent_of_Trained_Primary_Teachers["2024"].replace('*', ''))}%` }}
+                        ></div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div className="flex justify-between mb-1">
+                        <h3 className="text-sm font-medium">Trained Secondary Teachers</h3>
+                        <span className="text-sm font-medium">{edStats.Teachers_Training.Percent_of_Trained_Secondary_Teachers["2024"]}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                        <div
+                          className="bg-yellow-500 h-2.5 rounded-full"
+                          style={{ width: `${parseFloat(edStats.Teachers_Training.Percent_of_Trained_Secondary_Teachers["2024"].replace('*', ''))}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Education Funding</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <h3 className="text-sm font-medium">Education Budget as % of GDP</h3>
+                      <span className="text-sm font-medium">{edStats.Education_Funding.Education_Budget_as_Percent_of_GDP["2024"]}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                      <div
+                        className="bg-blue-500 h-2.5 rounded-full"
+                        style={{ width: `${edStats.Education_Funding.Education_Budget_as_Percent_of_GDP["2024"] * 10}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <h3 className="text-sm font-medium">Education Budget as % of National Budget</h3>
+                      <span className="text-sm font-medium">{edStats.Education_Funding.Education_Budget_as_Percent_of_National_Budget["2024"]}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                      <div
+                        className="bg-green-500 h-2.5 rounded-full"
+                        style={{ width: `${edStats.Education_Funding.Education_Budget_as_Percent_of_National_Budget["2024"]}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-md mt-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <strong>Note:</strong> The international recommendation for education spending is 4-6% of GDP
+                      and 15-20% of total public expenditure.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
+
+        <div className="mt-10 text-center text-xs text-gray-500 dark:text-gray-400">
+          <p>Source: Ministry of Education Zambia, UNESCO, World Bank</p>
+          <p>* Estimated values for 2024</p>
         </div>
-      </section>
+      </div>
     </PageLayout>
   );
 };
