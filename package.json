@@ -50,7 +50,7 @@
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
     "file-saver": "^2.0.5",
-    "framer-motion": "^12.5.0",
+    "framer-motion": "^10.18.0",
     "input-otp": "^1.2.4",
     "jspdf-autotable": "^3.8.2",
     "lucide-react": "^0.462.0",
