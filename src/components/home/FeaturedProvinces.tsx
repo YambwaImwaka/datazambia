@@ -1,7 +1,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, MapPin, Users, DollarSign, Building } from "lucide-react";
+import { ArrowRight, MapPin, Users, DollarSign, Building, Tree } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { provinces } from "@/utils/data";
@@ -44,6 +44,20 @@ export const FeaturedProvinces = () => {
         stiffness: 100,
         damping: 15
       }
+    }
+  };
+
+  // Map provinces to their appropriate images
+  const getProvinceImage = (provinceId: string) => {
+    switch(provinceId) {
+      case "lusaka": 
+        return "/lovable-uploads/2f245af2-a159-479f-b943-399b757e847a.png";
+      case "copperbelt":
+        return "https://images.unsplash.com/photo-1501854140801-50d01698950b";
+      case "southern":
+        return "https://images.unsplash.com/photo-1472396961693-142e6e269027";
+      default:
+        return "https://images.unsplash.com/photo-1485833077593-4278bba3f11f"; 
     }
   };
 
@@ -93,7 +107,7 @@ export const FeaturedProvinces = () => {
               >
                 <div className="relative h-56 overflow-hidden">
                   <img 
-                    src={province.image} 
+                    src={getProvinceImage(province.id)} 
                     alt={province.name}
                     className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
                   />

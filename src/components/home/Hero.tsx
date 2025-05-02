@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowRight, Search, MapPin, BarChart2 } from "lucide-react";
+import { ArrowRight, Search, MapPin, BarChart2, TreePine } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { provinces } from "@/utils/data";
@@ -13,10 +13,28 @@ export const Hero = () => {
   const [searchResults, setSearchResults] = useState<typeof provinces>([]);
   const [showResults, setShowResults] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
+  const [currentVisual, setCurrentVisual] = useState(0);
+
+  // Data visualizations placeholders for rotation
+  const visuals = [
+    { id: 1, title: "GDP Growth", value: "7.2%" },
+    { id: 2, title: "Education Enrollment", value: "92.4%" },
+    { id: 3, title: "Agricultural Output", value: "↑ 12.3%" },
+    { id: 4, title: "Healthcare Access", value: "76.8%" },
+  ];
 
   useEffect(() => {
     const timer = setTimeout(() => setAnimationComplete(true), 500);
-    return () => clearTimeout(timer);
+    
+    // Auto-rotate through visualizations
+    const rotationTimer = setInterval(() => {
+      setCurrentVisual(prev => (prev + 1) % visuals.length);
+    }, 5000);
+    
+    return () => {
+      clearTimeout(timer);
+      clearInterval(rotationTimer);
+    };
   }, []);
 
   useEffect(() => {
@@ -60,8 +78,29 @@ export const Hero = () => {
     }
   };
 
+  // Animation variants for the rotating visuals
+  const visualVariants = {
+    enter: { y: 20, opacity: 0 },
+    center: { 
+      y: 0, 
+      opacity: 1,
+      transition: { 
+        y: { type: "spring", stiffness: 300, damping: 30 },
+        opacity: { duration: 0.4 }
+      }
+    },
+    exit: { 
+      y: -20, 
+      opacity: 0,
+      transition: { 
+        y: { type: "spring", stiffness: 300, damping: 30 },
+        opacity: { duration: 0.4 }
+      }
+    }
+  };
+
   return (
-    <div className="relative min-h-[80vh] flex items-center justify-center overflow-hidden pt-20 md:pt-0">
+    <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden pt-20 md:pt-0">
       {/* Background with gradient and pattern */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-zambia-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-950"></div>
       
@@ -72,8 +111,26 @@ export const Hero = () => {
         <div className="absolute top-1/2 right-1/3 w-48 h-48 bg-gradient-to-tr from-yellow-300 to-amber-400 rounded-full filter blur-3xl animate-float-medium" style={{ animationDelay: "0.8s" }}></div>
       </div>
       
-      {/* Decorative elements */}
+      {/* Data visualization decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-10 left-10 w-48 h-48 opacity-30 bg-gradient-to-b from-blue-500/40 to-transparent rounded-full filter blur-xl"></div>
+        <div className="absolute bottom-10 right-10 w-60 h-60 opacity-30 bg-gradient-to-t from-zambia-500/40 to-transparent rounded-full filter blur-xl"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 bg-amber-500/30 rounded-full filter blur-md"></div>
+        
+        {/* Chart lines decorative elements */}
+        <div className="hidden md:block absolute top-1/4 right-[10%] w-32 h-32">
+          <svg viewBox="0 0 100 100" className="w-full h-full text-green-500/30">
+            <path d="M0,70 Q25,50 50,60 T100,40" fill="none" stroke="currentColor" strokeWidth="2"/>
+            <path d="M0,40 Q25,30 50,60 T100,20" fill="none" stroke="currentColor" strokeWidth="2"/>
+          </svg>
+        </div>
+        <div className="hidden md:block absolute bottom-1/3 left-[15%] w-24 h-24">
+          <svg viewBox="0 0 100 100" className="w-full h-full text-blue-500/30">
+            <path d="M0,50 Q25,20 50,30 T100,10" fill="none" stroke="currentColor" strokeWidth="2"/>
+            <path d="M0,80 Q25,60 50,70 T100,50" fill="none" stroke="currentColor" strokeWidth="2"/>
+          </svg>
+        </div>
+        
         <div className="absolute top-16 left-16 w-32 h-32 rounded-lg border border-gray-200 dark:border-gray-700 bg-white/10 dark:bg-gray-800/10 backdrop-blur-sm rotate-12"></div>
         <div className="absolute bottom-32 right-32 w-48 h-48 rounded-full border border-gray-200 dark:border-gray-700 bg-white/10 dark:bg-gray-800/10 backdrop-blur-sm"></div>
         <div className="absolute top-1/3 right-24 w-24 h-24 rounded-lg border border-gray-200 dark:border-gray-700 bg-white/10 dark:bg-gray-800/10 backdrop-blur-sm -rotate-12"></div>
@@ -85,7 +142,7 @@ export const Hero = () => {
         animate="visible"
         variants={containerVariants}
       >
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           <motion.div variants={itemVariants}>
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-gray-900 dark:text-white tracking-tight mb-6">
               Discover <span className="text-gradient bg-gradient-to-r from-zambia-500 to-blue-600 bg-clip-text text-transparent">Zambia</span> Through Data
@@ -94,6 +151,28 @@ export const Hero = () => {
             <p className="text-lg md:text-xl text-gray-600 dark:text-gray-300 mb-10 max-w-3xl mx-auto leading-relaxed">
               Explore comprehensive data insights across all provinces of Zambia. From economic indicators to health metrics, understand the nation through numbers.
             </p>
+          </motion.div>
+          
+          {/* Featured Data Stat with Animation */}
+          <motion.div
+            className="max-w-sm mx-auto bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm p-4 rounded-xl shadow-lg mb-10 overflow-hidden"
+            variants={itemVariants}
+          >
+            <div className="relative h-20">
+              {visuals.map((visual, index) => (
+                <motion.div
+                  key={visual.id}
+                  className="absolute inset-0 flex flex-col justify-center items-center"
+                  initial="enter"
+                  animate={index === currentVisual ? "center" : "exit"}
+                  variants={visualVariants}
+                  style={{ display: index === currentVisual ? 'flex' : 'none' }}
+                >
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">{visual.title}</p>
+                  <p className="text-3xl font-bold text-gray-900 dark:text-white">{visual.value}</p>
+                </motion.div>
+              ))}
+            </div>
           </motion.div>
           
           <motion.div 
@@ -176,35 +255,67 @@ export const Hero = () => {
             </Link>
           </motion.div>
           
-          {/* Feature highlights */}
+          {/* Data Category Cards */}
           <motion.div 
             variants={itemVariants}
-            className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16"
+            className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-16"
           >
-            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300">
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105">
               <div className="rounded-full w-12 h-12 bg-zambia-100 dark:bg-zambia-900/40 flex items-center justify-center mb-4 mx-auto">
                 <MapPin size={24} className="text-zambia-600 dark:text-zambia-400" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Provincial Insights</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">Detailed statistics and information for each of Zambia's 10 provinces.</p>
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">Provincial Data</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-xs">Comprehensive statistics for each province</p>
             </div>
             
-            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300">
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105">
               <div className="rounded-full w-12 h-12 bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center mb-4 mx-auto">
                 <BarChart2 size={24} className="text-blue-600 dark:text-blue-400" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Economic Indicators</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">Comprehensive economic data including GDP, trade statistics, and growth rates.</p>
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">Economic Metrics</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-xs">Growth rates, trade, and financial data</p>
             </div>
             
-            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-6 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300">
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+              <div className="rounded-full w-12 h-12 bg-green-100 dark:bg-green-900/40 flex items-center justify-center mb-4 mx-auto">
+                <TreePine size={24} className="text-green-600 dark:text-green-400" />
+              </div>
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">Agriculture</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-xs">Crop outputs and farming statistics</p>
+            </div>
+            
+            <div className="bg-white/70 dark:bg-gray-800/70 backdrop-blur-sm p-4 rounded-xl border border-gray-200 dark:border-gray-700 shadow-md hover:shadow-lg transition-all duration-300 transform hover:scale-105">
               <div className="rounded-full w-12 h-12 bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center mb-4 mx-auto">
                 <ArrowRight size={24} className="text-amber-600 dark:text-amber-400" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">Interactive Maps</h3>
-              <p className="text-gray-600 dark:text-gray-300 text-sm">Explore geographical data through intuitive and responsive interactive maps.</p>
+              <h3 className="text-base font-semibold text-gray-900 dark:text-white mb-2">Social Indicators</h3>
+              <p className="text-gray-600 dark:text-gray-300 text-xs">Education, health, and demographic data</p>
             </div>
           </motion.div>
+
+          {/* Animated data points */}
+          <div className="hidden md:block absolute inset-0 pointer-events-none overflow-hidden">
+            {[...Array(10)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-2 h-2 rounded-full bg-zambia-500 opacity-70"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                }}
+                animate={{
+                  scale: [1, 1.5, 1],
+                  opacity: [0.3, 0.7, 0.3],
+                }}
+                transition={{
+                  duration: 2 + Math.random() * 3,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  delay: Math.random() * 2,
+                }}
+              />
+            ))}
+          </div>
         </div>
       </motion.div>
     </div>
