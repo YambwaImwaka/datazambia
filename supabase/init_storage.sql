@@ -1,4 +1,5 @@
 
+
 -- Create a storage bucket for avatars if it doesn't already exist
 INSERT INTO storage.buckets (id, name, public)
 VALUES ('avatars', 'Avatar images', TRUE)
@@ -36,3 +37,8 @@ USING (
   bucket_id = 'avatars'
   AND auth.uid()::text = (storage.foldername(name))[1]
 );
+
+-- Fix mutable search path issues in functions
+ALTER FUNCTION public.has_role SET search_path = public;
+ALTER FUNCTION public.make_admin SET search_path = public;
+
