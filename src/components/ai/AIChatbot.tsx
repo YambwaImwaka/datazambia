@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -9,6 +10,8 @@ import {
   DialogHeader, 
   DialogTitle 
 } from "@/components/ui/dialog";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 interface Message {
   id: string;
@@ -30,6 +33,7 @@ const AIChatbot = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     scrollToBottom();
@@ -57,33 +61,42 @@ const AIChatbot = () => {
     setIsTyping(true);
     
     try {
-      // Hardcoded OpenAI API call
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer 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` // Replace with your actual API key
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [
-            { role: "system", content: "You are a helpful assistant providing data about Zambia." },
-            { role: "user", content: input }
-          ],
-          max_tokens: 100
-        })
+      // Get messages for context - exclude the welcome message
+      const messageHistory = messages
+        .filter(msg => msg.id !== "welcome")
+        .slice(-10); // Limit context to last 10 messages
+      
+      // Call our Supabase Edge Function
+      const { data, error } = await supabase.functions.invoke("ai-chat", {
+        body: { 
+          input: input,
+          messageHistory: messageHistory
+        }
       });
-
-      const data = await response.json();
+      
+      if (error) {
+        console.error("Error calling AI chat function:", error);
+        throw new Error(error.message);
+      }
+      
+      // Add bot response
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.choices?.[0]?.message?.content || "I'm sorry, I couldn't understand that.",
+        text: data.response || "I'm sorry, I couldn't process your request at the moment.",
         sender: "bot",
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
+      console.error("Error in chat:", error);
+      
+      toast({
+        title: "Error",
+        description: "Failed to get a response. Please try again later.",
+        variant: "destructive"
+      });
+      
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
         text: "There was an error processing your request. Please try again later.",
@@ -212,7 +225,7 @@ const AIChatbot = () => {
               </Button>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-              Powered by OpenAI
+              Powered by AI
             </p>
           </form>
         </DialogContent>
