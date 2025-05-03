@@ -7,10 +7,10 @@ import DataVisualizer from "@/components/home/DataVisualizer";
 import EmailSignup from "@/components/home/EmailSignup";
 import PageLayout from "@/components/layout/PageLayout";
 import SectorTiles from "@/components/home/SectorTiles";
-import FeaturedInsights from "@/components/home/FeaturedInsights";
 import DataHighlights from "@/components/home/DataHighlights";
 import FeaturedProvinces from "@/components/home/FeaturedProvinces";
 import AIChatbot from "@/components/ai/AIChatbot";
+import NewsHighlights from "@/components/home/NewsHighlights";
 import { educationStatistics } from "@/utils/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Book, LineChart, ArrowUpRight } from "lucide-react";
@@ -38,7 +38,7 @@ const Index: React.FC = () => {
       <DataHighlights />
       <SectorTiles />
       <FeaturedProvinces />
-      <FeaturedInsights />
+      <NewsHighlights />
       <DataVisualizer />
       
       {/* Education Statistics Showcase */}
