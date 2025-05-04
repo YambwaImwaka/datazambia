@@ -3,3 +3,9 @@ project_id = "xaofrarlthvoxdhazjlu"
 
 [functions.ai-chat]
 verify_jwt = false
+
+[functions.ai-image-generator]
+verify_jwt = false
+
+[functions.time-series-forecast]
+verify_jwt = false

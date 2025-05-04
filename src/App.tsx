@@ -13,6 +13,7 @@ import ProvincesList from "./pages/ProvincesList";
 import Explore from "./pages/Explore";
 import Education from "./pages/explore/Education";
 import Finance from "./pages/Finance";
+import AITools from "./pages/AITools";
 import About from "./pages/About";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
@@ -52,6 +53,7 @@ const App = () => {
                 <Route path="/explore/:categoryId" element={<Explore />} />
                 <Route path="/explore/education" element={<Education />} />
                 <Route path="/finance" element={<Finance />} />
+                <Route path="/ai-tools" element={<AITools />} />
                 <Route path="/about" element={<About />} />
                 
                 {/* Auth routes - accessible only when NOT logged in */}
