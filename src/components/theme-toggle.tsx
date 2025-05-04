@@ -36,3 +36,6 @@ export function ThemeToggle() {
     </DropdownMenu>
   );
 }
+
+// Export ModeToggle as an alias of ThemeToggle for backward compatibility
+export const ModeToggle = ThemeToggle;

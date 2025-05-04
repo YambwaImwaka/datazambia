@@ -1,9 +1,15 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Session, User } from '@supabase/supabase-js';
+import { Session, User as SupabaseUser } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { makeAdmin } from '@/utils/makeAdmin';
+
+// Extend the User type to include isAdmin property
+interface User extends SupabaseUser {
+  isAdmin?: boolean;
+}
 
 type AuthContextType = {
   session: Session | null;
@@ -29,14 +35,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (_event, session) => {
         setSession(session);
-        setUser(session?.user ?? null);
+        // Cast the user to our extended User type
+        setUser(session?.user as User ?? null);
         setIsLoading(false);
       }
     );
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
-      setUser(session?.user ?? null);
+      // Cast the user to our extended User type
+      setUser(session?.user as User ?? null);
       setIsLoading(false);
     });
 
@@ -59,7 +67,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .eq('role', 'admin')
         .single();
 
+      // Update both the isAdmin state and user object
       setIsAdmin(!!data && !error);
+      if (user && (!!data && !error)) {
+        setUser(currentUser => currentUser ? {...currentUser, isAdmin: true} : null);
+      }
     };
 
     checkAdminRole();
