@@ -14,8 +14,15 @@ import { Loader2, Search, Shield, ShieldCheck, UserX, Plus } from 'lucide-react'
 import { removeAdmin } from '@/utils/makeAdmin';
 import { useAuth } from '@/contexts/AuthContext';
 
+type AdminUser = {
+  id: string;
+  username: string | null;
+  full_name: string | null;
+  email: string | null;
+};
+
 const AdminAccountsPanel = () => {
-  const [adminUsers, setAdminUsers] = useState<any[]>([]);
+  const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
@@ -161,7 +168,7 @@ const AdminAccountsPanel = () => {
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
                                 <AlertDialogAction 
                                   className="bg-red-500 hover:bg-red-600"
-                                  onClick={() => handleRemoveAdmin(admin.id, admin.username || admin.full_name)}
+                                  onClick={() => handleRemoveAdmin(admin.id, admin.username || admin.full_name || 'User')}
                                 >
                                   Remove Admin
                                 </AlertDialogAction>

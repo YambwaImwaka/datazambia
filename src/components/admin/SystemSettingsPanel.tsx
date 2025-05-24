@@ -31,6 +31,20 @@ const emailSettingsSchema = z.object({
 type FeatureToggleFormValues = z.infer<typeof featureToggleSchema>;
 type EmailSettingsFormValues = z.infer<typeof emailSettingsSchema>;
 
+type SystemSettings = {
+  id: string;
+  enable_user_registration: boolean;
+  enable_notifications: boolean;
+  enable_user_favorites: boolean;
+  enable_comments: boolean;
+  maintenance_mode: boolean;
+  email_from_name: string | null;
+  email_from_address: string | null;
+  email_footer_text: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 const SystemSettingsPanel = () => {
   const [activeTab, setActiveTab] = useState('features');
   const queryClient = useQueryClient();
@@ -58,7 +72,7 @@ const SystemSettingsPanel = () => {
   // Fetch system settings from the database
   const { data: settings, isLoading: isLoadingSettings, error: settingsError } = useQuery({
     queryKey: ['system-settings'],
-    queryFn: async () => {
+    queryFn: async (): Promise<SystemSettings | null> => {
       const { data, error } = await supabase
         .from('system_settings')
         .select('*')
@@ -82,12 +96,12 @@ const SystemSettingsPanel = () => {
       });
       
       emailForm.reset({
-        email_from_name: settings.email_from_name,
-        email_from_address: settings.email_from_address,
+        email_from_name: settings.email_from_name || 'Zambia Insight',
+        email_from_address: settings.email_from_address || 'info@example.com',
         email_footer_text: settings.email_footer_text || '',
       });
     }
-  }, [settings]);
+  }, [settings, featureForm, emailForm]);
 
   // Mutation for updating feature toggles
   const featureToggleMutation = useMutation({

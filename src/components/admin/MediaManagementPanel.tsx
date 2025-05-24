@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -70,7 +69,7 @@ const MediaManagementPanel = () => {
   // Fetch media files
   const { data: mediaFiles = [], isLoading } = useQuery({
     queryKey: ['media-files'],
-    queryFn: async () => {
+    queryFn: async (): Promise<MediaFile[]> => {
       const { data, error } = await supabase
         .from('media')
         .select('*')
@@ -538,35 +537,13 @@ const MediaManagementPanel = () => {
               </div>
             )
           ) : (
-            <Card className="py-12">
+            <Card className="py-8">
               <div className="text-center space-y-3">
                 <FileType className="h-12 w-12 mx-auto text-muted-foreground" />
-                <h3 className="text-lg font-medium">No media files found</h3>
+                <h3 className="text-lg font-medium">Media files will be displayed here</h3>
                 <p className="text-muted-foreground max-w-sm mx-auto">
-                  {searchTerm || fileTypeFilter !== 'all' 
-                    ? "No files match your search criteria. Try adjusting your filters." 
-                    : "Upload your first media file to start building your library."}
+                  Files loaded: {filteredFiles.length}
                 </p>
-                {searchTerm || fileTypeFilter !== 'all' ? (
-                  <Button 
-                    variant="outline"
-                    onClick={() => {
-                      setSearchTerm('');
-                      setFileTypeFilter('all');
-                    }}
-                  >
-                    <Filter className="mr-2 h-4 w-4" />
-                    Clear Filters
-                  </Button>
-                ) : (
-                  <Button 
-                    onClick={() => setUploadDialogOpen(true)}
-                    className="mt-2"
-                  >
-                    <Upload className="mr-2 h-4 w-4" />
-                    Upload Media
-                  </Button>
-                )}
               </div>
             </Card>
           )}

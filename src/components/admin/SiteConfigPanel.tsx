@@ -26,6 +26,21 @@ const siteConfigSchema = z.object({
 
 type SiteConfigFormValues = z.infer<typeof siteConfigSchema>;
 
+type SiteConfig = {
+  id: string;
+  site_name: string;
+  site_tagline: string | null;
+  site_description: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+  logo_url: string | null;
+  favicon_url: string | null;
+  primary_color: string | null;
+  secondary_color: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 const SiteConfigPanel = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
@@ -51,7 +66,7 @@ const SiteConfigPanel = () => {
     isLoading: isLoadingConfig 
   } = useQuery({
     queryKey: ['site-config'],
-    queryFn: async () => {
+    queryFn: async (): Promise<SiteConfig | null> => {
       const { data, error } = await supabase
         .from('site_config')
         .select('*')
@@ -485,7 +500,7 @@ const SiteConfigPanel = () => {
                 <div className="flex justify-end">
                   <Button 
                     type="submit" 
-                    disabled={updateSiteConfigMutation.isPending || !form.formState.isDirty && logoUrl === siteConfig?.logo_url && faviconUrl === siteConfig?.favicon_url}
+                    disabled={updateSiteConfigMutation.isPending || (!form.formState.isDirty && logoUrl === (siteConfig?.logo_url || null) && faviconUrl === (siteConfig?.favicon_url || null))}
                   >
                     {updateSiteConfigMutation.isPending ? (
                       <Loader2 className="h-4 w-4 animate-spin mr-2" />
