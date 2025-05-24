@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, TrendingUp, BarChart4 } from "lucide-react";
+import { Loader2, TrendingUp, Brain } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -103,6 +103,7 @@ const TimeSeriesForecaster = () => {
   const [isForecasting, setIsForecasting] = useState(false);
   const [forecastData, setForecastData] = useState<any[] | null>(null);
   const [combinedData, setCombinedData] = useState<any[] | null>(null);
+  const [aiInsights, setAiInsights] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
@@ -114,9 +115,10 @@ const TimeSeriesForecaster = () => {
     setError(null);
     setForecastData(null);
     setCombinedData(null);
+    setAiInsights(null);
 
     try {
-      const { data, error } = await supabase.functions.invoke("time-series-forecast", {
+      const { data, error } = await supabase.functions.invoke("ai-enhanced-forecast", {
         body: { 
           timeSeriesData: historicalData,
           periodsToForecast: parseInt(forecastPeriods),
@@ -130,8 +132,8 @@ const TimeSeriesForecaster = () => {
 
       if (data?.forecast) {
         setForecastData(data.forecast);
+        setAiInsights(data.aiInsights);
         
-        // Combine historical and forecast data for the chart
         const combined = [
           ...historicalData,
           ...data.forecast
@@ -140,8 +142,8 @@ const TimeSeriesForecaster = () => {
         setCombinedData(combined);
         
         toast({
-          title: "Forecast generated",
-          description: `Forecast for ${currentMetric.name} generated successfully.`,
+          title: "AI-Enhanced Forecast Generated",
+          description: `Advanced forecast for ${currentMetric.name} with AI insights.`,
         });
       } else {
         throw new Error("No forecast data received");
@@ -192,10 +194,10 @@ const TimeSeriesForecaster = () => {
 
   return (
     <Card className="w-full shadow-md">
-      <CardHeader className="bg-gradient-to-r from-green-600 to-blue-600 text-white">
+      <CardHeader className="bg-gradient-to-r from-purple-600 to-blue-600 text-white">
         <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="h-5 w-5" />
-          AI Economic Forecaster
+          <Brain className="h-5 w-5" />
+          AI-Enhanced Economic Forecaster
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-6">
@@ -239,15 +241,18 @@ const TimeSeriesForecaster = () => {
           <Button 
             onClick={handleGenerateForecast} 
             disabled={isForecasting} 
-            className="w-full"
+            className="w-full bg-purple-600 hover:bg-purple-700"
           >
             {isForecasting ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating Forecast...
+                Generating AI-Enhanced Forecast...
               </>
             ) : (
-              "Generate AI Forecast"
+              <>
+                <Brain className="mr-2 h-4 w-4" />
+                Generate AI-Enhanced Forecast
+              </>
             )}
           </Button>
 
@@ -281,7 +286,7 @@ const TimeSeriesForecaster = () => {
                     x={historicalData[historicalData.length - 1].x}
                     stroke="#666"
                     strokeDasharray="3 3"
-                    label={{ value: 'Forecast Start', position: 'insideTopLeft', fill: '#666', fontSize: 12 }}
+                    label={{ value: 'AI Forecast Start', position: 'insideTopLeft', fill: '#666', fontSize: 12 }}
                   />
                 )}
 
@@ -299,34 +304,32 @@ const TimeSeriesForecaster = () => {
                   <Line
                     type="monotone"
                     dataKey={(data) => data.isForecast ? data.y : null}
-                    stroke={`${currentMetric.color}80`} // Semi-transparent
+                    stroke={`${currentMetric.color}80`}
                     strokeDasharray="5 5"
                     strokeWidth={2}
                     dot={{ strokeWidth: 2, r: 4 }}
-                    name="AI Forecast"
+                    name="AI-Enhanced Forecast"
                   />
                 )}
               </LineChart>
             </ResponsiveContainer>
           </div>
 
-          {forecastData && (
+          {aiInsights && (
             <motion.div 
               initial={{ opacity: 0, y: 20 }} 
               animate={{ opacity: 1, y: 0 }}
-              className="bg-gray-50 dark:bg-gray-800/30 p-4 rounded-md"
+              className="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-4 rounded-md border border-purple-200 dark:border-purple-700"
             >
-              <h3 className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                AI Forecast Analysis
+              <h3 className="text-sm font-medium text-purple-800 dark:text-purple-300 mb-2 flex items-center gap-2">
+                <Brain className="h-4 w-4" />
+                AI Economic Analysis
               </h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                Based on historical trends, the AI predicts 
-                {selectedMetric === 'gdp_growth' && " GDP growth will trend towards a moderate and stable rate in the coming periods, reflecting expected economic stability."}
-                {selectedMetric === 'inflation_rate' && " inflation may experience moderate fluctuations with a slight upward trend, influenced by global economic factors and domestic policies."}
-                {selectedMetric === 'copper_price' && " copper prices may show resilience with potential for recovery, reflecting global demand patterns and supply constraints."}
+              <p className="text-sm text-purple-700 dark:text-purple-400 whitespace-pre-wrap">
+                {aiInsights}
               </p>
-              <p className="text-xs text-gray-500 mt-3">
-                Note: This forecast is generated using AI algorithms analyzing historical patterns and trends. External factors and policy changes may affect actual outcomes.
+              <p className="text-xs text-purple-600 dark:text-purple-500 mt-3 italic">
+                Powered by advanced AI models analyzing Zambian economic patterns
               </p>
             </motion.div>
           )}
@@ -334,7 +337,7 @@ const TimeSeriesForecaster = () => {
         </div>
       </CardContent>
       <CardFooter className="bg-gray-50 dark:bg-gray-800/30 text-xs text-center text-gray-500">
-        AI-powered economic forecasting for Zambia's key indicators
+        AI-enhanced forecasting with Grok & DeepSeek for Zambia's economy
       </CardFooter>
     </Card>
   );

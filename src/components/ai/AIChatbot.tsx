@@ -3,13 +3,15 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, BarChart3, User, Loader2, X, TrendingUp, MapPin } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Send, BarChart3, User, Loader2, X, Bot, Cpu } from "lucide-react";
 import { 
   Dialog, 
   DialogContent, 
   DialogHeader, 
   DialogTitle 
 } from "@/components/ui/dialog";
+import { Badge } from "@/components/ui/badge";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
@@ -18,6 +20,7 @@ interface Message {
   text: string;
   sender: "user" | "bot";
   timestamp: Date;
+  provider?: string;
 }
 
 const AIChatbot = () => {
@@ -25,17 +28,17 @@ const AIChatbot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
-      text: "Hello! I'm your Zambia Data Analyst. I can help you understand economic indicators, provincial statistics, health metrics, education data, and development trends across Zambia. What would you like to explore?",
+      text: "Hello! I'm your enhanced Zambia Data Analyst powered by multiple AI providers. I can help you understand economic indicators, provincial statistics, health metrics, education data, and development trends across Zambia. What would you like to explore?",
       sender: "bot",
       timestamp: new Date()
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [aiProvider, setAiProvider] = useState("grok");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
-  // Suggested questions for quick start
   const suggestedQuestions = [
     "What are Zambia's current economic indicators?",
     "Compare education statistics between provinces",
@@ -60,7 +63,6 @@ const AIChatbot = () => {
     
     if (!input.trim()) return;
     
-    // Add user message
     const userMessage: Message = {
       id: Date.now().toString(),
       text: input,
@@ -73,30 +75,29 @@ const AIChatbot = () => {
     setIsTyping(true);
     
     try {
-      // Get messages for context - exclude the welcome message
       const messageHistory = messages
         .filter(msg => msg.id !== "welcome")
-        .slice(-8); // Limit context to last 8 messages for focused analysis
+        .slice(-8);
       
-      // Call our enhanced Supabase Edge Function
-      const { data, error } = await supabase.functions.invoke("ai-chat", {
+      const { data, error } = await supabase.functions.invoke("multi-ai-chat", {
         body: { 
           input: input,
-          messageHistory: messageHistory
+          messageHistory: messageHistory,
+          preferredProvider: aiProvider
         }
       });
       
       if (error) {
-        console.error("Error calling Zambia AI chat function:", error);
+        console.error("Error calling multi-AI chat function:", error);
         throw new Error(error.message);
       }
       
-      // Add bot response
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
         text: data.response || "I'm sorry, I couldn't analyze that data at the moment.",
         sender: "bot",
-        timestamp: new Date()
+        timestamp: new Date(),
+        provider: data.provider
       };
 
       setMessages(prev => [...prev, botMessage]);
@@ -120,7 +121,6 @@ const AIChatbot = () => {
     }
   };
 
-  // Component for floating chat button
   const FloatingChatButton = () => (
     <Button
       onClick={() => setIsOpen(true)} 
@@ -139,11 +139,11 @@ const AIChatbot = () => {
           <DialogHeader className="bg-gradient-to-r from-zambia-600 to-green-600 p-4 text-white">
             <div className="flex items-center gap-3">
               <div className="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <BarChart3 size={16} />
+                <Bot size={16} />
               </div>
               <div className="flex-1">
-                <DialogTitle className="font-semibold">Zambia Data Analyst</DialogTitle>
-                <p className="text-xs text-white/80">Economic & Development Insights</p>
+                <DialogTitle className="font-semibold">Enhanced Zambia AI Analyst</DialogTitle>
+                <p className="text-xs text-white/80">Multi-AI Economic & Development Insights</p>
               </div>
               <Button 
                 variant="ghost" 
@@ -155,9 +155,25 @@ const AIChatbot = () => {
               </Button>
             </div>
           </DialogHeader>
+
+          <div className="p-3 bg-gray-50 dark:bg-gray-800 border-b">
+            <div className="flex items-center gap-2">
+              <Cpu size={14} className="text-gray-500" />
+              <span className="text-xs text-gray-600 dark:text-gray-400">AI Provider:</span>
+              <Select value={aiProvider} onValueChange={setAiProvider}>
+                <SelectTrigger className="h-7 text-xs">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="grok">Grok (xAI)</SelectItem>
+                  <SelectItem value="deepseek">DeepSeek</SelectItem>
+                  <SelectItem value="openai">OpenAI</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
           
-          <div className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-800/50 max-h-[calc(80vh-180px)]">
-            {/* Suggested questions for first-time users */}
+          <div className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-800/50 max-h-[calc(80vh-220px)]">
             {messages.length === 1 && (
               <div className="mb-4 space-y-2">
                 <p className="text-xs text-gray-500 dark:text-gray-400">Try asking about:</p>
@@ -186,7 +202,7 @@ const AIChatbot = () => {
                   <div className="flex gap-2">
                     {message.sender === 'bot' && (
                       <div className="w-8 h-8 rounded-full bg-gradient-to-r from-zambia-500 to-green-500 flex items-center justify-center text-white flex-shrink-0 mt-1">
-                        <BarChart3 size={16} />
+                        <Bot size={16} />
                       </div>
                     )}
                     <div
@@ -197,8 +213,13 @@ const AIChatbot = () => {
                       }`}
                     >
                       {message.text}
-                      <div className={`text-xs mt-1 ${message.sender === 'user' ? 'text-gray-500' : 'text-gray-400'}`}>
-                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      <div className={`text-xs mt-1 flex items-center gap-2 ${message.sender === 'user' ? 'text-gray-500' : 'text-gray-400'}`}>
+                        <span>{message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                        {message.provider && (
+                          <Badge variant="outline" className="text-xs px-1 py-0">
+                            {message.provider}
+                          </Badge>
+                        )}
                       </div>
                     </div>
                     {message.sender === 'user' && (
@@ -218,7 +239,7 @@ const AIChatbot = () => {
                 >
                   <div className="flex gap-2">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-r from-zambia-500 to-green-500 flex items-center justify-center text-white flex-shrink-0 mt-1">
-                      <BarChart3 size={16} />
+                      <Bot size={16} />
                     </div>
                     <div className="p-3 rounded-xl bg-white dark:bg-gray-700 text-gray-800 dark:text-white shadow-sm rounded-tl-none min-w-[60px]">
                       <div className="flex gap-1 items-center">
@@ -253,7 +274,7 @@ const AIChatbot = () => {
               </Button>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-              AI-powered Zambia data analysis
+              Enhanced with Grok & DeepSeek AI
             </p>
           </form>
         </DialogContent>
