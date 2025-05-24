@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,7 +17,14 @@ type AdminUser = {
   id: string;
   username: string | null;
   full_name: string | null;
-  email: string | null;
+  avatar_url: string | null;
+  bio: string | null;
+  created_at: string;
+  location: string | null;
+  notification_preferences: any;
+  preferences: any;
+  theme: string | null;
+  updated_at: string;
 };
 
 const AdminAccountsPanel = () => {
@@ -89,8 +95,7 @@ const AdminAccountsPanel = () => {
   const filteredAdmins = adminUsers.filter((admin) => {
     return (
       admin.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      admin.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      admin.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      admin.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 
