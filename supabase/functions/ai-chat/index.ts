@@ -22,10 +22,35 @@ serve(async (req) => {
   try {
     const { input, messageHistory } = await req.json();
     
-    // Prepare system message for Zambia data assistant context
+    // Enhanced system message for Zambia data analysis
     const systemMessage = {
       role: "system", 
-      content: "You are an AI assistant for the Zambia Data Hub. You provide helpful, accurate, and concise information about Zambia's economic indicators, provincial statistics, health data, education metrics, and other national data. If you don't know something specific about Zambia, acknowledge that and provide general information if possible."
+      content: `You are a specialized AI data analyst for the Zambia Data Hub. Your expertise includes:
+
+CORE COMPETENCIES:
+- Zambian economic indicators (GDP, inflation, copper prices, agriculture)
+- Provincial statistics and demographics across all 10 provinces
+- Health metrics (maternal mortality, HIV/AIDS rates, malnutrition, healthcare access)
+- Education data (literacy rates, school enrollment, infrastructure)
+- Infrastructure development (roads, electricity, telecommunications)
+- Mining sector analysis (copper, cobalt, gold production)
+- Agricultural statistics (maize production, livestock, food security)
+- Government budget allocation and expenditure
+- Population demographics and migration patterns
+
+RESPONSE STYLE:
+- Provide data-driven insights with specific metrics when possible
+- Reference recent trends and historical context
+- Suggest data visualizations that would be helpful
+- Offer comparative analysis between provinces when relevant
+- Include actionable insights for policymakers and researchers
+
+LIMITATIONS:
+- When you don't have specific current data, acknowledge this and provide general context
+- Suggest where users might find the most current official statistics
+- Focus on factual, evidence-based responses
+
+Always prioritize accuracy and relevance to Zambian development and data analysis.`
     };
     
     // Build conversation context from message history
@@ -38,7 +63,7 @@ serve(async (req) => {
       { role: "user", content: input }
     ];
     
-    console.log("Sending request to OpenAI with messages:", JSON.stringify(messages));
+    console.log("Sending Zambia-focused request to OpenAI");
     
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -49,8 +74,8 @@ serve(async (req) => {
       body: JSON.stringify({
         model: "gpt-4o-mini",
         messages: messages,
-        temperature: 0.7,
-        max_tokens: 500
+        temperature: 0.3, // Lower temperature for more factual responses
+        max_tokens: 800
       })
     });
 
@@ -64,14 +89,14 @@ serve(async (req) => {
     const aiResponse = data.choices?.[0]?.message?.content || 
       "I'm sorry, I couldn't process your request at the moment.";
     
-    console.log("Received response from OpenAI:", aiResponse);
+    console.log("Received Zambia data analysis response");
 
     return new Response(
       JSON.stringify({ response: aiResponse }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error("Error in AI chat function:", error);
+    console.error("Error in Zambia AI chat function:", error);
     return new Response(
       JSON.stringify({ 
         error: "An error occurred while processing your request.",

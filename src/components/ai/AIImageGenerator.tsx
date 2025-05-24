@@ -4,23 +4,39 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Loader2, Image as ImageIcon, Download } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Loader2, Image as ImageIcon, Download, MapPin, BarChart } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 const AIImageGenerator = () => {
   const [prompt, setPrompt] = useState("");
+  const [visualType, setVisualType] = useState("chart");
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { toast } = useToast();
 
+  const visualTypes = [
+    { id: "chart", name: "Data Chart/Graph", icon: BarChart },
+    { id: "map", name: "Geographic Map", icon: MapPin },
+    { id: "infographic", name: "Infographic", icon: ImageIcon },
+    { id: "dashboard", name: "Dashboard Layout", icon: BarChart }
+  ];
+
+  const samplePrompts = {
+    chart: "Bar chart showing Zambia's GDP growth over the last 5 years with green and copper color scheme",
+    map: "Map of Zambia highlighting the 10 provinces with population density indicators",
+    infographic: "Infographic showing Zambia's key agricultural exports including maize, tobacco, and cotton with statistics",
+    dashboard: "Modern dashboard design showing Zambia's economic indicators including copper prices, inflation rate, and employment statistics"
+  };
+
   const handleGenerateImage = async () => {
     if (!prompt.trim()) {
       toast({
         title: "Empty prompt",
-        description: "Please enter a description of what you want to generate.",
+        description: "Please describe the visualization you want to create.",
         variant: "destructive"
       });
       return;
@@ -30,7 +46,12 @@ const AIImageGenerator = () => {
     setError(null);
 
     try {
-      const enhancedPrompt = `${prompt}. Create a detailed visualization about Zambia.`;
+      // Enhanced prompt for Zambian data visualizations
+      const enhancedPrompt = `Create a professional ${visualType} visualization: ${prompt}. 
+      Style: Clean, modern data visualization suitable for a government or research report.
+      Colors: Use Zambia's national colors (green, red, black, orange) and copper tones where appropriate.
+      Context: This is for the Zambia Data Hub, focusing on economic, social, and development data.
+      Quality: High-resolution, professional appearance with clear labels and legends.`;
       
       const { data, error } = await supabase.functions.invoke("ai-image-generator", {
         body: { prompt: enhancedPrompt }
@@ -43,18 +64,18 @@ const AIImageGenerator = () => {
       if (data.image) {
         setGeneratedImage(data.image);
         toast({
-          title: "Image generated",
-          description: "Your visualization has been created successfully.",
+          title: "Visualization created",
+          description: "Your Zambian data visualization has been generated successfully.",
         });
       } else {
         throw new Error("No image data received");
       }
     } catch (err) {
-      console.error("Error generating image:", err);
-      setError("Failed to generate image. Please try again with a different description.");
+      console.error("Error generating visualization:", err);
+      setError("Failed to generate visualization. Please try with a more specific description.");
       toast({
         title: "Generation failed",
-        description: "There was an error generating your image. Please try again.",
+        description: "There was an error creating your visualization. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -67,29 +88,65 @@ const AIImageGenerator = () => {
 
     const link = document.createElement("a");
     link.href = generatedImage;
-    link.download = `zambia-insight-${Date.now()}.png`;
+    link.download = `zambia-data-viz-${Date.now()}.png`;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
+  const useSamplePrompt = () => {
+    setPrompt(samplePrompts[visualType as keyof typeof samplePrompts]);
+  };
+
   return (
     <Card className="w-full shadow-md">
-      <CardHeader className="bg-gradient-to-r from-blue-600 to-zambia-600 text-white">
+      <CardHeader className="bg-gradient-to-r from-green-600 to-zambia-600 text-white">
         <CardTitle className="flex items-center gap-2">
           <ImageIcon className="h-5 w-5" />
-          AI Data Visualization Generator
+          Zambia Data Visualization Generator
         </CardTitle>
       </CardHeader>
       <CardContent className="pt-6">
         <div className="space-y-4">
           <div>
-            <label htmlFor="prompt" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Describe the visualization you want
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Visualization Type
             </label>
+            <Select value={visualType} onValueChange={setVisualType}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select visualization type" />
+              </SelectTrigger>
+              <SelectContent>
+                {visualTypes.map((type) => (
+                  <SelectItem key={type.id} value={type.id}>
+                    <div className="flex items-center gap-2">
+                      <type.icon className="h-4 w-4" />
+                      {type.name}
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div>
+            <div className="flex justify-between items-center mb-1">
+              <label htmlFor="prompt" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                Describe your visualization
+              </label>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={useSamplePrompt}
+                className="text-xs"
+              >
+                Use Example
+              </Button>
+            </div>
             <Textarea
               id="prompt"
-              placeholder="e.g., A chart showing Zambia's copper exports over the last 5 years, or a map highlighting education statistics across provinces..."
+              placeholder={`e.g., ${samplePrompts[visualType as keyof typeof samplePrompts]}`}
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               className="min-h-[100px]"
@@ -105,10 +162,10 @@ const AIImageGenerator = () => {
             {isGenerating ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Generating Visualization...
+                Creating Visualization...
               </>
             ) : (
-              "Generate Visualization"
+              "Generate Data Visualization"
             )}
           </Button>
 
@@ -128,7 +185,7 @@ const AIImageGenerator = () => {
               <div className="relative border rounded-md overflow-hidden">
                 <img 
                   src={generatedImage} 
-                  alt="AI Generated Visualization"
+                  alt="AI Generated Data Visualization"
                   className="w-full h-auto"
                 />
                 <Button 
@@ -136,7 +193,7 @@ const AIImageGenerator = () => {
                   onClick={handleDownload} 
                   className="absolute bottom-2 right-2 bg-white/80 dark:bg-black/50 hover:bg-white dark:hover:bg-black/70"
                 >
-                  <Download className="h-4 w-4 mr-1" /> Save
+                  <Download className="h-4 w-4 mr-1" /> Download
                 </Button>
               </div>
             </motion.div>
@@ -144,7 +201,7 @@ const AIImageGenerator = () => {
         </div>
       </CardContent>
       <CardFooter className="bg-gray-50 dark:bg-gray-800/30 text-xs text-center text-gray-500">
-        Powered by AI technology to visualize Zambian data insights
+        AI-powered data visualization for Zambian statistics and analytics
       </CardFooter>
     </Card>
   );

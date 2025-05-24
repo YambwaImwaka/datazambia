@@ -3,7 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Bot, User, Loader2, X } from "lucide-react";
+import { Send, BarChart3, User, Loader2, X, TrendingUp, MapPin } from "lucide-react";
 import { 
   Dialog, 
   DialogContent, 
@@ -25,7 +25,7 @@ const AIChatbot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
-      text: "Hello! I'm Zambia Data AI Assistant. Ask me about economic indicators, health statistics, or any data about Zambia's provinces.",
+      text: "Hello! I'm your Zambia Data Analyst. I can help you understand economic indicators, provincial statistics, health metrics, education data, and development trends across Zambia. What would you like to explore?",
       sender: "bot",
       timestamp: new Date()
     }
@@ -35,12 +35,24 @@ const AIChatbot = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
+  // Suggested questions for quick start
+  const suggestedQuestions = [
+    "What are Zambia's current economic indicators?",
+    "Compare education statistics between provinces",
+    "Show me health metrics for rural areas",
+    "What's the trend in copper production?"
+  ];
+
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleSuggestedQuestion = (question: string) => {
+    setInput(question);
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -64,9 +76,9 @@ const AIChatbot = () => {
       // Get messages for context - exclude the welcome message
       const messageHistory = messages
         .filter(msg => msg.id !== "welcome")
-        .slice(-10); // Limit context to last 10 messages
+        .slice(-8); // Limit context to last 8 messages for focused analysis
       
-      // Call our Supabase Edge Function
+      // Call our enhanced Supabase Edge Function
       const { data, error } = await supabase.functions.invoke("ai-chat", {
         body: { 
           input: input,
@@ -75,31 +87,31 @@ const AIChatbot = () => {
       });
       
       if (error) {
-        console.error("Error calling AI chat function:", error);
+        console.error("Error calling Zambia AI chat function:", error);
         throw new Error(error.message);
       }
       
       // Add bot response
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: data.response || "I'm sorry, I couldn't process your request at the moment.",
+        text: data.response || "I'm sorry, I couldn't analyze that data at the moment.",
         sender: "bot",
         timestamp: new Date()
       };
 
       setMessages(prev => [...prev, botMessage]);
     } catch (error) {
-      console.error("Error in chat:", error);
+      console.error("Error in Zambia data analysis:", error);
       
       toast({
-        title: "Error",
-        description: "Failed to get a response. Please try again later.",
+        title: "Analysis Error",
+        description: "Failed to process your data inquiry. Please try again.",
         variant: "destructive"
       });
       
       setMessages(prev => [...prev, {
         id: (Date.now() + 1).toString(),
-        text: "There was an error processing your request. Please try again later.",
+        text: "I encountered an error while analyzing the data. Please try rephrasing your question or ask about a specific economic indicator, province, or development metric.",
         sender: "bot",
         timestamp: new Date()
       }]);
@@ -114,7 +126,7 @@ const AIChatbot = () => {
       onClick={() => setIsOpen(true)} 
       className="fixed bottom-6 right-6 rounded-full w-16 h-16 shadow-lg bg-zambia-600 hover:bg-zambia-700 text-white p-0 z-50 flex items-center justify-center"
     >
-      <Bot size={24} />
+      <BarChart3 size={24} />
     </Button>
   );
 
@@ -124,14 +136,14 @@ const AIChatbot = () => {
       
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="p-0 w-full sm:max-w-md max-h-[80vh] border border-gray-200 dark:border-gray-700 overflow-hidden flex flex-col">
-          <DialogHeader className="bg-gradient-to-r from-zambia-600 to-blue-600 p-4 text-white">
+          <DialogHeader className="bg-gradient-to-r from-zambia-600 to-green-600 p-4 text-white">
             <div className="flex items-center gap-3">
               <div className="bg-white/20 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-sm">
-                <Bot size={16} />
+                <BarChart3 size={16} />
               </div>
               <div className="flex-1">
-                <DialogTitle className="font-semibold">Zambia Data AI Assistant</DialogTitle>
-                <p className="text-xs text-white/80">Ask about Zambia's statistics and data</p>
+                <DialogTitle className="font-semibold">Zambia Data Analyst</DialogTitle>
+                <p className="text-xs text-white/80">Economic & Development Insights</p>
               </div>
               <Button 
                 variant="ghost" 
@@ -144,7 +156,23 @@ const AIChatbot = () => {
             </div>
           </DialogHeader>
           
-          <div className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-800/50 max-h-[calc(80vh-140px)]">
+          <div className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-800/50 max-h-[calc(80vh-180px)]">
+            {/* Suggested questions for first-time users */}
+            {messages.length === 1 && (
+              <div className="mb-4 space-y-2">
+                <p className="text-xs text-gray-500 dark:text-gray-400">Try asking about:</p>
+                {suggestedQuestions.map((question, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleSuggestedQuestion(question)}
+                    className="block w-full text-left text-xs p-2 bg-white dark:bg-gray-700 rounded border hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors"
+                  >
+                    {question}
+                  </button>
+                ))}
+              </div>
+            )}
+
             <AnimatePresence>
               {messages.map((message) => (
                 <motion.div
@@ -157,8 +185,8 @@ const AIChatbot = () => {
                 >
                   <div className="flex gap-2">
                     {message.sender === 'bot' && (
-                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-zambia-500 to-blue-500 flex items-center justify-center text-white flex-shrink-0 mt-1">
-                        <Bot size={16} />
+                      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-zambia-500 to-green-500 flex items-center justify-center text-white flex-shrink-0 mt-1">
+                        <BarChart3 size={16} />
                       </div>
                     )}
                     <div
@@ -189,8 +217,8 @@ const AIChatbot = () => {
                   className="flex mb-4 justify-start"
                 >
                   <div className="flex gap-2">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-zambia-500 to-blue-500 flex items-center justify-center text-white flex-shrink-0 mt-1">
-                      <Bot size={16} />
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-zambia-500 to-green-500 flex items-center justify-center text-white flex-shrink-0 mt-1">
+                      <BarChart3 size={16} />
                     </div>
                     <div className="p-3 rounded-xl bg-white dark:bg-gray-700 text-gray-800 dark:text-white shadow-sm rounded-tl-none min-w-[60px]">
                       <div className="flex gap-1 items-center">
@@ -211,7 +239,7 @@ const AIChatbot = () => {
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about Zambia's data..."
+                placeholder="Ask about Zambian data, statistics, or trends..."
                 className="flex-grow"
                 disabled={isTyping}
               />
@@ -225,7 +253,7 @@ const AIChatbot = () => {
               </Button>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-              Powered by AI
+              AI-powered Zambia data analysis
             </p>
           </form>
         </DialogContent>
