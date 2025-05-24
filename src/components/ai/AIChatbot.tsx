@@ -3,8 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Send, BarChart3, User, Loader2, X, Bot, Cpu } from "lucide-react";
+import { Send, BarChart3, User, Loader2, X, Bot } from "lucide-react";
 import { 
   Dialog, 
   DialogContent, 
@@ -28,14 +27,13 @@ const AIChatbot = () => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
-      text: "Hello! I'm your enhanced Zambia Data Analyst powered by multiple AI providers. I can help you understand economic indicators, provincial statistics, health metrics, education data, and development trends across Zambia. What would you like to explore?",
+      text: "Hello! I'm your DeepSeek-powered Zambia Data Analyst. I can help you understand economic indicators, provincial statistics, health metrics, education data, and development trends across Zambia. What would you like to explore?",
       sender: "bot",
       timestamp: new Date()
     }
   ]);
   const [isTyping, setIsTyping] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [aiProvider, setAiProvider] = useState("grok");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
@@ -82,13 +80,12 @@ const AIChatbot = () => {
       const { data, error } = await supabase.functions.invoke("multi-ai-chat", {
         body: { 
           input: input,
-          messageHistory: messageHistory,
-          preferredProvider: aiProvider
+          messageHistory: messageHistory
         }
       });
       
       if (error) {
-        console.error("Error calling multi-AI chat function:", error);
+        console.error("Error calling DeepSeek AI chat function:", error);
         throw new Error(error.message);
       }
       
@@ -142,8 +139,8 @@ const AIChatbot = () => {
                 <Bot size={16} />
               </div>
               <div className="flex-1">
-                <DialogTitle className="font-semibold">Enhanced Zambia AI Analyst</DialogTitle>
-                <p className="text-xs text-white/80">Multi-AI Economic & Development Insights</p>
+                <DialogTitle className="font-semibold">DeepSeek Zambia AI Analyst</DialogTitle>
+                <p className="text-xs text-white/80">Advanced Economic & Development Insights</p>
               </div>
               <Button 
                 variant="ghost" 
@@ -155,23 +152,6 @@ const AIChatbot = () => {
               </Button>
             </div>
           </DialogHeader>
-
-          <div className="p-3 bg-gray-50 dark:bg-gray-800 border-b">
-            <div className="flex items-center gap-2">
-              <Cpu size={14} className="text-gray-500" />
-              <span className="text-xs text-gray-600 dark:text-gray-400">AI Provider:</span>
-              <Select value={aiProvider} onValueChange={setAiProvider}>
-                <SelectTrigger className="h-7 text-xs">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="grok">Grok (xAI)</SelectItem>
-                  <SelectItem value="deepseek">DeepSeek</SelectItem>
-                  <SelectItem value="openai">OpenAI</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
           
           <div className="flex-1 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-800/50 max-h-[calc(80vh-220px)]">
             {messages.length === 1 && (
@@ -274,7 +254,7 @@ const AIChatbot = () => {
               </Button>
             </div>
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2 text-center">
-              Enhanced with Grok & DeepSeek AI
+              Powered by DeepSeek AI
             </p>
           </form>
         </DialogContent>

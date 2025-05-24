@@ -7,8 +7,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY');
-const XAI_API_KEY = Deno.env.get('XAI_API_KEY');
 const DEEPSEEK_API_KEY = Deno.env.get('DEEPSEEK_API_KEY');
 
 interface AIProvider {
@@ -19,18 +17,6 @@ interface AIProvider {
 }
 
 const providers: Record<string, AIProvider> = {
-  openai: {
-    name: 'OpenAI',
-    apiKey: OPENAI_API_KEY || '',
-    baseUrl: 'https://api.openai.com/v1/chat/completions',
-    model: 'gpt-4o-mini'
-  },
-  grok: {
-    name: 'Grok',
-    apiKey: XAI_API_KEY || '',
-    baseUrl: 'https://api.x.ai/v1/chat/completions',
-    model: 'grok-beta'
-  },
   deepseek: {
     name: 'DeepSeek',
     apiKey: DEEPSEEK_API_KEY || '',
@@ -73,7 +59,7 @@ serve(async (req) => {
   }
 
   try {
-    const { input, messageHistory, preferredProvider = 'grok' } = await req.json();
+    const { input, messageHistory } = await req.json();
     
     const systemMessage = {
       role: "system", 
@@ -114,42 +100,26 @@ Always prioritize accuracy and relevance to Zambian development and data analysi
       { role: "user", content: input }
     ];
     
-    console.log(`Using ${preferredProvider} AI for Zambia data analysis`);
+    console.log(`Using DeepSeek AI for Zambia data analysis`);
     
-    // Try preferred provider first, then fallback to others
-    const providerOrder = [preferredProvider, 'grok', 'deepseek', 'openai'].filter((p, i, arr) => arr.indexOf(p) === i);
+    const provider = providers.deepseek;
     
-    let response = '';
-    let usedProvider = '';
-    
-    for (const providerName of providerOrder) {
-      const provider = providers[providerName];
-      if (!provider || !provider.apiKey) continue;
-      
-      try {
-        response = await callAI(provider, messages);
-        usedProvider = provider.name;
-        console.log(`Successfully used ${provider.name} for analysis`);
-        break;
-      } catch (error) {
-        console.warn(`${provider.name} failed:`, error.message);
-        continue;
-      }
+    if (!provider.apiKey) {
+      throw new Error('DeepSeek API key not configured');
     }
     
-    if (!response) {
-      throw new Error('All AI providers failed');
-    }
+    const response = await callAI(provider, messages);
+    console.log(`Successfully used DeepSeek for analysis`);
 
     return new Response(
       JSON.stringify({ 
         response,
-        provider: usedProvider
+        provider: provider.name
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (error) {
-    console.error("Error in multi-AI chat function:", error);
+    console.error("Error in DeepSeek AI chat function:", error);
     return new Response(
       JSON.stringify({ 
         error: "An error occurred while processing your request.",

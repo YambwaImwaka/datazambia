@@ -7,7 +7,6 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-const XAI_API_KEY = Deno.env.get('XAI_API_KEY');
 const DEEPSEEK_API_KEY = Deno.env.get('DEEPSEEK_API_KEY');
 
 function simpleForecast(data: any[], periodsToForecast: number) {
@@ -41,13 +40,9 @@ function simpleForecast(data: any[], periodsToForecast: number) {
   return forecast;
 }
 
-async function getAIInsights(data: any[], metricName: string, forecast: any[], provider: 'grok' | 'deepseek' = 'deepseek') {
-  const apiKey = provider === 'grok' ? XAI_API_KEY : DEEPSEEK_API_KEY;
-  const baseUrl = provider === 'grok' ? 'https://api.x.ai/v1/chat/completions' : 'https://api.deepseek.com/v1/chat/completions';
-  const model = provider === 'grok' ? 'grok-beta' : 'deepseek-chat';
-
-  if (!apiKey) {
-    return "AI insights unavailable - API key not configured";
+async function getAIInsights(data: any[], metricName: string, forecast: any[]) {
+  if (!DEEPSEEK_API_KEY) {
+    return "AI insights unavailable - DeepSeek API key not configured";
   }
 
   const recentData = data.slice(-6);
@@ -65,14 +60,14 @@ Provide a brief analysis covering:
 Keep response under 150 words and focus on actionable insights.`;
 
   try {
-    const response = await fetch(baseUrl, {
+    const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${apiKey}`
+        "Authorization": `Bearer ${DEEPSEEK_API_KEY}`
       },
       body: JSON.stringify({
-        model: model,
+        model: 'deepseek-chat',
         messages: [
           { role: "system", content: "You are an expert economist specializing in Zambian economic analysis. Provide concise, data-driven insights." },
           { role: "user", content: prompt }
@@ -83,14 +78,14 @@ Keep response under 150 words and focus on actionable insights.`;
     });
 
     if (!response.ok) {
-      throw new Error(`${provider} API error: ${response.status}`);
+      throw new Error(`DeepSeek API error: ${response.status}`);
     }
 
     const aiData = await response.json();
     return aiData.choices?.[0]?.message?.content || "AI analysis unavailable";
   } catch (error) {
-    console.warn(`${provider} AI insights failed:`, error.message);
-    return provider === 'grok' ? await getAIInsights(data, metricName, forecast, 'deepseek') : "AI insights currently unavailable";
+    console.warn(`DeepSeek AI insights failed:`, error.message);
+    return "AI insights currently unavailable";
   }
 }
 
@@ -111,13 +106,13 @@ serve(async (req) => {
     const forecast = simpleForecast(timeSeriesData, periodsToForecast);
     const aiInsights = await getAIInsights(timeSeriesData, metricName, forecast);
     
-    console.log(`Generated ${forecast.length} forecast points with AI insights`);
+    console.log(`Generated ${forecast.length} forecast points with DeepSeek AI insights`);
 
     return new Response(
       JSON.stringify({
         forecast,
         aiInsights,
-        message: `AI-enhanced forecast generated for ${metricName}`
+        message: `DeepSeek AI-enhanced forecast generated for ${metricName}`
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
