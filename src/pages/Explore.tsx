@@ -1,8 +1,8 @@
+
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MapChart } from '@/components/charts/MapChart';
 import { provinces, dataCategories } from '@/utils/data';
-import AgricultureDashboard from '@/components/agriculture/AgricultureDashboard';
+import { CropProductionDashboard } from '@/components/agriculture/CropProductionDashboard';
 import FinanceOverview from '@/components/finance/FinanceOverview';
 import EconomyDashboard from '@/components/economy/EconomyDashboard';
 import HealthDashboard from '@/components/health/HealthDashboard';
@@ -30,7 +30,7 @@ const Explore = () => {
   // Determine which dashboard to show based on the category
   const renderDashboard = () => {
     if (currentCategory === "agriculture") {
-      return <AgricultureDashboard />;
+      return <CropProductionDashboard />;
     } else if (currentCategory === "finance") {
       return <FinanceOverview />;
     } else if (currentCategory === "economy") {
@@ -46,29 +46,13 @@ const Explore = () => {
         </div>
       </div>;
     } else {
-      // Default case - show the province map
-      // Transform the data for the MapChart component
-      const provinceMapData = provinces.map(province => ({
-        id: province.id,
-        name: province.name,
-        value: province.population, // Using population as the value
-        coordinates: province.coordinates as [number, number],
-        color: getRandomColor(province.name) // Generate a color based on province name
-      }));
-
+      // Default case - show provinces overview without map
       return (
         <div className="container mx-auto py-8 px-4">
           <h1 className="text-3xl font-bold mb-6">Explore Zambia</h1>
-          
-          <div className="mb-8">
-            <MapChart 
-              data={provinceMapData}
-              title="Population Distribution by Province"
-              colorScale={['#C6E5FF', '#66B2FF', '#0066CC', '#003366']}
-              tooltipFormat={(name, value) => `${name}: ${value}M population`}
-              onClick={(provinceId) => navigate(`/province/${provinceId}`)}
-            />
-          </div>
+          <p className="text-gray-600 dark:text-gray-300 mb-8">
+            Discover comprehensive data and insights across Zambia's provinces and sectors
+          </p>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {provinces.map(province => (
@@ -150,20 +134,6 @@ const Explore = () => {
       );
     }
   };
-
-  // Generate a deterministic color based on province name
-  function getRandomColor(name: string) {
-    let hash = 0;
-    for (let i = 0; i < name.length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    let color = '#';
-    for (let i = 0; i < 3; i++) {
-      const value = (hash >> (i * 8)) & 0xFF;
-      color += ('00' + value.toString(16)).substr(-2);
-    }
-    return color;
-  }
 
   return (
     <PageLayout

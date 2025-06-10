@@ -1,8 +1,7 @@
 
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
-import { MapChart } from '@/components/charts/MapChart';
 import { provinces } from '@/utils/data';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,7 +10,6 @@ import PageLayout from '@/components/layout/PageLayout';
 
 const ProvincesList = () => {
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
   
   useEffect(() => {
     // Simulate data loading
@@ -24,29 +22,6 @@ const ProvincesList = () => {
     
     return () => clearTimeout(timer);
   }, []);
-  
-  // Format data for map visualization
-  const provinceMapData = provinces.map(province => ({
-    id: province.id,
-    name: province.name,
-    value: province.population,
-    coordinates: province.coordinates as [number, number],
-    color: getRandomColor(province.name)
-  }));
-  
-  // Generate a deterministic color based on province name
-  function getRandomColor(name: string) {
-    let hash = 0;
-    for (let i = 0; i < name.length; i++) {
-      hash = name.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    let color = '#';
-    for (let i = 0; i < 3; i++) {
-      const value = (hash >> (i * 8)) & 0xFF;
-      color += ('00' + value.toString(16)).substr(-2);
-    }
-    return color;
-  }
 
   return (
     <PageLayout>
@@ -55,19 +30,14 @@ const ProvincesList = () => {
           Provinces of Zambia
         </h1>
         
-        <div className="mb-12 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
+        <div className="mb-8 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md">
           <h2 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">
-            Interactive Map
+            Provincial Overview
           </h2>
-          <div className="h-[500px]">
-            <MapChart 
-              data={provinceMapData}
-              title="Zambia Provinces"
-              colorScale={['#C6E5FF', '#66B2FF', '#0066CC', '#003366']}
-              tooltipFormat={(name, value) => `${name}: ${value}M population`}
-              onClick={(provinceId) => navigate(`/province/${provinceId}`)}
-            />
-          </div>
+          <p className="text-gray-600 dark:text-gray-300">
+            Explore detailed information about each of Zambia's 10 provinces, including economic data, 
+            agricultural statistics, demographic information, and key industries.
+          </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
