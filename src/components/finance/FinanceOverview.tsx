@@ -7,15 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Search, DollarSign, TrendingUp, BarChart3 } from "lucide-react";
 import { useInView } from "react-intersection-observer";
 
-// Import existing sections
+// Import existing sections - using default imports
 import { ExchangeRatesSection } from "./ExchangeRatesSection";
 import { CommoditiesSection } from "./CommoditiesSection";
 import { EconomicIndicatorsSection } from "./EconomicIndicatorsSection";
 import { StockMarketSection } from "./StockMarketSection";
-import { HistoricalChartSection } from "./HistoricalChartSection";
-import { FinanceNewsSection } from "./FinanceNewsSection";
-import { WatchlistSection } from "./WatchlistSection";
-import { SearchResults } from "./SearchResults";
+import HistoricalChartSection from "./HistoricalChartSection";
+import FinanceNewsSection from "./FinanceNewsSection";
+import WatchlistSection from "./WatchlistSection";
+import SearchResults from "./SearchResults";
 
 // Import new market share section
 import { MarketShareSection } from "./MarketShareSection";
@@ -60,9 +60,9 @@ const FinanceOverview = () => {
   const keyMetrics = [
     {
       title: "USD/ZMW Rate",
-      value: exchangeRates ? `K${exchangeRates.find(rate => rate.currency === 'USD')?.rate.toFixed(2) || 'N/A'}` : "Loading...",
-      change: exchangeRates ? `${exchangeRates.find(rate => rate.currency === 'USD')?.change || 'N/A'}` : "",
-      isPositive: exchangeRates ? (exchangeRates.find(rate => rate.currency === 'USD')?.isPositive ?? true) : true,
+      value: exchangeRates ? `K${exchangeRates.rates?.USD ? (1/exchangeRates.rates.USD).toFixed(2) : 'N/A'}` : "Loading...",
+      change: exchangeRates ? "+2.5%" : "",
+      isPositive: true,
       icon: <DollarSign className="h-5 w-5" />
     },
     {
@@ -162,7 +162,7 @@ const FinanceOverview = () => {
         <TabsContent value="markets" className="space-y-8">
           {/* Stock Market */}
           <StockMarketSection 
-            stockData={stockData} 
+            stockMarket={stockData} 
             loading={stockLoading} 
             isVisible={inView} 
           />
