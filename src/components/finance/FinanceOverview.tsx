@@ -104,7 +104,12 @@ const FinanceOverview = () => {
 
       {/* Show search results if there's a search term */}
       {searchTerm && (
-        <SearchResults searchTerm={searchTerm} />
+        <SearchResults 
+          query={searchTerm}
+          exchangeRates={exchangeRates}
+          commodities={commodityPrices}
+          indicators={economicIndicators}
+        />
       )}
 
       {/* Main Content Tabs */}
