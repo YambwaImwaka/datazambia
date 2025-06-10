@@ -1,275 +1,203 @@
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Bookmark, BarChart4, Download, Search, RefreshCcw, Newspaper } from "lucide-react";
-import ExchangeRatesSection from './ExchangeRatesSection';
-import CommoditiesSection from './CommoditiesSection';
-import EconomicIndicatorsSection from './EconomicIndicatorsSection';
-import { fetchExchangeRates } from '@/services/FinanceService';
-import { fetchCommodityPrices } from '@/services/FinanceService';
-import { fetchEconomicIndicators } from '@/services/FinanceService';
-import { useInView } from 'react-intersection-observer';
-import { useQueries } from '@tanstack/react-query';
-import { DataExport } from '@/components/ui/DataExport';
-import HistoricalChartSection from './HistoricalChartSection';
-import WatchlistSection from './WatchlistSection';
-import FinanceNewsSection from './FinanceNewsSection';
-import SearchResults from './SearchResults';
-import { toast } from 'sonner';
-import { exportToPdf } from '@/utils/pdfExport';
+import { Search, DollarSign, TrendingUp, BarChart3 } from "lucide-react";
+import { useInView } from "react-intersection-observer";
+
+// Import existing sections
+import { ExchangeRatesSection } from "./ExchangeRatesSection";
+import { CommoditiesSection } from "./CommoditiesSection";
+import { EconomicIndicatorsSection } from "./EconomicIndicatorsSection";
+import { StockMarketSection } from "./StockMarketSection";
+import { HistoricalChartSection } from "./HistoricalChartSection";
+import { FinanceNewsSection } from "./FinanceNewsSection";
+import { WatchlistSection } from "./WatchlistSection";
+import { SearchResults } from "./SearchResults";
+
+// Import new market share section
+import { MarketShareSection } from "./MarketShareSection";
+
+// Import services
+import { fetchExchangeRates } from "@/services/exchange-rates/ExchangeRateService";
+import { fetchCommodityPrices } from "@/services/commodities/CommodityService";
+import { fetchEconomicIndicators } from "@/services/economic/EconomicIndicatorService";
+import { fetchStockMarketData } from "@/services/stock-market/StockMarketService";
 
 const FinanceOverview = () => {
-  const [activeTab, setActiveTab] = useState("exchange-rates");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-  
-  // Intersection observer for animations
-  const { ref: exchangeRef, inView: exchangeVisible } = useInView({ threshold: 0.1, triggerOnce: true });
-  const { ref: commoditiesRef, inView: commoditiesVisible } = useInView({ threshold: 0.1, triggerOnce: true });
-  const { ref: indicatorsRef, inView: indicatorsVisible } = useInView({ threshold: 0.1, triggerOnce: true });
-  const { ref: historicalRef, inView: historicalVisible } = useInView({ threshold: 0.1, triggerOnce: true });
-  const { ref: watchlistRef, inView: watchlistVisible } = useInView({ threshold: 0.1, triggerOnce: true });
-  const { ref: newsRef, inView: newsVisible } = useInView({ threshold: 0.1, triggerOnce: true });
-  
-  // Use React Query for data fetching
-  const [
-    exchangeRatesQuery,
-    commoditiesQuery,
-    economicIndicatorsQuery
-  ] = useQueries({
-    queries: [
-      {
-        queryKey: ['exchangeRates'],
-        queryFn: fetchExchangeRates,
-        staleTime: 1000 * 60 * 15, // 15 minutes
-      },
-      {
-        queryKey: ['commodities'],
-        queryFn: fetchCommodityPrices,
-        staleTime: 1000 * 60 * 60, // 1 hour
-      },
-      {
-        queryKey: ['economicIndicators'],
-        queryFn: fetchEconomicIndicators,
-        staleTime: 1000 * 60 * 60 * 24, // 24 hours
-      }
-    ]
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState("overview");
+  const { ref, inView } = useInView({ threshold: 0.1, triggerOnce: true });
+
+  // Fetch data using React Query
+  const { data: exchangeRates, isLoading: exchangeLoading } = useQuery({
+    queryKey: ['exchangeRates'],
+    queryFn: fetchExchangeRates,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      setIsSearching(true);
-      // In a real app, this would trigger a search API call
-      toast.info(`Searching for: ${searchQuery}`);
-    }
-  };
+  const { data: commodityPrices, isLoading: commodityLoading } = useQuery({
+    queryKey: ['commodities'],
+    queryFn: fetchCommodityPrices,
+    staleTime: 1000 * 60 * 10, // 10 minutes
+  });
 
-  const clearSearch = () => {
-    setSearchQuery("");
-    setIsSearching(false);
-  };
+  const { data: economicIndicators, isLoading: indicatorsLoading } = useQuery({
+    queryKey: ['economicIndicators'],
+    queryFn: fetchEconomicIndicators,
+    staleTime: 1000 * 60 * 60, // 1 hour
+  });
 
-  const generatePdfReport = () => {
-    // Prepare data for PDF export
-    const allData = [];
-    
-    // Add exchange rate data if available
-    if (exchangeRatesQuery.data?.rates) {
-      const exchangeRateRows = Object.entries(exchangeRatesQuery.data.rates).map(([currency, rate]) => ({
-        Type: "Exchange Rate",
-        Name: currency,
-        Value: rate,
-        Unit: "ZMW"
-      }));
-      allData.push(...exchangeRateRows);
+  const { data: stockData, isLoading: stockLoading } = useQuery({
+    queryKey: ['stockMarket'],
+    queryFn: fetchStockMarketData,
+    staleTime: 1000 * 60 * 15, // 15 minutes
+  });
+
+  // Key metrics for overview cards
+  const keyMetrics = [
+    {
+      title: "USD/ZMW Rate",
+      value: exchangeRates ? `K${exchangeRates.find(rate => rate.currency === 'USD')?.rate.toFixed(2) || 'N/A'}` : "Loading...",
+      change: exchangeRates ? `${exchangeRates.find(rate => rate.currency === 'USD')?.change || 'N/A'}` : "",
+      isPositive: exchangeRates ? (exchangeRates.find(rate => rate.currency === 'USD')?.isPositive ?? true) : true,
+      icon: <DollarSign className="h-5 w-5" />
+    },
+    {
+      title: "Copper Price",
+      value: commodityPrices ? `$${commodityPrices.find(commodity => commodity.name === 'Copper')?.price.toLocaleString() || 'N/A'}` : "Loading...",
+      change: commodityPrices ? `${commodityPrices.find(commodity => commodity.name === 'Copper')?.change || 'N/A'}` : "",
+      isPositive: commodityPrices ? (commodityPrices.find(commodity => commodity.name === 'Copper')?.isPositive ?? true) : true,
+      icon: <TrendingUp className="h-5 w-5" />
+    },
+    {
+      title: "GDP Growth",
+      value: economicIndicators ? `${economicIndicators.find(indicator => indicator.name.includes('GDP'))?.value || 'N/A'}` : "Loading...",
+      change: economicIndicators ? `${economicIndicators.find(indicator => indicator.name.includes('GDP'))?.change || 'N/A'}` : "",
+      isPositive: economicIndicators ? (economicIndicators.find(indicator => indicator.name.includes('GDP'))?.isPositive ?? true) : true,
+      icon: <BarChart3 className="h-5 w-5" />
     }
-    
-    // Add commodity data if available
-    if (commoditiesQuery.data) {
-      const commodityRows = commoditiesQuery.data.map(commodity => ({
-        Type: "Commodity",
-        Name: commodity.name,
-        Value: commodity.price,
-        Unit: commodity.unit,
-        Change: commodity.change
-      }));
-      allData.push(...commodityRows);
-    }
-    
-    // Add economic indicator data if available
-    if (economicIndicatorsQuery.data) {
-      const indicatorRows = economicIndicatorsQuery.data.map(indicator => ({
-        Type: "Economic Indicator",
-        Name: indicator.name,
-        Value: indicator.value,
-        Change: indicator.change,
-        Source: indicator.source
-      }));
-      allData.push(...indicatorRows);
-    }
-    
-    // Generate PDF
-    exportToPdf({
-      title: "Zambia Financial Markets Report",
-      subtitle: "Current market indicators and economic data",
-      fileName: "zambia-financial-report",
-      tableData: allData,
-      tableColumns: ["Type", "Name", "Value", "Unit", "Change", "Source"],
-      additionalText: "This comprehensive report provides an overview of Zambia's current financial metrics, including exchange rates, commodity prices, and key economic indicators. Data is sourced from official government sources and international financial institutions."
-    });
-  };
-  
+  ];
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">Finance & Economic Overview</h1>
-          <p className="text-gray-600 dark:text-gray-300">
-            Current financial metrics, exchange rates, and economic indicators for Zambia
-          </p>
-        </div>
+    <div className="container mx-auto px-4" ref={ref}>
+      {/* Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-4">Financial Markets & Economy</h1>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">
+          Comprehensive financial data, market analysis, and economic indicators for Zambia
+        </p>
         
-        <div className="flex flex-col sm:flex-row gap-2">
-          <form onSubmit={handleSearch} className="relative">
-            <Input
-              type="text"
-              placeholder="Search financial data..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-64"
-            />
-            <Button 
-              type="submit" 
-              variant="ghost" 
-              size="sm"
-              className="absolute right-1 top-1/2 -translate-y-1/2"
-            >
-              <Search size={18} />
-            </Button>
-          </form>
-          
-          <Button variant="outline" size="sm" onClick={generatePdfReport}>
-            <Download className="mr-2 h-4 w-4" />
-            Export PDF
-          </Button>
-          
-          <DataExport 
-            data={[
-              ...(exchangeRatesQuery.data?.rates ? Object.entries(exchangeRatesQuery.data.rates).map(([currency, rate]) => ({ currency, rate })) : []),
-              ...(commoditiesQuery.data || []),
-              ...(economicIndicatorsQuery.data || [])
-            ]}
-            fileName="zambia-financial-data"
+        {/* Search Bar */}
+        <div className="relative max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+          <Input
+            placeholder="Search financial data..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
           />
         </div>
       </div>
-      
-      {isSearching ? (
-        <div className="mb-4">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">Search Results: "{searchQuery}"</h2>
-            <Button variant="ghost" size="sm" onClick={clearSearch}>
-              Clear Search
-            </Button>
-          </div>
-          <SearchResults 
-            query={searchQuery} 
-            exchangeRates={exchangeRatesQuery.data}
-            commodities={commoditiesQuery.data}
-            indicators={economicIndicatorsQuery.data}
-          />
-        </div>
-      ) : (
-        <>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-8">
-            <Card className="col-span-1">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center">
-                  <Bookmark className="mr-2 h-5 w-5" />
-                  My Watchlist
-                </CardTitle>
-                <CardDescription>
-                  Personalized financial items you're tracking
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div ref={watchlistRef}>
-                  <WatchlistSection isVisible={watchlistVisible} />
-                </div>
-              </CardContent>
-            </Card>
-            
-            <Card className="col-span-1 lg:col-span-2">
-              <CardHeader className="pb-2">
-                <CardTitle className="text-lg flex items-center">
-                  <Newspaper className="mr-2 h-5 w-5" />
-                  Latest Financial News
-                </CardTitle>
-                <CardDescription>
-                  Recent updates about Zambia's economy and markets
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div ref={newsRef}>
-                  <FinanceNewsSection isVisible={newsVisible} />
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          
-          <Tabs defaultValue="exchange-rates" onValueChange={setActiveTab} className="space-y-8">
-            <TabsList className="grid w-full grid-cols-2 md:grid-cols-4 lg:grid-cols-6">
-              <TabsTrigger value="exchange-rates">Exchange Rates</TabsTrigger>
-              <TabsTrigger value="commodities">Commodities</TabsTrigger>
-              <TabsTrigger value="indicators">Economic Indicators</TabsTrigger>
-              <TabsTrigger value="historical">
-                <span className="hidden md:inline">Historical Charts</span>
-                <span className="md:hidden">Charts</span>
-              </TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="exchange-rates" className="space-y-4">
-              <div ref={exchangeRef}>
-                <ExchangeRatesSection 
-                  exchangeRates={exchangeRatesQuery.data} 
-                  loading={exchangeRatesQuery.isLoading}
-                  isVisible={exchangeVisible} 
-                />
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="commodities" className="space-y-4">
-              <div ref={commoditiesRef}>
-                <CommoditiesSection 
-                  commodityPrices={commoditiesQuery.data} 
-                  loading={commoditiesQuery.isLoading}
-                  isVisible={commoditiesVisible} 
-                />
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="indicators" className="space-y-4">
-              <div ref={indicatorsRef}>
-                <EconomicIndicatorsSection 
-                  economicIndicators={economicIndicatorsQuery.data} 
-                  loading={economicIndicatorsQuery.isLoading}
-                  isVisible={indicatorsVisible} 
-                />
-              </div>
-            </TabsContent>
-            
-            <TabsContent value="historical" className="space-y-4">
-              <div ref={historicalRef}>
-                <HistoricalChartSection isVisible={historicalVisible} />
-              </div>
-            </TabsContent>
-          </Tabs>
-        </>
+
+      {/* Show search results if there's a search term */}
+      {searchTerm && (
+        <SearchResults searchTerm={searchTerm} />
       )}
+
+      {/* Main Content Tabs */}
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-4 mb-8">
+          <TabsTrigger value="overview">Market Overview</TabsTrigger>
+          <TabsTrigger value="markets">Stock & Commodities</TabsTrigger>
+          <TabsTrigger value="economy">Economic Data</TabsTrigger>
+          <TabsTrigger value="market-share">Market Share</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-8">
+          {/* Key Metrics Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {keyMetrics.map((metric, index) => (
+              <Card 
+                key={metric.title}
+                className="p-6"
+                style={{ 
+                  opacity: 0,
+                  animation: inView ? `fade-in 0.5s ease-out ${index * 0.2}s forwards` : "none"
+                }}
+              >
+                <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2">
+                    {metric.icon}
+                    <h3 className="font-semibold text-gray-900 dark:text-white">{metric.title}</h3>
+                  </div>
+                </div>
+                <div className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                  {metric.value}
+                </div>
+                <div className={`text-sm ${metric.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                  {metric.change}
+                </div>
+              </Card>
+            ))}
+          </div>
+
+          {/* Exchange Rates */}
+          <ExchangeRatesSection 
+            exchangeRates={exchangeRates} 
+            loading={exchangeLoading} 
+            isVisible={inView} 
+          />
+
+          {/* Economic Indicators */}
+          <EconomicIndicatorsSection 
+            economicIndicators={economicIndicators} 
+            loading={indicatorsLoading} 
+            isVisible={inView} 
+          />
+        </TabsContent>
+
+        <TabsContent value="markets" className="space-y-8">
+          {/* Stock Market */}
+          <StockMarketSection 
+            stockData={stockData} 
+            loading={stockLoading} 
+            isVisible={inView} 
+          />
+
+          {/* Commodities */}
+          <CommoditiesSection 
+            commodityPrices={commodityPrices} 
+            loading={commodityLoading} 
+            isVisible={inView} 
+          />
+
+          {/* Historical Charts */}
+          <HistoricalChartSection isVisible={inView} />
+
+          {/* Watchlist */}
+          <WatchlistSection isVisible={inView} />
+        </TabsContent>
+
+        <TabsContent value="economy" className="space-y-8">
+          {/* Economic Indicators - Full View */}
+          <EconomicIndicatorsSection 
+            economicIndicators={economicIndicators} 
+            loading={indicatorsLoading} 
+            isVisible={inView} 
+          />
+
+          {/* Finance News */}
+          <FinanceNewsSection isVisible={inView} />
+        </TabsContent>
+
+        <TabsContent value="market-share" className="space-y-8">
+          {/* New Market Share Section */}
+          <MarketShareSection isVisible={inView} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
