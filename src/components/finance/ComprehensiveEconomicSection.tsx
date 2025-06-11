@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -117,12 +116,18 @@ export const ComprehensiveEconomicSection = ({ isVisible }: ComprehensiveEconomi
   };
 
   return (
-    <div>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
-          Comprehensive Economic Overview
-        </h2>
-        <div className="flex gap-2">
+    <div className="w-full space-y-6">
+      {/* Header Section */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+          <h2 className="text-2xl md:text-3xl font-bold text-foreground">
+            Comprehensive Economic Overview
+          </h2>
+          <p className="text-muted-foreground text-sm md:text-base mt-1">
+            Complete economic indicators, sectoral analysis, and mining sector data for Zambia
+          </p>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
           <DataExport 
             data={economicData ? [
               ...economicData.macroeconomicOverview,
@@ -132,11 +137,12 @@ export const ComprehensiveEconomicSection = ({ isVisible }: ComprehensiveEconomi
             fileName="zambia-comprehensive-economic-data"
             label="Export Data"
             disabled={loading || refreshing}
+            className="w-full sm:w-auto"
           />
           <Button 
             variant="outline" 
             size="sm" 
-            className="flex items-center gap-1"
+            className="flex items-center justify-center gap-2 w-full sm:w-auto"
             onClick={handleRefresh}
             disabled={refreshing || loading}
           >
@@ -145,13 +151,10 @@ export const ComprehensiveEconomicSection = ({ isVisible }: ComprehensiveEconomi
           </Button>
         </div>
       </div>
-      <p className="text-gray-600 dark:text-gray-300 mb-6">
-        Complete economic indicators, sectoral analysis, and mining sector data for Zambia
-      </p>
 
       {loading || refreshing ? (
         <div className="space-y-6">
-          <Skeleton className="h-12 w-64" />
+          <Skeleton className="h-12 w-full max-w-md" />
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <Skeleton className="h-96" />
             <Skeleton className="h-96" />
@@ -160,338 +163,389 @@ export const ComprehensiveEconomicSection = ({ isVisible }: ComprehensiveEconomi
           </div>
         </div>
       ) : (
-        <Tabs defaultValue="macroeconomic" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="macroeconomic">Macroeconomic</TabsTrigger>
-            <TabsTrigger value="sectoral">Sectoral GDP</TabsTrigger>
-            <TabsTrigger value="mining">Mining Analysis</TabsTrigger>
-            <TabsTrigger value="trade">Trade & Finance</TabsTrigger>
-            <TabsTrigger value="detailed">Detailed Data</TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="macroeconomic" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              {economicData?.macroeconomicOverview.slice(0, 6).map((indicator, index) => (
-                <Card 
-                  key={indicator.indicator}
-                  className="p-4"
-                  style={{ 
-                    opacity: 0,
-                    animation: isVisible ? `fade-in 0.5s ease-out ${index * 0.1}s forwards` : "none"
-                  }}
+        <div className="w-full">
+          <Tabs defaultValue="macroeconomic" className="w-full">
+            {/* Improved Tab Navigation */}
+            <div className="mb-6">
+              <TabsList className="grid w-full grid-cols-2 md:grid-cols-3 lg:grid-cols-5 h-auto gap-1 bg-muted/30 p-1 rounded-lg">
+                <TabsTrigger 
+                  value="macroeconomic" 
+                  className="text-xs md:text-sm px-2 py-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 rounded-md"
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <DollarSign className="h-4 w-4 text-blue-500" />
-                    <h3 className="font-semibold text-sm">{indicator.indicator}</h3>
-                  </div>
-                  <p className="text-lg font-bold text-blue-600 dark:text-blue-400 mb-1">
-                    {indicator.value}
-                  </p>
-                  <p className="text-xs text-gray-600 dark:text-gray-400">
-                    Source: {indicator.source}
-                  </p>
-                </Card>
-              ))}
+                  <span className="hidden sm:inline">Macroeconomic</span>
+                  <span className="sm:hidden">Macro</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="sectoral" 
+                  className="text-xs md:text-sm px-2 py-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 rounded-md"
+                >
+                  <span className="hidden sm:inline">Sectoral GDP</span>
+                  <span className="sm:hidden">Sectoral</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="mining" 
+                  className="text-xs md:text-sm px-2 py-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 rounded-md"
+                >
+                  Mining
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="trade" 
+                  className="text-xs md:text-sm px-2 py-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 rounded-md"
+                >
+                  <span className="hidden sm:inline">Trade & Finance</span>
+                  <span className="sm:hidden">Trade</span>
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="detailed" 
+                  className="text-xs md:text-sm px-2 py-2.5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all duration-200 rounded-md col-span-2 md:col-span-1"
+                >
+                  <span className="hidden sm:inline">Detailed Data</span>
+                  <span className="sm:hidden">Details</span>
+                </TabsTrigger>
+              </TabsList>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="p-6">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <TrendingUp className="h-5 w-5" />
-                    Key Economic Indicators
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {economicData?.macroeconomicOverview.slice(0, 5).map((indicator, index) => (
-                      <div key={indicator.indicator} className="border-b pb-3 last:border-b-0">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-medium text-sm">{indicator.indicator}</h4>
-                            <p className="text-xs text-gray-600 dark:text-gray-400">
-                              {indicator.source}
-                            </p>
+            {/* Tab Content with proper spacing */}
+            <div className="min-h-[500px]">
+              <TabsContent value="macroeconomic" className="mt-0 space-y-6">
+                {/* Key Metrics Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {economicData?.macroeconomicOverview.slice(0, 6).map((indicator, index) => (
+                    <Card 
+                      key={indicator.indicator}
+                      className="p-4 border-border hover:shadow-md transition-shadow duration-200"
+                      style={{ 
+                        opacity: 0,
+                        animation: isVisible ? `fade-in 0.5s ease-out ${index * 0.1}s forwards` : "none"
+                      }}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        <DollarSign className="h-4 w-4 text-primary" />
+                        <h3 className="font-semibold text-sm text-card-foreground">{indicator.indicator}</h3>
+                      </div>
+                      <p className="text-lg font-bold text-primary mb-1">
+                        {indicator.value}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Source: {indicator.source}
+                      </p>
+                    </Card>
+                  ))}
+                </div>
+
+                {/* Overview Charts */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card className="p-6 border-border">
+                    <CardHeader className="p-0 mb-4">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <TrendingUp className="h-5 w-5" />
+                        Key Economic Indicators
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="space-y-4">
+                        {economicData?.macroeconomicOverview.slice(0, 5).map((indicator, index) => (
+                          <div key={indicator.indicator} className="border-b border-border pb-3 last:border-b-0">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <h4 className="font-medium text-sm text-card-foreground">{indicator.indicator}</h4>
+                                <p className="text-xs text-muted-foreground">
+                                  {indicator.source}
+                                </p>
+                              </div>
+                              <div className="text-right ml-4">
+                                <span className="text-lg font-bold text-primary">
+                                  {indicator.value}
+                                </span>
+                              </div>
+                            </div>
                           </div>
-                          <div className="text-right">
-                            <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
-                              {indicator.value}
-                            </span>
-                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="p-6 border-border">
+                    <CardHeader className="p-0 mb-4">
+                      <CardTitle className="text-lg">Economic Overview Summary</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="space-y-3 text-sm">
+                        <div className="grid grid-cols-1 gap-2">
+                          <p><strong>GDP:</strong> $29.2 billion with 4.7% growth rate</p>
+                          <p><strong>Population:</strong> 20.9 million people</p>
+                          <p><strong>Per Capita Income:</strong> $1,480</p>
+                          <p><strong>Inflation:</strong> 13.8% (May 2024)</p>
+                          <p><strong>Unemployment:</strong> 12.4% of labor force</p>
+                          <p><strong>Exchange Rate:</strong> 28.5 ZMW per USD</p>
+                          <p><strong>Debt-to-GDP:</strong> 71.3%</p>
+                          <p><strong>Foreign Reserves:</strong> $3.1 billion</p>
                         </div>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
 
-              <Card className="p-6">
-                <CardHeader>
-                  <CardTitle>Economic Overview Summary</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-3 text-sm">
-                    <p><strong>GDP:</strong> $29.2 billion with 4.7% growth rate</p>
-                    <p><strong>Population:</strong> 20.9 million people</p>
-                    <p><strong>Per Capita Income:</strong> $1,480</p>
-                    <p><strong>Inflation:</strong> 13.8% (May 2024)</p>
-                    <p><strong>Unemployment:</strong> 12.4% of labor force</p>
-                    <p><strong>Exchange Rate:</strong> 28.5 ZMW per USD</p>
-                    <p><strong>Debt-to-GDP:</strong> 71.3%</p>
-                    <p><strong>Foreign Reserves:</strong> $3.1 billion</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="sectoral" className="mt-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="p-6">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Building2 className="h-5 w-5" />
-                    GDP by Sector (2023)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={getSectoralPieData()}
-                          cx="50%"
-                          cy="50%"
-                          outerRadius={100}
-                          fill="#8884d8"
-                          dataKey="value"
-                          label={({ name, value }) => `${name}: ${value}%`}
-                        >
-                          {getSectoralPieData().map((entry, index) => (
-                            <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
-                          ))}
-                        </Pie>
-                        <Tooltip formatter={(value) => [`${value}%`, 'GDP Contribution']} />
-                        <Legend />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="p-6">
-                <CardHeader>
-                  <CardTitle>Sectoral Analysis</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {economicData?.sectoralContributions.map((sector, index) => (
-                      <div key={sector.sector} className="border-b pb-3 last:border-b-0">
-                        <div className="flex justify-between items-center">
-                          <div>
-                            <h4 className="font-medium">{sector.sector}</h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              Source: {sector.source}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <span 
-                              className="text-lg font-bold" 
-                              style={{ color: CHART_COLORS[index % CHART_COLORS.length] }}
+              <TabsContent value="sectoral" className="mt-0 space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card className="p-6 border-border">
+                    <CardHeader className="p-0 mb-4">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <Building2 className="h-5 w-5" />
+                        GDP by Sector (2023)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="h-80">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <PieChart>
+                            <Pie
+                              data={getSectoralPieData()}
+                              cx="50%"
+                              cy="50%"
+                              outerRadius={100}
+                              fill="#8884d8"
+                              dataKey="value"
+                              label={({ name, value }) => `${name}: ${value}%`}
                             >
-                              {sector.contribution}%
-                            </span>
-                          </div>
-                        </div>
+                              {getSectoralPieData().map((entry, index) => (
+                                <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
+                              ))}
+                            </Pie>
+                            <Tooltip formatter={(value) => [`${value}%`, 'GDP Contribution']} />
+                            <Legend />
+                          </PieChart>
+                        </ResponsiveContainer>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
+                    </CardContent>
+                  </Card>
 
-          <TabsContent value="mining" className="mt-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-              <Card className="p-6">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Factory className="h-5 w-5" />
-                    Mining Production by Region (2023)
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={getRegionalMiningData()}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="region" />
-                        <YAxis />
-                        <Tooltip />
-                        <Bar dataKey="production2023" fill="#0088FE" name="2023 Production" />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="p-6">
-                <CardHeader>
-                  <CardTitle>Mineral Production Trends</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="h-80">
-                    <ResponsiveContainer width="100%" height="100%">
-                      <LineChart data={getMiningProductionTrendData()}>
-                        <CartesianGrid strokeDasharray="3 3" />
-                        <XAxis dataKey="year" />
-                        <YAxis />
-                        <Tooltip />
-                        <Line type="monotone" dataKey="Copper" stroke="#0088FE" strokeWidth={2} />
-                        <Line type="monotone" dataKey="Cobalt" stroke="#00C49F" strokeWidth={2} />
-                        <Line type="monotone" dataKey="Gold" stroke="#FFBB28" strokeWidth={2} />
-                        <Legend />
-                      </LineChart>
-                    </ResponsiveContainer>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-
-            <Card className="p-6">
-              <CardHeader>
-                <CardTitle>Mining Sector Key Facts</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <div className="text-center">
-                    <h4 className="font-bold text-2xl text-blue-600">763,000</h4>
-                    <p className="text-sm text-gray-600">Metric tons copper (2023)</p>
-                  </div>
-                  <div className="text-center">
-                    <h4 className="font-bold text-2xl text-green-600">8,500</h4>
-                    <p className="text-sm text-gray-600">Metric tons cobalt (2023)</p>
-                  </div>
-                  <div className="text-center">
-                    <h4 className="font-bold text-2xl text-yellow-600">20M</h4>
-                    <p className="text-sm text-gray-600">Tons copper reserves</p>
-                  </div>
-                  <div className="text-center">
-                    <h4 className="font-bold text-2xl text-purple-600">12.4%</h4>
-                    <p className="text-sm text-gray-600">Of GDP contribution</p>
-                  </div>
+                  <Card className="p-6 border-border">
+                    <CardHeader className="p-0 mb-4">
+                      <CardTitle className="text-lg">Sectoral Analysis</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="space-y-4">
+                        {economicData?.sectoralContributions.map((sector, index) => (
+                          <div key={sector.sector} className="border-b border-border pb-3 last:border-b-0">
+                            <div className="flex justify-between items-center">
+                              <div className="flex-1">
+                                <h4 className="font-medium text-card-foreground">{sector.sector}</h4>
+                                <p className="text-sm text-muted-foreground">
+                                  Source: {sector.source}
+                                </p>
+                              </div>
+                              <div className="text-right ml-4">
+                                <span 
+                                  className="text-lg font-bold" 
+                                  style={{ color: CHART_COLORS[index % CHART_COLORS.length] }}
+                                >
+                                  {sector.contribution}%
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
+              </TabsContent>
 
-          <TabsContent value="trade" className="mt-6">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card className="p-6">
-                <CardHeader>
-                  <CardTitle>Trade & Exports</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {economicData?.tradeExports.map((trade, index) => (
-                      <div key={trade.indicator} className="border-b pb-3 last:border-b-0">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-medium">{trade.indicator}</h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              {trade.source}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <span className="text-lg font-bold text-green-600 dark:text-green-400">
-                              {trade.value}
-                            </span>
-                          </div>
-                        </div>
+              <TabsContent value="mining" className="mt-0 space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                  <Card className="p-6 border-border">
+                    <CardHeader className="p-0 mb-4">
+                      <CardTitle className="flex items-center gap-2 text-lg">
+                        <Factory className="h-5 w-5" />
+                        Mining Production by Region (2023)
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="h-80">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <BarChart data={getRegionalMiningData()}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis 
+                              dataKey="region" 
+                              fontSize={12}
+                              angle={-45}
+                              textAnchor="end"
+                              height={60}
+                            />
+                            <YAxis fontSize={12} />
+                            <Tooltip />
+                            <Bar dataKey="production2023" fill="#0088FE" name="2023 Production" />
+                          </BarChart>
+                        </ResponsiveContainer>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
+                    </CardContent>
+                  </Card>
 
-              <Card className="p-6">
-                <CardHeader>
-                  <CardTitle>Fiscal & Government Finance</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {economicData?.fiscalGovernment.map((fiscal, index) => (
-                      <div key={fiscal.indicator} className="border-b pb-3 last:border-b-0">
-                        <div className="flex justify-between items-start">
-                          <div>
-                            <h4 className="font-medium">{fiscal.indicator}</h4>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
-                              {fiscal.source}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <span className="text-lg font-bold text-red-600 dark:text-red-400">
-                              {fiscal.value}
-                            </span>
-                          </div>
-                        </div>
+                  <Card className="p-6 border-border">
+                    <CardHeader className="p-0 mb-4">
+                      <CardTitle className="text-lg">Mineral Production Trends</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="h-80">
+                        <ResponsiveContainer width="100%" height="100%">
+                          <LineChart data={getMiningProductionTrendData()}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis dataKey="year" fontSize={12} />
+                            <YAxis fontSize={12} />
+                            <Tooltip />
+                            <Line type="monotone" dataKey="Copper" stroke="#0088FE" strokeWidth={2} />
+                            <Line type="monotone" dataKey="Cobalt" stroke="#00C49F" strokeWidth={2} />
+                            <Line type="monotone" dataKey="Gold" stroke="#FFBB28" strokeWidth={2} />
+                            <Legend />
+                          </LineChart>
+                        </ResponsiveContainer>
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
-
-          <TabsContent value="detailed" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Complete Economic Dataset</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Indicator</TableHead>
-                        <TableHead>Value</TableHead>
-                        <TableHead>Source</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {economicData?.macroeconomicOverview.map((indicator, index) => (
-                        <TableRow key={`macro-${index}`}>
-                          <TableCell className="font-medium">Macroeconomic</TableCell>
-                          <TableCell>{indicator.indicator}</TableCell>
-                          <TableCell className="font-semibold text-blue-600 dark:text-blue-400">
-                            {indicator.value}
-                          </TableCell>
-                          <TableCell className="text-sm">{indicator.source}</TableCell>
-                        </TableRow>
-                      ))}
-                      {economicData?.sectoralContributions.map((sector, index) => (
-                        <TableRow key={`sector-${index}`}>
-                          <TableCell className="font-medium">Sectoral GDP</TableCell>
-                          <TableCell>{sector.sector}</TableCell>
-                          <TableCell className="font-semibold text-green-600 dark:text-green-400">
-                            {sector.contribution}%
-                          </TableCell>
-                          <TableCell className="text-sm">{sector.source}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
+                    </CardContent>
+                  </Card>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
+
+                {/* Mining Key Facts */}
+                <Card className="p-6 border-border">
+                  <CardHeader className="p-0 mb-4">
+                    <CardTitle className="text-lg">Mining Sector Key Facts</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-0">
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                      <div className="text-center p-4 rounded-lg bg-muted/30">
+                        <h4 className="font-bold text-xl md:text-2xl text-primary">763,000</h4>
+                        <p className="text-xs md:text-sm text-muted-foreground">Metric tons copper (2023)</p>
+                      </div>
+                      <div className="text-center p-4 rounded-lg bg-muted/30">
+                        <h4 className="font-bold text-xl md:text-2xl text-green-600">8,500</h4>
+                        <p className="text-xs md:text-sm text-muted-foreground">Metric tons cobalt (2023)</p>
+                      </div>
+                      <div className="text-center p-4 rounded-lg bg-muted/30">
+                        <h4 className="font-bold text-xl md:text-2xl text-yellow-600">20M</h4>
+                        <p className="text-xs md:text-sm text-muted-foreground">Tons copper reserves</p>
+                      </div>
+                      <div className="text-center p-4 rounded-lg bg-muted/30">
+                        <h4 className="font-bold text-xl md:text-2xl text-purple-600">12.4%</h4>
+                        <p className="text-xs md:text-sm text-muted-foreground">Of GDP contribution</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+
+              <TabsContent value="trade" className="mt-0 space-y-6">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  <Card className="p-6 border-border">
+                    <CardHeader className="p-0 mb-4">
+                      <CardTitle className="text-lg">Trade & Exports</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="space-y-4">
+                        {economicData?.tradeExports.map((trade, index) => (
+                          <div key={trade.indicator} className="border-b border-border pb-3 last:border-b-0">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <h4 className="font-medium text-card-foreground">{trade.indicator}</h4>
+                                <p className="text-sm text-muted-foreground">
+                                  {trade.source}
+                                </p>
+                              </div>
+                              <div className="text-right ml-4">
+                                <span className="text-lg font-bold text-green-600">
+                                  {trade.value}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card className="p-6 border-border">
+                    <CardHeader className="p-0 mb-4">
+                      <CardTitle className="text-lg">Fiscal & Government Finance</CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                      <div className="space-y-4">
+                        {economicData?.fiscalGovernment.map((fiscal, index) => (
+                          <div key={fiscal.indicator} className="border-b border-border pb-3 last:border-b-0">
+                            <div className="flex justify-between items-start">
+                              <div className="flex-1">
+                                <h4 className="font-medium text-card-foreground">{fiscal.indicator}</h4>
+                                <p className="text-sm text-muted-foreground">
+                                  {fiscal.source}
+                                </p>
+                              </div>
+                              <div className="text-right ml-4">
+                                <span className="text-lg font-bold text-red-600">
+                                  {fiscal.value}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+              </TabsContent>
+
+              <TabsContent value="detailed" className="mt-0">
+                <Card className="border-border">
+                  <CardHeader>
+                    <CardTitle className="text-lg">Complete Economic Dataset</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead className="w-[120px]">Category</TableHead>
+                            <TableHead className="min-w-[200px]">Indicator</TableHead>
+                            <TableHead className="w-[120px]">Value</TableHead>
+                            <TableHead className="w-[120px]">Source</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {economicData?.macroeconomicOverview.map((indicator, index) => (
+                            <TableRow key={`macro-${index}`}>
+                              <TableCell className="font-medium text-xs">Macroeconomic</TableCell>
+                              <TableCell className="text-sm">{indicator.indicator}</TableCell>
+                              <TableCell className="font-semibold text-primary text-sm">
+                                {indicator.value}
+                              </TableCell>
+                              <TableCell className="text-xs text-muted-foreground">{indicator.source}</TableCell>
+                            </TableRow>
+                          ))}
+                          {economicData?.sectoralContributions.map((sector, index) => (
+                            <TableRow key={`sector-${index}`}>
+                              <TableCell className="font-medium text-xs">Sectoral GDP</TableCell>
+                              <TableCell className="text-sm">{sector.sector}</TableCell>
+                              <TableCell className="font-semibold text-green-600 text-sm">
+                                {sector.contribution}%
+                              </TableCell>
+                              <TableCell className="text-xs text-muted-foreground">{sector.source}</TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            </div>
+          </Tabs>
+        </div>
       )}
       
-      <div className="text-xs text-gray-500 dark:text-gray-400 mt-6 text-right">
-        <p>Economic data compiled from multiple official sources including World Bank, IMF, Bank of Zambia</p>
-        <p>Last updated: {new Date().toLocaleDateString()}</p>
+      {/* Footer */}
+      <div className="text-xs text-muted-foreground mt-8 pt-4 border-t border-border">
+        <div className="text-center space-y-1">
+          <p>Economic data compiled from multiple official sources including World Bank, IMF, Bank of Zambia</p>
+          <p>Last updated: {new Date().toLocaleDateString()}</p>
+        </div>
       </div>
     </div>
   );
