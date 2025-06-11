@@ -18,6 +18,7 @@ interface DataExportProps {
   variant?: 'default' | 'outline' | 'secondary' | 'ghost' | 'link' | 'destructive';
   size?: 'default' | 'sm' | 'lg' | 'icon';
   disabled?: boolean;
+  className?: string;
 }
 
 export const DataExport = ({
@@ -26,7 +27,8 @@ export const DataExport = ({
   label = 'Export',
   variant = 'outline',
   size = 'sm',
-  disabled = false
+  disabled = false,
+  className = ''
 }: DataExportProps) => {
   const [isExporting, setIsExporting] = useState(false);
 
@@ -59,7 +61,7 @@ export const DataExport = ({
           variant={variant} 
           size={size} 
           disabled={disabled || isExporting || !data?.length}
-          className="gap-2"
+          className={`gap-2 ${className}`}
         >
           {isExporting ? (
             <>
