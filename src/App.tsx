@@ -15,6 +15,7 @@ import Education from "./pages/explore/Education";
 import Finance from "./pages/Finance";
 import AITools from "./pages/AITools";
 import About from "./pages/About";
+import Contact from "./pages/Contact";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
 import Dashboard from "./pages/Dashboard";
@@ -55,6 +56,7 @@ const App = () => {
                 <Route path="/finance" element={<Finance />} />
                 <Route path="/ai-tools" element={<AITools />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
                 
                 {/* Auth routes - accessible only when NOT logged in */}
                 <Route element={<ProtectedRoute requireAuth={false} />}>

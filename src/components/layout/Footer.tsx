@@ -32,11 +32,11 @@ const Footer = () => {
     {
       title: 'Company',
       links: [
+        { name: 'Contact', href: '/contact' },
         { name: 'Team', href: '/team' },
         { name: 'Careers', href: '/careers' },
         { name: 'Blog', href: '/blog' },
         { name: 'Press', href: '/press' },
-        { name: 'Contact', href: '/contact' },
       ],
     },
     {
@@ -54,7 +54,7 @@ const Footer = () => {
     { name: 'Github', icon: <Github className="h-5 w-5" />, href: 'https://github.com' },
     { name: 'Twitter', icon: <Twitter className="h-5 w-5" />, href: 'https://twitter.com' },
     { name: 'LinkedIn', icon: <Linkedin className="h-5 w-5" />, href: 'https://linkedin.com' },
-    { name: 'Mail', icon: <Mail className="h-5 w-5" />, href: 'mailto:info@zambiainsight.com' },
+    { name: 'Mail', icon: <Mail className="h-5 w-5" />, href: 'mailto:hello@datazambia.com' },
   ];
 
   return (
