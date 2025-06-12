@@ -66,7 +66,7 @@ const Contact = () => {
               Contact Us
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300">
-              We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+              We value your interest and welcome your inquiries. Please feel free to send us a message—our team will get back to you as promptly as possible.
             </p>
           </div>
 
