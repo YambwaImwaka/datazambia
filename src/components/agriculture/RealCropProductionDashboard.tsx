@@ -599,20 +599,20 @@ export const RealCropProductionDashboard = () => {
                   </TableCaption>
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="font-bold bg-blue-50 dark:bg-blue-900/20">
+                      <TableHead className="font-bold bg-blue-50 dark:bg-blue-900/20 min-w-[100px]">
                         <div className="flex items-center gap-2">
                           <Calendar className="h-4 w-4" />
                           Year
                         </div>
                       </TableHead>
-                      <TableHead>Crop</TableHead>
-                      <TableHead>Top Region</TableHead>
-                      <TableHead>Production (MT)</TableHead>
-                      <TableHead>2nd Region</TableHead>
-                      <TableHead>Production (MT)</TableHead>
-                      <TableHead>3rd Region</TableHead>
-                      <TableHead>Production (MT)</TableHead>
-                      <TableHead>Source</TableHead>
+                      <TableHead className="min-w-[100px]">Crop</TableHead>
+                      <TableHead className="min-w-[120px]">Top Region</TableHead>
+                      <TableHead className="min-w-[140px]">Production (MT)</TableHead>
+                      <TableHead className="min-w-[120px]">2nd Region</TableHead>
+                      <TableHead className="min-w-[140px]">Production (MT)</TableHead>
+                      <TableHead className="min-w-[120px]">3rd Region</TableHead>
+                      <TableHead className="min-w-[140px]">Production (MT)</TableHead>
+                      <TableHead className="min-w-[150px]">Source</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -621,32 +621,62 @@ export const RealCropProductionDashboard = () => {
                         (selectedCrop === "all" || record.Crop === selectedCrop) &&
                         (selectedYear === "all" || record.Year === parseInt(selectedYear))
                       )
-                      .sort((a, b) => b.Year - a.Year) // Sort by year descending
+                      .sort((a, b) => b.Year - a.Year) // Sort by year descending (newest first)
                       .map((record, index) => (
-                        <TableRow key={index}>
-                          <TableCell className="font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10">
+                        <TableRow key={`${record.Year}-${record.Crop}-${index}`} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                          <TableCell className="font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10 sticky left-0">
                             <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4" />
-                              {record.Year}
+                              <span className="text-lg font-bold">{record.Year}</span>
                             </div>
                           </TableCell>
-                          <TableCell>
+                          <TableCell className="font-semibold">
                             <div className="flex items-center gap-2">
                               <Wheat className="h-4 w-4" />
                               {record.Crop}
                             </div>
                           </TableCell>
-                          <TableCell className="font-medium">{record["Top Region"]}</TableCell>
-                          <TableCell className="font-medium">{record["Production MT"].toLocaleString()}</TableCell>
-                          <TableCell>{record["2ND Best Region"]}</TableCell>
-                          <TableCell>{record["2nd Production Mt"].toLocaleString()}</TableCell>
-                          <TableCell>{record["3rd Best Region"]}</TableCell>
-                          <TableCell>{record["3rd Production Mt"].toLocaleString()}</TableCell>
-                          <TableCell className="text-xs">{record.Source}</TableCell>
+                          <TableCell className="font-medium text-green-700 dark:text-green-400">
+                            🥇 {record["Top Region"]}
+                          </TableCell>
+                          <TableCell className="font-medium">
+                            {record["Production MT"].toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-gray-600 dark:text-gray-400">
+                            🥈 {record["2ND Best Region"]}
+                          </TableCell>
+                          <TableCell>
+                            {record["2nd Production Mt"].toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-gray-600 dark:text-gray-400">
+                            🥉 {record["3rd Best Region"]}
+                          </TableCell>
+                          <TableCell>
+                            {record["3rd Production Mt"].toLocaleString()}
+                          </TableCell>
+                          <TableCell className="text-xs text-gray-500 dark:text-gray-400 max-w-[150px] truncate" title={record.Source}>
+                            {record.Source}
+                          </TableCell>
                         </TableRow>
                       ))}
                   </TableBody>
                 </Table>
+              </div>
+              
+              {/* Summary info below table */}
+              <div className="mt-4 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+                  <Calendar className="h-4 w-4" />
+                  <span>
+                    Showing {realCropData
+                      .filter(record => 
+                        (selectedCrop === "all" || record.Crop === selectedCrop) &&
+                        (selectedYear === "all" || record.Year === parseInt(selectedYear))
+                      ).length} records
+                    {selectedYear === "all" ? " across all years (2019-2023)" : ` for year ${selectedYear}`}
+                    {selectedCrop !== "all" ? ` for ${selectedCrop}` : " for all crops"}
+                  </span>
+                </div>
               </div>
             </CardContent>
           </Card>
