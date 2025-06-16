@@ -249,50 +249,39 @@ export const RealCropProductionDashboard = () => {
   const [selectedCrop, setSelectedCrop] = useState<string>("all");
   const [selectedYear, setSelectedYear] = useState<string>("all");
 
-  // Transform data for visualization
+  // Transform data for visualization with proper year handling
   const transformedData = useMemo(() => {
-    // Create time series data for line charts
-    const timeSeriesData = realCropData.reduce((acc, record) => {
-      const existing = acc.find(item => item.year === record.Year && item.crop === record.Crop);
-      if (!existing) {
-        acc.push({
-          year: record.Year,
-          crop: record.Crop,
-          totalProduction: record["Production MT"] + record["2nd Production Mt"] + 
-                          record["3rd Production Mt"] + record["4th Production Mt"] + 
-                          record["5th Production Mt"],
-          topRegionProduction: record["Production MT"],
-          topRegion: record["Top Region"]
-        });
-      }
-      return acc;
-    }, [] as any[]);
+    // Create time series data for line charts - show data by year
+    const timeSeriesData = realCropData.map(record => ({
+      year: record.Year,
+      crop: record.Crop,
+      totalProduction: (record["Production MT"] + record["2nd Production Mt"] + 
+                      record["3rd Production Mt"] + record["4th Production Mt"] + 
+                      record["5th Production Mt"]) / 1000, // Convert to thousands of MT
+      topRegionProduction: record["Production MT"] / 1000,
+      topRegion: record["Top Region"],
+      source: record.Source
+    }));
 
-    // Create regional breakdown data
+    // Create regional breakdown data with year information preserved
     const regionalData = realCropData.reduce((acc, record) => {
       const regions = [
-        { name: record["Top Region"], production: record["Production MT"] },
-        { name: record["2ND Best Region"], production: record["2nd Production Mt"] },
-        { name: record["3rd Best Region"], production: record["3rd Production Mt"] },
-        { name: record["4th Best Region"], production: record["4th Production Mt"] },
-        { name: record["5th Best Region"], production: record["5th Production Mt"] }
+        { name: record["Top Region"], production: record["Production MT"], rank: 1 },
+        { name: record["2ND Best Region"], production: record["2nd Production Mt"], rank: 2 },
+        { name: record["3rd Best Region"], production: record["3rd Production Mt"], rank: 3 },
+        { name: record["4th Best Region"], production: record["4th Production Mt"], rank: 4 },
+        { name: record["5th Best Region"], production: record["5th Production Mt"], rank: 5 }
       ];
 
       regions.forEach(region => {
-        const existing = acc.find(item => 
-          item.region === region.name && 
-          item.crop === record.Crop && 
-          item.year === record.Year
-        );
-        if (!existing) {
-          acc.push({
-            region: region.name,
-            crop: record.Crop,
-            year: record.Year,
-            production: region.production / 1000, // Convert to thousands of MT
-            source: record.Source
-          });
-        }
+        acc.push({
+          region: region.name,
+          crop: record.Crop,
+          year: record.Year,
+          production: region.production / 1000, // Convert to thousands of MT
+          rank: region.rank,
+          source: record.Source
+        });
       });
       return acc;
     }, [] as any[]);
@@ -312,10 +301,7 @@ export const RealCropProductionDashboard = () => {
       data = data.filter(item => item.year === parseInt(selectedYear));
     }
     
-    return data.map(item => ({
-      ...item,
-      totalProduction: item.totalProduction / 1000 // Convert to thousands of MT
-    }));
+    return data;
   }, [transformedData.timeSeriesData, selectedCrop, selectedYear]);
 
   const filteredRegionalData = useMemo(() => {
@@ -336,11 +322,12 @@ export const RealCropProductionDashboard = () => {
   const crops = ["Maize", "Soybeans", "Wheat"];
   const years = [2019, 2020, 2021, 2022, 2023];
 
-  // Create chart data for different visualizations
+  // Create chart data for yearly trends
   const getYearlyTrendData = () => {
     if (selectedCrop === "all") {
+      // Group by year and show all crops
       return years.map(year => {
-        const yearData = filteredTimeSeriesData.filter(item => item.year === year);
+        const yearData = transformedData.timeSeriesData.filter(item => item.year === year);
         return {
           year: year.toString(),
           Maize: yearData.find(item => item.crop === "Maize")?.totalProduction || 0,
@@ -349,33 +336,59 @@ export const RealCropProductionDashboard = () => {
         };
       });
     } else {
-      return filteredTimeSeriesData.map(item => ({
-        year: item.year.toString(),
-        production: item.totalProduction
-      }));
+      // Show single crop over years
+      return years.map(year => {
+        const yearData = transformedData.timeSeriesData.find(item => 
+          item.crop === selectedCrop && item.year === year
+        );
+        return {
+          year: year.toString(),
+          production: yearData?.totalProduction || 0
+        };
+      });
     }
   };
 
   const getRegionalBarData = () => {
     const regions = ["Southern", "Eastern", "Central", "Lusaka", "Copperbelt"];
     
-    if (selectedCrop === "all" && selectedYear === "all") {
+    if (selectedYear === "all") {
+      // Average across all years
       return regions.map(region => {
         const regionData = filteredRegionalData.filter(item => item.region === region);
-        return {
-          region,
-          Maize: regionData.filter(item => item.crop === "Maize").reduce((sum, item) => sum + item.production, 0) / 5,
-          Soybeans: regionData.filter(item => item.crop === "Soybeans").reduce((sum, item) => sum + item.production, 0) / 5,
-          Wheat: regionData.filter(item => item.crop === "Wheat").reduce((sum, item) => sum + item.production, 0) / 5
-        };
+        
+        if (selectedCrop === "all") {
+          return {
+            region,
+            Maize: regionData.filter(item => item.crop === "Maize").reduce((sum, item) => sum + item.production, 0) / Math.max(regionData.filter(item => item.crop === "Maize").length, 1),
+            Soybeans: regionData.filter(item => item.crop === "Soybeans").reduce((sum, item) => sum + item.production, 0) / Math.max(regionData.filter(item => item.crop === "Soybeans").length, 1),
+            Wheat: regionData.filter(item => item.crop === "Wheat").reduce((sum, item) => sum + item.production, 0) / Math.max(regionData.filter(item => item.crop === "Wheat").length, 1)
+          };
+        } else {
+          return {
+            region,
+            production: regionData.reduce((sum, item) => sum + item.production, 0) / Math.max(regionData.length, 1)
+          };
+        }
       });
     } else {
+      // Show data for specific year
       return regions.map(region => {
         const regionData = filteredRegionalData.filter(item => item.region === region);
-        return {
-          region,
-          production: regionData.reduce((sum, item) => sum + item.production, 0) / Math.max(regionData.length, 1)
-        };
+        
+        if (selectedCrop === "all") {
+          return {
+            region,
+            Maize: regionData.find(item => item.crop === "Maize")?.production || 0,
+            Soybeans: regionData.find(item => item.crop === "Soybeans")?.production || 0,
+            Wheat: regionData.find(item => item.crop === "Wheat")?.production || 0
+          };
+        } else {
+          return {
+            region,
+            production: regionData.find(item => item.crop === selectedCrop)?.production || 0
+          };
+        }
       });
     }
   };
@@ -432,7 +445,7 @@ export const RealCropProductionDashboard = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5" />
-                Production Trends (Thousand MT)
+                Production Trends by Year (Thousand MT)
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -466,7 +479,10 @@ export const RealCropProductionDashboard = () => {
         <TabsContent value="regional" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Production by Region (Thousand MT)</CardTitle>
+              <CardTitle>
+                Production by Region (Thousand MT)
+                {selectedYear !== "all" && ` - ${selectedYear}`}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="h-80">
@@ -540,13 +556,13 @@ export const RealCropProductionDashboard = () => {
         <TabsContent value="detailed" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Complete Production Records</CardTitle>
+              <CardTitle>Complete Production Records by Year</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
                 <Table>
                   <TableCaption>
-                    Comprehensive crop production data from official sources
+                    Comprehensive crop production data from official sources (showing {selectedYear === "all" ? "all years" : selectedYear})
                   </TableCaption>
                   <TableHeader>
                     <TableRow>
@@ -567,9 +583,10 @@ export const RealCropProductionDashboard = () => {
                         (selectedCrop === "all" || record.Crop === selectedCrop) &&
                         (selectedYear === "all" || record.Year === parseInt(selectedYear))
                       )
+                      .sort((a, b) => b.Year - a.Year) // Sort by year descending
                       .map((record, index) => (
                         <TableRow key={index}>
-                          <TableCell className="font-medium">{record.Year}</TableCell>
+                          <TableCell className="font-medium text-blue-600">{record.Year}</TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <Wheat className="h-4 w-4" />
