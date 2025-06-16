@@ -1,3 +1,4 @@
+
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -624,7 +625,7 @@ export const RealCropProductionDashboard = () => {
                       .sort((a, b) => b.Year - a.Year) // Sort by year descending (newest first)
                       .map((record, index) => (
                         <TableRow key={`${record.Year}-${record.Crop}-${index}`} className="hover:bg-gray-50 dark:hover:bg-gray-800/50">
-                          <TableCell className="font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10 sticky left-0">
+                          <TableCell className="font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10">
                             <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4" />
                               <span className="text-lg font-bold">{record.Year}</span>
