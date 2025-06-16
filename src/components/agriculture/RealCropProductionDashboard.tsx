@@ -1,4 +1,3 @@
-
 import { useState, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -14,7 +13,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { TrendingUp, TrendingDown, Wheat, Award } from "lucide-react";
+import { TrendingUp, TrendingDown, Wheat, Award, Calendar } from "lucide-react";
 
 // Real crop production data
 const realCropData = [
@@ -400,7 +399,8 @@ export const RealCropProductionDashboard = () => {
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
             Real Crop Production Data (2019-2023)
           </h2>
-          <p className="text-gray-600 dark:text-gray-300">
+          <p className="text-gray-600 dark:text-gray-300 flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
             Official agricultural production statistics from government sources
           </p>
         </div>
@@ -423,7 +423,7 @@ export const RealCropProductionDashboard = () => {
               <SelectValue placeholder="Select Year" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Years</SelectItem>
+              <SelectItem value="all">All Years (2019-2023)</SelectItem>
               {years.map(year => (
                 <SelectItem key={year} value={year.toString()}>{year}</SelectItem>
               ))}
@@ -446,6 +446,11 @@ export const RealCropProductionDashboard = () => {
               <CardTitle className="flex items-center gap-2">
                 <TrendingUp className="h-5 w-5" />
                 Production Trends by Year (Thousand MT)
+                {selectedYear !== "all" && (
+                  <span className="text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
+                    Year: {selectedYear}
+                  </span>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -479,9 +484,18 @@ export const RealCropProductionDashboard = () => {
         <TabsContent value="regional" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>
-                Production by Region (Thousand MT)
-                {selectedYear !== "all" && ` - ${selectedYear}`}
+              <CardTitle className="flex items-center gap-2">
+                <span>Production by Region (Thousand MT)</span>
+                {selectedYear !== "all" ? (
+                  <span className="text-sm bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    {selectedYear}
+                  </span>
+                ) : (
+                  <span className="text-sm bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 px-2 py-1 rounded">
+                    Average (2019-2023)
+                  </span>
+                )}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -523,7 +537,11 @@ export const RealCropProductionDashboard = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2">
                       <Award className="h-5 w-5 text-yellow-500" />
-                      {crop} (2023)
+                      {crop}
+                      <span className="text-sm bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 px-2 py-1 rounded flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        2023
+                      </span>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
@@ -556,17 +574,37 @@ export const RealCropProductionDashboard = () => {
         <TabsContent value="detailed" className="mt-6">
           <Card>
             <CardHeader>
-              <CardTitle>Complete Production Records by Year</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Calendar className="h-5 w-5" />
+                Complete Production Records by Year
+                {selectedYear !== "all" && (
+                  <span className="text-sm bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 px-2 py-1 rounded">
+                    Showing: {selectedYear}
+                  </span>
+                )}
+                {selectedCrop !== "all" && (
+                  <span className="text-sm bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200 px-2 py-1 rounded">
+                    Crop: {selectedCrop}
+                  </span>
+                )}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="overflow-x-auto">
                 <Table>
-                  <TableCaption>
-                    Comprehensive crop production data from official sources (showing {selectedYear === "all" ? "all years" : selectedYear})
+                  <TableCaption className="flex items-center justify-center gap-2">
+                    <Calendar className="h-4 w-4" />
+                    Comprehensive crop production data from official sources 
+                    {selectedYear === "all" ? " (2019-2023)" : ` for ${selectedYear}`}
                   </TableCaption>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Year</TableHead>
+                      <TableHead className="font-bold bg-blue-50 dark:bg-blue-900/20">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          Year
+                        </div>
+                      </TableHead>
                       <TableHead>Crop</TableHead>
                       <TableHead>Top Region</TableHead>
                       <TableHead>Production (MT)</TableHead>
@@ -586,7 +624,12 @@ export const RealCropProductionDashboard = () => {
                       .sort((a, b) => b.Year - a.Year) // Sort by year descending
                       .map((record, index) => (
                         <TableRow key={index}>
-                          <TableCell className="font-medium text-blue-600">{record.Year}</TableCell>
+                          <TableCell className="font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/10">
+                            <div className="flex items-center gap-2">
+                              <Calendar className="h-4 w-4" />
+                              {record.Year}
+                            </div>
+                          </TableCell>
                           <TableCell>
                             <div className="flex items-center gap-2">
                               <Wheat className="h-4 w-4" />
@@ -594,7 +637,7 @@ export const RealCropProductionDashboard = () => {
                             </div>
                           </TableCell>
                           <TableCell className="font-medium">{record["Top Region"]}</TableCell>
-                          <TableCell>{record["Production MT"].toLocaleString()}</TableCell>
+                          <TableCell className="font-medium">{record["Production MT"].toLocaleString()}</TableCell>
                           <TableCell>{record["2ND Best Region"]}</TableCell>
                           <TableCell>{record["2nd Production Mt"].toLocaleString()}</TableCell>
                           <TableCell>{record["3rd Best Region"]}</TableCell>
