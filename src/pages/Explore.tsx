@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { provinces, dataCategories } from '@/utils/data';
-import AgricultureDashboard from '@/components/agriculture/AgricultureDashboard';
+import AgricultureMain from '@/components/agriculture/AgricultureMain';
 import FinanceOverview from '@/components/finance/FinanceOverview';
 import EconomyDashboard from '@/components/economy/EconomyDashboard';
 import HealthDashboard from '@/components/health/HealthDashboard';
@@ -30,7 +30,7 @@ const Explore = () => {
   // Determine which dashboard to show based on the category
   const renderDashboard = () => {
     if (currentCategory === "agriculture") {
-      return <AgricultureDashboard />;
+      return <AgricultureMain />;
     } else if (currentCategory === "finance") {
       return <FinanceOverview />;
     } else if (currentCategory === "economy") {
