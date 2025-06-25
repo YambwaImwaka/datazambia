@@ -30,9 +30,9 @@ const Header = () => {
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center">
-          <Link to="/" className="flex items-center space-x-3">
+          <Link to="/" className="flex items-center">
             <div className="relative">
-              <div className="w-10 h-10 bg-gradient-to-r from-zambia-600 to-zambia-800 rounded-xl flex items-center justify-center shadow-lg">
+              <div className="w-10 h-10 bg-gradient-to-r from-zambia-600 to-zambia-800 rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-200">
                 <img 
                   src="/lovable-uploads/2f245af2-a159-479f-b943-399b757e847a.png" 
                   alt="Zambia Data Hub Logo" 
@@ -44,16 +44,6 @@ const Header = () => {
                   }}
                 />
               </div>
-            </div>
-            <div className="hidden md:block">
-              <span className="font-bold text-xl bg-gradient-to-r from-zambia-600 to-zambia-800 bg-clip-text text-transparent">
-                Zambia Data Hub
-              </span>
-            </div>
-            <div className="md:hidden">
-              <span className="font-bold text-lg bg-gradient-to-r from-zambia-600 to-zambia-800 bg-clip-text text-transparent">
-                ZDH
-              </span>
             </div>
           </Link>
         </div>
