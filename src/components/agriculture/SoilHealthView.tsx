@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -42,11 +41,11 @@ const soilHealthData = {
     { type: 'Silt Loam', area: 5, suitability: 'High fertility' }
   ],
   degradation: [
-    { factor: 'Erosion', severity: 65, impact: 'High' },
-    { factor: 'Nutrient Depletion', severity: 58, impact: 'High' },
-    { factor: 'Acidification', severity: 42, impact: 'Moderate' },
-    { factor: 'Salinization', severity: 15, impact: 'Low' },
-    { factor: 'Compaction', severity: 35, impact: 'Moderate' }
+    { factor: 'Erosion', severity: 65, impact: 'High', color: '#EF4444' },
+    { factor: 'Nutrient Depletion', severity: 58, impact: 'High', color: '#EF4444' },
+    { factor: 'Acidification', severity: 42, impact: 'Moderate', color: '#F59E0B' },
+    { factor: 'Salinization', severity: 15, impact: 'Low', color: '#10B981' },
+    { factor: 'Compaction', severity: 35, impact: 'Moderate', color: '#F59E0B' }
   ]
 };
 
@@ -167,7 +166,7 @@ export const SoilHealthView = ({ selectedProvince, selectedYear }: SoilHealthVie
                       <Bar 
                         dataKey="ph" 
                         radius={[4, 4, 0, 0]}
-                        fill={(entry: any) => entry.color || '#3B82F6'}
+                        fill="#3B82F6"
                       />
                     </BarChart>
                   </ResponsiveContainer>
@@ -341,10 +340,7 @@ export const SoilHealthView = ({ selectedProvince, selectedYear }: SoilHealthVie
                     <Bar 
                       dataKey="severity" 
                       radius={[0, 4, 4, 0]}
-                      fill={(entry: any) => 
-                        entry.severity > 60 ? '#EF4444' :
-                        entry.severity > 40 ? '#F59E0B' : '#10B981'
-                      }
+                      fill="#3B82F6"
                     />
                   </BarChart>
                 </ResponsiveContainer>
