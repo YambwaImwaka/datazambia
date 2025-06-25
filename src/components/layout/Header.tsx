@@ -9,8 +9,6 @@ import {
   LogIn, 
   Menu, 
   ChevronDown,
-  Bot,
-  TrendingUp,
   Sparkles
 } from "lucide-react";
 import MobileNav from "./MobileNav";
@@ -29,14 +27,34 @@ const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center">
-          <Link to="/" className="flex items-center">
-            <div className="bg-gradient-to-r from-zambia-600 to-zambia-800 text-white text-xl font-bold py-1 px-3 rounded-md mr-2">ZDH</div>
-            <span className="hidden md:inline-block font-semibold text-lg">
-              Zambia Data Hub
-            </span>
+          <Link to="/" className="flex items-center space-x-3">
+            <div className="relative">
+              <div className="w-10 h-10 bg-gradient-to-r from-zambia-600 to-zambia-800 rounded-xl flex items-center justify-center shadow-lg">
+                <img 
+                  src="/lovable-uploads/2f245af2-a159-479f-b943-399b757e847a.png" 
+                  alt="Zambia Data Hub Logo" 
+                  className="w-8 h-8 object-contain"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement!.innerHTML = '<span class="text-white font-bold text-lg">ZDH</span>';
+                  }}
+                />
+              </div>
+            </div>
+            <div className="hidden md:block">
+              <span className="font-bold text-xl bg-gradient-to-r from-zambia-600 to-zambia-800 bg-clip-text text-transparent">
+                Zambia Data Hub
+              </span>
+            </div>
+            <div className="md:hidden">
+              <span className="font-bold text-lg bg-gradient-to-r from-zambia-600 to-zambia-800 bg-clip-text text-transparent">
+                ZDH
+              </span>
+            </div>
           </Link>
         </div>
 
@@ -44,7 +62,7 @@ const Header = () => {
         <nav className="hidden md:flex items-center space-x-1">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex items-center gap-1">
+              <Button variant="ghost" className="flex items-center gap-1 hover:bg-zambia-50 dark:hover:bg-zambia-900/20">
                 Explore <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
@@ -68,26 +86,26 @@ const Header = () => {
           </DropdownMenu>
 
           <Link to="/provinces">
-            <Button variant="ghost">Provinces</Button>
+            <Button variant="ghost" className="hover:bg-zambia-50 dark:hover:bg-zambia-900/20">Provinces</Button>
           </Link>
           
           <Link to="/finance">
-            <Button variant="ghost">Finance</Button>
+            <Button variant="ghost" className="hover:bg-zambia-50 dark:hover:bg-zambia-900/20">Finance</Button>
           </Link>
 
           <Link to="/ai-tools">
-            <Button variant="ghost" className="flex items-center gap-1">
+            <Button variant="ghost" className="flex items-center gap-1 hover:bg-zambia-50 dark:hover:bg-zambia-900/20">
               <Sparkles className="h-4 w-4" />
               AI Tools
             </Button>
           </Link>
           
           <Link to="/about">
-            <Button variant="ghost">About</Button>
+            <Button variant="ghost" className="hover:bg-zambia-50 dark:hover:bg-zambia-900/20">About</Button>
           </Link>
         </nav>
 
-        <div className="flex items-center space-x-1">
+        <div className="flex items-center space-x-2">
           <ModeToggle />
 
           {user ? (
@@ -96,7 +114,7 @@ const Header = () => {
               
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="relative h-9 w-9 rounded-full">
+                  <Button variant="ghost" size="sm" className="relative h-9 w-9 rounded-full hover:bg-zambia-50 dark:hover:bg-zambia-900/20">
                     <UserCircle className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -134,7 +152,7 @@ const Header = () => {
             </>
           ) : (
             <Link to="/auth/signin">
-              <Button size="sm" variant="secondary" className="gap-1">
+              <Button size="sm" variant="secondary" className="gap-1 bg-zambia-600 hover:bg-zambia-700 text-white">
                 <LogIn className="h-4 w-4" />
                 <span>Sign In</span>
               </Button>
@@ -144,7 +162,7 @@ const Header = () => {
           <Button 
             variant="ghost" 
             size="sm"
-            className="md:hidden"
+            className="md:hidden hover:bg-zambia-50 dark:hover:bg-zambia-900/20"
             onClick={() => setIsMobileMenuOpen(true)}
           >
             <Menu className="h-5 w-5" />
