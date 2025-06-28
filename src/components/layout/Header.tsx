@@ -3,13 +3,15 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/contexts/AuthContext";
+import { useAnalyticsContext } from "@/components/analytics/AnalyticsProvider";
 import { 
   UserCircle, 
   LogOut, 
   LogIn, 
   Menu, 
   ChevronDown,
-  Sparkles
+  Sparkles,
+  BarChart3
 } from "lucide-react";
 import MobileNav from "./MobileNav";
 import { useState } from "react";
@@ -24,13 +26,18 @@ import UserNotifications from "../notifications/UserNotifications";
 
 const Header = () => {
   const { user, signOut } = useAuth();
+  const { trackClick } = useAnalyticsContext();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  const handleNavClick = (item: string) => {
+    trackClick(`nav_${item}`, { location: 'header' });
+  };
   
   return (
     <header className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center">
-          <Link to="/" className="flex items-center">
+          <Link to="/" className="flex items-center" onClick={() => handleNavClick('logo')}>
             <div className="relative">
               <div className="w-10 h-10 bg-gradient-to-r from-zambia-600 to-zambia-800 rounded-xl flex items-center justify-center shadow-lg hover:shadow-xl transition-shadow duration-200">
                 <img 
@@ -57,40 +64,40 @@ const Header = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <Link to="/explore">
+              <Link to="/explore" onClick={() => handleNavClick('explore_all')}>
                 <DropdownMenuItem className="cursor-pointer">All Data</DropdownMenuItem>
               </Link>
-              <Link to="/explore/education">
+              <Link to="/explore/education" onClick={() => handleNavClick('explore_education')}>
                 <DropdownMenuItem className="cursor-pointer">Education</DropdownMenuItem>
               </Link>
-              <Link to="/explore/health">
+              <Link to="/explore/health" onClick={() => handleNavClick('explore_health')}>
                 <DropdownMenuItem className="cursor-pointer">Health</DropdownMenuItem>
               </Link>
-              <Link to="/explore/economy">
+              <Link to="/explore/economy" onClick={() => handleNavClick('explore_economy')}>
                 <DropdownMenuItem className="cursor-pointer">Economy</DropdownMenuItem>
               </Link>
-              <Link to="/explore/agriculture">
+              <Link to="/explore/agriculture" onClick={() => handleNavClick('explore_agriculture')}>
                 <DropdownMenuItem className="cursor-pointer">Agriculture</DropdownMenuItem>
               </Link>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Link to="/provinces">
+          <Link to="/provinces" onClick={() => handleNavClick('provinces')}>
             <Button variant="ghost" className="hover:bg-zambia-50 dark:hover:bg-zambia-900/20">Provinces</Button>
           </Link>
           
-          <Link to="/finance">
+          <Link to="/finance" onClick={() => handleNavClick('finance')}>
             <Button variant="ghost" className="hover:bg-zambia-50 dark:hover:bg-zambia-900/20">Finance</Button>
           </Link>
 
-          <Link to="/ai-tools">
+          <Link to="/ai-tools" onClick={() => handleNavClick('ai_tools')}>
             <Button variant="ghost" className="flex items-center gap-1 hover:bg-zambia-50 dark:hover:bg-zambia-900/20">
               <Sparkles className="h-4 w-4" />
               AI Tools
             </Button>
           </Link>
           
-          <Link to="/about">
+          <Link to="/about" onClick={() => handleNavClick('about')}>
             <Button variant="ghost" className="hover:bg-zambia-50 dark:hover:bg-zambia-900/20">About</Button>
           </Link>
         </nav>
@@ -115,25 +122,34 @@ const Header = () => {
                     </p>
                   </div>
                   <DropdownMenuSeparator />
-                  <Link to="/dashboard">
+                  <Link to="/dashboard" onClick={() => handleNavClick('dashboard')}>
                     <DropdownMenuItem className="cursor-pointer">Dashboard</DropdownMenuItem>
                   </Link>
-                  <Link to="/profile">
+                  <Link to="/profile" onClick={() => handleNavClick('profile')}>
                     <DropdownMenuItem className="cursor-pointer">Profile</DropdownMenuItem>
                   </Link>
-                  <Link to="/favorites">
+                  <Link to="/favorites" onClick={() => handleNavClick('favorites')}>
                     <DropdownMenuItem className="cursor-pointer">Favorites</DropdownMenuItem>
                   </Link>
                   {user.isAdmin && (
                     <>
                       <DropdownMenuSeparator />
-                      <Link to="/admin/dashboard">
+                      <Link to="/admin/dashboard" onClick={() => handleNavClick('admin_dashboard')}>
                         <DropdownMenuItem className="cursor-pointer">Admin Dashboard</DropdownMenuItem>
+                      </Link>
+                      <Link to="/admin/analytics" onClick={() => handleNavClick('admin_analytics')}>
+                        <DropdownMenuItem className="cursor-pointer">
+                          <BarChart3 className="h-4 w-4 mr-2" />
+                          Analytics
+                        </DropdownMenuItem>
                       </Link>
                     </>
                   )}
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="cursor-pointer" onClick={() => signOut()}>
+                  <DropdownMenuItem className="cursor-pointer" onClick={() => {
+                    handleNavClick('logout');
+                    signOut();
+                  }}>
                     <LogOut className="h-4 w-4 mr-2" />
                     Logout
                   </DropdownMenuItem>
@@ -141,7 +157,7 @@ const Header = () => {
               </DropdownMenu>
             </>
           ) : (
-            <Link to="/auth/signin">
+            <Link to="/auth/signin" onClick={() => handleNavClick('signin')}>
               <Button size="sm" variant="secondary" className="gap-1 bg-zambia-600 hover:bg-zambia-700 text-white">
                 <LogIn className="h-4 w-4" />
                 <span>Sign In</span>
@@ -153,7 +169,10 @@ const Header = () => {
             variant="ghost" 
             size="sm"
             className="md:hidden hover:bg-zambia-50 dark:hover:bg-zambia-900/20"
-            onClick={() => setIsMobileMenuOpen(true)}
+            onClick={() => {
+              handleNavClick('mobile_menu');
+              setIsMobileMenuOpen(true);
+            }}
           >
             <Menu className="h-5 w-5" />
           </Button>

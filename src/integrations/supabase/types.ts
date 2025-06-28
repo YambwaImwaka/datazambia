@@ -9,6 +9,178 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          browser: string | null
+          city: string | null
+          country: string | null
+          created_at: string
+          device_type: string | null
+          event_data: Json | null
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          operating_system: string | null
+          page_path: string
+          page_title: string | null
+          referrer: string | null
+          screen_resolution: string | null
+          session_id: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          operating_system?: string | null
+          page_path: string
+          page_title?: string | null
+          referrer?: string | null
+          screen_resolution?: string | null
+          session_id: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          device_type?: string | null
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          operating_system?: string | null
+          page_path?: string
+          page_title?: string | null
+          referrer?: string | null
+          screen_resolution?: string | null
+          session_id?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      analytics_page_views: {
+        Row: {
+          created_at: string
+          date: string
+          id: string
+          page_path: string
+          page_title: string | null
+          unique_visitors: number
+          updated_at: string
+          view_count: number
+        }
+        Insert: {
+          created_at?: string
+          date?: string
+          id?: string
+          page_path: string
+          page_title?: string | null
+          unique_visitors?: number
+          updated_at?: string
+          view_count?: number
+        }
+        Update: {
+          created_at?: string
+          date?: string
+          id?: string
+          page_path?: string
+          page_title?: string | null
+          unique_visitors?: number
+          updated_at?: string
+          view_count?: number
+        }
+        Relationships: []
+      }
+      analytics_sessions: {
+        Row: {
+          browser: string | null
+          city: string | null
+          country: string | null
+          device_type: string | null
+          ended_at: string | null
+          exit_page: string | null
+          id: string
+          ip_address: unknown | null
+          is_bounce: boolean | null
+          landing_page: string | null
+          operating_system: string | null
+          page_views: number | null
+          referrer: string | null
+          session_duration: number | null
+          session_id: string
+          started_at: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          device_type?: string | null
+          ended_at?: string | null
+          exit_page?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_bounce?: boolean | null
+          landing_page?: string | null
+          operating_system?: string | null
+          page_views?: number | null
+          referrer?: string | null
+          session_duration?: number | null
+          session_id: string
+          started_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          browser?: string | null
+          city?: string | null
+          country?: string | null
+          device_type?: string | null
+          ended_at?: string | null
+          exit_page?: string | null
+          id?: string
+          ip_address?: unknown | null
+          is_bounce?: boolean | null
+          landing_page?: string | null
+          operating_system?: string | null
+          page_views?: number | null
+          referrer?: string | null
+          session_duration?: number | null
+          session_id?: string
+          started_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       media: {
         Row: {
           alt_text: string | null
