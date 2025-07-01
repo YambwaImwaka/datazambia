@@ -52,7 +52,7 @@ interface ProfileData {
 }
 
 const UserProfile = () => {
-  const { user, isLoading: authLoading } = useAuth();
+  const { user, isLoading: authLoading, isAdmin } = useAuth();
   const { theme, setTheme } = useTheme();
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -432,6 +432,17 @@ const UserProfile = () => {
                             </FormItem>
                           )}
                         />
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <h3 className="text-sm font-medium mb-1">Email</h3>
+                            <p className="text-sm">{user?.email}</p>
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-medium mb-1">Account Type</h3>
+                            <p className="text-sm">{isAdmin ? 'Administrator' : 'Standard User'}</p>
+                          </div>
+                        </div>
                         
                         <Button type="submit" disabled={loading}>
                           {loading ? (
