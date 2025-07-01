@@ -33,50 +33,67 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
+      async (_event, session) => {
+        console.log('Auth state change:', _event, session?.user?.email);
         setSession(session);
-        // Cast the user to our extended User type
         setUser(session?.user as User ?? null);
+        
+        if (session?.user) {
+          // Check admin role immediately when user is authenticated
+          const { data, error } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', session.user.id)
+            .eq('role', 'admin')
+            .single();
+
+          const adminStatus = !!data && !error;
+          console.log('Admin check result:', adminStatus, 'for user:', session.user.email);
+          setIsAdmin(adminStatus);
+          
+          if (adminStatus) {
+            setUser(currentUser => currentUser ? {...currentUser, isAdmin: true} : null);
+          }
+        } else {
+          setIsAdmin(false);
+        }
+        
         setIsLoading(false);
       }
     );
 
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Initial session check:', session?.user?.email);
       setSession(session);
-      // Cast the user to our extended User type
       setUser(session?.user as User ?? null);
-      setIsLoading(false);
+      
+      if (session?.user) {
+        // Check admin role for initial session
+        supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', session.user.id)
+          .eq('role', 'admin')
+          .single()
+          .then(({ data, error }) => {
+            const adminStatus = !!data && !error;
+            console.log('Initial admin check result:', adminStatus, 'for user:', session.user.email);
+            setIsAdmin(adminStatus);
+            
+            if (adminStatus) {
+              setUser(currentUser => currentUser ? {...currentUser, isAdmin: true} : null);
+            }
+            setIsLoading(false);
+          });
+      } else {
+        setIsLoading(false);
+      }
     });
 
     return () => {
       subscription.unsubscribe();
     };
   }, []);
-
-  useEffect(() => {
-    if (!user) {
-      setIsAdmin(false);
-      return;
-    }
-
-    const checkAdminRole = async () => {
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', user.id)
-        .eq('role', 'admin')
-        .single();
-
-      // Update both the isAdmin state and user object
-      const adminStatus = !!data && !error;
-      setIsAdmin(adminStatus);
-      if (user && adminStatus) {
-        setUser(currentUser => currentUser ? {...currentUser, isAdmin: true} : null);
-      }
-    };
-
-    checkAdminRole();
-  }, [user]);
 
   const signUp = async (email: string, password: string, metadata?: { full_name?: string, username?: string }) => {
     setIsLoading(true);
@@ -117,19 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       toast.success('Successfully signed in!');
       
-      // Check if user is admin and redirect accordingly
-      const { data: roleData } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
-        .eq('role', 'admin')
-        .single();
-      
-      if (roleData) {
-        navigate('/admin/dashboard');
-      } else {
-        navigate('/dashboard');
-      }
+      // Don't navigate here - let the auth state change handler and ProtectedRoute handle navigation
     } catch (error: any) {
       toast.error(error.message || 'An error occurred during sign in');
       console.error('Error during sign in:', error);
