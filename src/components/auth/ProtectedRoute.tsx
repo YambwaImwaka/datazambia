@@ -37,14 +37,18 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/auth/signin" state={{ from: location }} replace />;
   }
 
-  // If admin access is required and user is not an admin, redirect to dashboard
+  // If admin access is required and user is not an admin, redirect to user dashboard
   if (requireAdmin && !isAdmin) {
     return <Navigate to="/dashboard" replace />;
   }
 
-  // If user is authenticated but on a public auth page, redirect to dashboard
+  // If user is authenticated but on a public auth page, redirect based on role
   if (user && !requireAuth) {
-    return <Navigate to="/dashboard" replace />;
+    if (isAdmin) {
+      return <Navigate to="/admin/dashboard" replace />;
+    } else {
+      return <Navigate to="/dashboard" replace />;
+    }
   }
 
   return <Outlet />;

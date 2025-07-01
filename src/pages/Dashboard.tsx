@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import Header from '@/components/layout/Header';
@@ -15,6 +15,18 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
 
+  // Redirect admins to admin dashboard
+  useEffect(() => {
+    if (isAdmin) {
+      navigate('/admin/dashboard', { replace: true });
+    }
+  }, [isAdmin, navigate]);
+
+  // Don't render if user is admin (they should be redirected)
+  if (isAdmin) {
+    return null;
+  }
+
   const quickLinks = [
     { title: 'Provinces', icon: <Map className="h-6 w-6" />, onClick: () => navigate('/provinces') },
     { title: 'Health Stats', icon: <Activity className="h-6 w-6" />, onClick: () => navigate('/explore/health') },
@@ -22,28 +34,19 @@ const Dashboard = () => {
     { title: 'Agriculture', icon: <Database className="h-6 w-6" />, onClick: () => navigate('/explore/agriculture') },
   ];
 
-  const adminLinks = [
-    { title: 'Manage Users', icon: <Users className="h-6 w-6" />, onClick: () => navigate('/admin/users') },
-    { title: 'System Settings', icon: <Settings className="h-6 w-6" />, onClick: () => navigate('/admin/settings') },
-    { title: 'Data Management', icon: <Database className="h-6 w-6" />, onClick: () => navigate('/admin/data') },
-    { title: 'Reports', icon: <FileText className="h-6 w-6" />, onClick: () => navigate('/admin/reports') },
-    { title: 'Create Admin', icon: <UserPlus className="h-6 w-6" />, onClick: () => navigate('/create-admin') },
-  ];
-
   return (
     <PageLayout>
       <div className="mb-8">
         <h1 className="text-3xl font-bold">Welcome, {user?.user_metadata?.full_name || user?.email}</h1>
         <p className="text-muted-foreground mt-2">
-          {isAdmin ? 'Admin Dashboard' : 'User Dashboard'} - Access Zambia's key data insights
+          User Dashboard - Access Zambia's key data insights
         </p>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full md:w-auto grid-cols-2 md:inline-flex">
+        <TabsList className="grid w-full md:w-auto grid-cols-3 md:inline-flex">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="quick-access">Quick Access</TabsTrigger>
-          {isAdmin && <TabsTrigger value="admin">Admin Panel</TabsTrigger>}
           <TabsTrigger value="profile">My Profile</TabsTrigger>
         </TabsList>
 
@@ -162,24 +165,6 @@ const Dashboard = () => {
           </div>
         </TabsContent>
 
-        {isAdmin && (
-          <TabsContent value="admin">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {adminLinks.map((link, index) => (
-                <Card key={index} className="hover:shadow-md transition-shadow cursor-pointer" onClick={link.onClick}>
-                  <CardContent className="p-6 flex flex-col items-center justify-center text-center">
-                    <div className="bg-primary/10 p-4 rounded-full mb-4">
-                      {link.icon}
-                    </div>
-                    <h3 className="font-semibold">{link.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-2">{link.title}</p>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-        )}
-
         <TabsContent value="profile">
           <Card>
             <CardHeader>
@@ -202,7 +187,7 @@ const Dashboard = () => {
                 </div>
                 <div>
                   <h3 className="text-sm font-medium mb-1">Account Type</h3>
-                  <p className="text-sm">{isAdmin ? 'Administrator' : 'Standard User'}</p>
+                  <p className="text-sm">Standard User</p>
                 </div>
               </div>
 

@@ -68,8 +68,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         .single();
 
       // Update both the isAdmin state and user object
-      setIsAdmin(!!data && !error);
-      if (user && (!!data && !error)) {
+      const adminStatus = !!data && !error;
+      setIsAdmin(adminStatus);
+      if (user && adminStatus) {
         setUser(currentUser => currentUser ? {...currentUser, isAdmin: true} : null);
       }
     };
@@ -115,7 +116,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       toast.success('Successfully signed in!');
-      navigate('/');
+      
+      // Check if user is admin and redirect accordingly
+      const { data: roleData } = await supabase
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
+        .eq('role', 'admin')
+        .single();
+      
+      if (roleData) {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/dashboard');
+      }
     } catch (error: any) {
       toast.error(error.message || 'An error occurred during sign in');
       console.error('Error during sign in:', error);
