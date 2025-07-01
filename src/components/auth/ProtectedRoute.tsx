@@ -16,7 +16,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   const { user, isLoading, isAdmin } = useAuth();
   const location = useLocation();
 
-  console.log('ProtectedRoute check:', {
+  console.log('🛡️ ProtectedRoute check:', {
     requireAuth,
     requireAdmin,
     user: user?.email,
@@ -43,32 +43,35 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
 
   // If authentication is required and user is not logged in, redirect to login
   if (requireAuth && !user) {
-    console.log('Redirecting to signin - no user');
+    console.log('🔒 Redirecting to signin - no user');
     return <Navigate to="/auth/signin" state={{ from: location }} replace />;
   }
 
   // If admin access is required and user is not an admin, redirect to user dashboard
   if (requireAdmin && !isAdmin) {
-    console.log('Redirecting to dashboard - not admin');
+    console.log('🚫 Redirecting to dashboard - not admin, user:', user?.email, 'isAdmin:', isAdmin);
     return <Navigate to="/dashboard" replace />;
   }
 
   // If user is authenticated but on a public auth page, redirect based on role
   if (user && !requireAuth) {
-    console.log('Authenticated user on public page, redirecting based on role');
+    console.log('🔄 Authenticated user on public page, redirecting based on role');
     if (isAdmin) {
+      console.log('👑 Admin user, redirecting to admin dashboard');
       return <Navigate to="/admin/dashboard" replace />;
     } else {
+      console.log('👤 Regular user, redirecting to dashboard');
       return <Navigate to="/dashboard" replace />;
     }
   }
 
   // If user is admin but trying to access regular dashboard, redirect to admin dashboard
   if (user && isAdmin && location.pathname === '/dashboard') {
-    console.log('Admin user accessing regular dashboard, redirecting to admin dashboard');
+    console.log('👑 Admin user accessing regular dashboard, redirecting to admin dashboard');
     return <Navigate to="/admin/dashboard" replace />;
   }
 
+  console.log('✅ Access granted to:', location.pathname);
   return <Outlet />;
 };
 

@@ -6,18 +6,22 @@ import Footer from '@/components/layout/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { BarChart3, LineChart, Map, FileText, Users, Settings, Database, Activity, UserPlus } from 'lucide-react';
+import { BarChart3, LineChart, Map, FileText, Users, Settings, Database, Activity, UserPlus, Crown } from 'lucide-react';
 import { provinces } from '@/utils/data';
 import PageLayout from '@/components/layout/PageLayout';
+import { makeAdmin } from '@/utils/makeAdmin';
+import { toast } from 'sonner';
 
 const Dashboard = () => {
-  const { user, isAdmin, signOut } = useAuth();
+  const { user, isAdmin, signOut, refreshUserRoles } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
+  const [isConverting, setIsConverting] = useState(false);
 
   // Redirect admins to admin dashboard
   useEffect(() => {
     if (isAdmin) {
+      console.log('👑 Admin detected, redirecting to admin dashboard');
       navigate('/admin/dashboard', { replace: true });
     }
   }, [isAdmin, navigate]);
@@ -26,6 +30,33 @@ const Dashboard = () => {
   if (isAdmin) {
     return null;
   }
+
+  const handleMakeAdmin = async () => {
+    if (!user?.email) return;
+    
+    setIsConverting(true);
+    try {
+      console.log('🔄 Converting current user to admin...');
+      const result = await makeAdmin(user.email);
+      
+      if (result.success) {
+        toast.success('You have been granted admin privileges! Refreshing...');
+        // Refresh the user roles
+        await refreshUserRoles();
+        // Force a page reload to ensure all state is updated
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } else {
+        toast.error(result.message);
+      }
+    } catch (error: any) {
+      console.error('Failed to convert to admin:', error);
+      toast.error('Failed to grant admin privileges');
+    } finally {
+      setIsConverting(false);
+    }
+  };
 
   const quickLinks = [
     { title: 'Provinces', icon: <Map className="h-6 w-6" />, onClick: () => navigate('/provinces') },
@@ -41,6 +72,26 @@ const Dashboard = () => {
         <p className="text-muted-foreground mt-2">
           User Dashboard - Access Zambia's key data insights
         </p>
+        
+        {/* Debug/Admin Conversion Section - Remove this in production */}
+        <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
+          <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-2">
+            Admin Access Testing
+          </h3>
+          <p className="text-xs text-yellow-700 dark:text-yellow-300 mb-3">
+            If you should have admin access, click the button below to convert your account:
+          </p>
+          <Button 
+            onClick={handleMakeAdmin} 
+            disabled={isConverting}
+            variant="outline"
+            size="sm"
+            className="border-yellow-300 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-600 dark:text-yellow-300 dark:hover:bg-yellow-900/50"
+          >
+            <Crown className="h-4 w-4 mr-2" />
+            {isConverting ? 'Converting...' : 'Make Me Admin'}
+          </Button>
+        </div>
       </div>
 
       <Tabs defaultValue="overview" className="space-y-6" value={activeTab} onValueChange={setActiveTab}>

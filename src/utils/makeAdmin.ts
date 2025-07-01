@@ -15,56 +15,66 @@ import { toast } from 'sonner';
  */
 export const makeAdmin = async (email: string) => {
   try {
-    // First check if user exists - using a simpler query structure to avoid type recursion
-    const { data: userQuery, error: userError } = await supabase
-      .from('profiles')
-      .select('id')
-      .ilike('email', email);
+    console.log(`🔄 Starting admin conversion for: ${email}`);
     
-    if (userError) {
-      // Fall back to checking auth.users (requires admin function)
-      const { data, error } = await supabase.rpc('make_admin', { email });
-      
-      if (error) throw error;
-      
-      return { success: true, message: `User ${email} has been granted admin privileges` };
+    // First, try to use the database function which handles everything
+    const { data, error } = await supabase.rpc('make_admin', { email });
+    
+    if (error) {
+      console.error('❌ Database function error:', error);
+      throw error;
     }
-
-    const userData = userQuery?.[0] || null;
     
-    if (!userData) {
+    console.log('✅ Admin conversion successful via database function');
+    return { success: true, message: `User ${email} has been granted admin privileges` };
+    
+  } catch (error: any) {
+    console.error('❌ Error making admin:', error);
+    
+    // If the database function fails, try manual approach
+    try {
+      console.log('🔄 Trying manual approach...');
+      
+      // Get current user to check if they're the one being promoted
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      
+      if (currentUser && currentUser.email === email) {
+        // If it's the current user, add the role directly
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: currentUser.id,
+            role: 'admin'
+          });
+        
+        if (roleError) {
+          if (roleError.code === '23505') { // Unique violation
+            console.log('ℹ️ User is already an admin');
+            return { 
+              success: true, 
+              message: `User ${email} is already an admin`, 
+            };
+          }
+          throw roleError;
+        }
+        
+        console.log('✅ Manual admin conversion successful');
+        return { success: true, message: `User ${email} has been granted admin privileges` };
+      }
+      
       return { 
         success: false, 
-        message: `User with email ${email} not found. They must register first.`, 
+        message: `Cannot convert ${email} - user not found or not current user`, 
+      };
+      
+    } catch (manualError: any) {
+      console.error('❌ Manual approach failed:', manualError);
+      return { 
+        success: false, 
+        message: error.message || 'Failed to grant admin privileges', 
+        error 
       };
     }
-    
-    // If we found the user in profiles, add the admin role - simplified query to prevent type recursion
-    const { error: roleError } = await supabase
-      .from('user_roles')
-      .insert({
-        user_id: userData.id,
-        role: 'admin'
-      });
-    
-    if (roleError) {
-      if (roleError.code === '23505') { // Unique violation
-        return { 
-          success: false, 
-          message: `User ${email} is already an admin`, 
-        };
-      }
-      throw roleError;
-    }
-    
-    return { success: true, message: `User ${email} has been granted admin privileges` };
-  } catch (error: any) {
-    console.error('Error making admin:', error);
-    return { 
-      success: false, 
-      message: error.message || 'Failed to grant admin privileges', 
-      error 
-    };
   }
 };
 
