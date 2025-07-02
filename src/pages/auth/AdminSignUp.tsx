@@ -3,13 +3,12 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Checkbox } from '@/components/ui/checkbox';
 import { Mail, Lock, User, Loader2, Crown } from 'lucide-react';
 import PageLayout from '@/components/layout/PageLayout';
 import { supabase } from '@/integrations/supabase/client';
@@ -18,15 +17,15 @@ import { toast } from 'sonner';
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
   password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
-  full_name: z.string().min(2, { message: 'Full name must be at least 2 characters' }).optional(),
-  username: z.string().min(3, { message: 'Username must be at least 3 characters' }).optional(),
-  isAdmin: z.boolean().default(false),
+  full_name: z.string().min(2, { message: 'Full name must be at least 2 characters' }),
+  username: z.string().min(3, { message: 'Username must be at least 3 characters' }),
 });
 
 type FormValues = z.infer<typeof formSchema>;
 
-const SignUp = () => {
-  const { signUp, isLoading } = useAuth();
+const AdminSignUp = () => {
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = React.useState(false);
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -35,51 +34,49 @@ const SignUp = () => {
       password: '',
       full_name: '',
       username: '',
-      isAdmin: false,
     },
   });
 
   const onSubmit = async (data: FormValues) => {
-    const { email, password, full_name, username, isAdmin } = data;
-    
-    if (isAdmin) {
-      // Handle admin signup separately
-      try {
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { full_name, username },
-            emailRedirectTo: `${window.location.origin}/`
-          },
-        });
+    setIsLoading(true);
+    try {
+      const { email, password, full_name, username } = data;
+      
+      // Sign up the user
+      const { data: authData, error: authError } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { full_name, username },
+          emailRedirectTo: `${window.location.origin}/`
+        },
+      });
 
-        if (authError) {
-          throw authError;
-        }
-
-        if (authData.user) {
-          // Make the user an admin immediately after signup
-          const { error: roleError } = await supabase
-            .from('user_roles')
-            .insert({
-              user_id: authData.user.id,
-              role: 'admin'
-            });
-
-          if (roleError && roleError.code !== '23505') { // Ignore duplicate key errors
-            console.error('Error adding admin role:', roleError);
-          }
-
-          toast.success('Admin account created successfully! Please check your email to verify your account.');
-        }
-      } catch (error: any) {
-        toast.error(error.message || 'An error occurred during admin sign up');
-        console.error('Error during admin sign up:', error);
+      if (authError) {
+        throw authError;
       }
-    } else {
-      // Use the regular signup process
-      await signUp(email, password, { full_name, username });
+
+      if (authData.user) {
+        // Make the user an admin immediately after signup
+        const { error: roleError } = await supabase
+          .from('user_roles')
+          .insert({
+            user_id: authData.user.id,
+            role: 'admin'
+          });
+
+        if (roleError && roleError.code !== '23505') { // Ignore duplicate key errors
+          console.error('Error adding admin role:', roleError);
+        }
+
+        toast.success('Admin account created successfully! Please check your email to verify your account.');
+        navigate('/auth/signin');
+      }
+    } catch (error: any) {
+      toast.error(error.message || 'An error occurred during admin sign up');
+      console.error('Error during admin sign up:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -88,9 +85,12 @@ const SignUp = () => {
       <div className="max-w-md mx-auto">
         <Card>
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">Sign up</CardTitle>
-            <CardDescription>
-              Create an account to access Zambia Insight
+            <div className="flex items-center justify-center mb-2">
+              <Crown className="h-8 w-8 text-yellow-500" />
+            </div>
+            <CardTitle className="text-2xl font-bold text-center">Admin Sign Up</CardTitle>
+            <CardDescription className="text-center">
+              Create an admin account for Zambia Insight
             </CardDescription>
           </CardHeader>
           
@@ -107,7 +107,7 @@ const SignUp = () => {
                         <div className="relative">
                           <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                           <Input
-                            placeholder="you@example.com"
+                            placeholder="admin@example.com"
                             className="pl-10"
                             {...field}
                           />
@@ -183,59 +183,32 @@ const SignUp = () => {
                     </FormItem>
                   )}
                 />
-
-                <FormField
-                  control={form.control}
-                  name="isAdmin"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                      <FormControl>
-                        <Checkbox
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="space-y-1 leading-none">
-                        <FormLabel className="flex items-center gap-2">
-                          <Crown className="h-4 w-4 text-yellow-500" />
-                          Sign up as Administrator
-                        </FormLabel>
-                        <FormDescription>
-                          Check this if you need admin access to manage the platform
-                        </FormDescription>
-                      </div>
-                    </FormItem>
-                  )}
-                />
                 
                 <Button type="submit" className="w-full" disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating Account...
+                      Creating Admin Account...
                     </>
                   ) : (
-                    'Create Account'
+                    <>
+                      <Crown className="mr-2 h-4 w-4" />
+                      Create Admin Account
+                    </>
                   )}
                 </Button>
                 
-                <FormDescription className="text-center">
+                <div className="text-center text-sm text-muted-foreground">
                   Already have an account?{' '}
                   <Link to="/auth/signin" className="text-primary hover:underline">
                     Sign in
                   </Link>
-                </FormDescription>
+                </div>
               </form>
             </Form>
           </CardContent>
           
-          <CardFooter className="flex flex-col space-y-2">
-            <div className="text-center">
-              <Link to="/auth/admin-signup" className="text-sm text-primary hover:underline flex items-center justify-center gap-1">
-                <Crown className="h-4 w-4" />
-                Need admin access? Use dedicated admin signup
-              </Link>
-            </div>
+          <CardFooter className="justify-center">
             <Link to="/" className="text-sm text-muted-foreground hover:underline">
               Back to Home
             </Link>
@@ -246,4 +219,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default AdminSignUp;

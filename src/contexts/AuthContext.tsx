@@ -52,7 +52,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       if (adminStatus) {
         setUser(currentUser => currentUser ? {...currentUser, isAdmin: true} : null);
-        console.log('🎯 User is admin, should redirect to admin dashboard');
+        console.log('🎯 User is admin, updating state');
       } else {
         console.log('👤 User is not admin, regular user access');
       }
@@ -70,19 +70,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           // Check admin role immediately when user is authenticated
           await refreshUserRoles();
           
-          // Handle navigation based on event and admin status
+          // Handle navigation based on event
           if (event === 'SIGNED_IN') {
-            console.log('📍 User signed in, admin status:', isAdmin);
-            // Use a small delay to ensure state is updated
-            setTimeout(() => {
-              if (isAdmin) {
+            console.log('📍 User signed in, checking admin status...');
+            // Use a delay to ensure admin status is properly updated
+            setTimeout(async () => {
+              // Re-check admin status right before navigation
+              const { data } = await supabase
+                .from('user_roles')
+                .select('role')
+                .eq('user_id', session.user.id)
+                .eq('role', 'admin')
+                .single();
+              
+              const currentAdminStatus = !!data;
+              console.log('🎯 Final admin check before navigation:', currentAdminStatus);
+              
+              if (currentAdminStatus) {
                 console.log('🎯 Redirecting admin to admin dashboard');
                 navigate('/admin/dashboard', { replace: true });
               } else {
                 console.log('🎯 Redirecting regular user to dashboard');
                 navigate('/dashboard', { replace: true });
               }
-            }, 100);
+            }, 500); // Increased delay to ensure role is properly set
           }
         } else {
           setIsAdmin(false);

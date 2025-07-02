@@ -19,6 +19,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import SignIn from "./pages/auth/SignIn";
 import SignUp from "./pages/auth/SignUp";
+import AdminSignUp from "./pages/auth/AdminSignUp";
 import Dashboard from "./pages/Dashboard";
 import UserProfile from "./pages/profile/UserProfile";
 import UserFavorites from "./pages/profile/UserFavorites";
@@ -65,6 +66,7 @@ const App = () => {
                   <Route element={<ProtectedRoute requireAuth={false} />}>
                     <Route path="/auth/signin" element={<SignIn />} />
                     <Route path="/auth/signup" element={<SignUp />} />
+                    <Route path="/auth/admin-signup" element={<AdminSignUp />} />
                   </Route>
                   
                   {/* Protected routes - accessible only when logged in */}
