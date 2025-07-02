@@ -56,10 +56,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       } else {
         console.log('👤 User is not admin, regular user access');
       }
-      
-      return adminStatus;
     }
-    return false;
   };
 
   useEffect(() => {
@@ -71,18 +68,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         
         if (session?.user) {
           // Check admin role immediately when user is authenticated
-          const adminStatus = await refreshUserRoles();
+          await refreshUserRoles();
           
           // Handle navigation based on event and admin status
           if (event === 'SIGNED_IN') {
-            console.log('📍 User signed in, admin status:', adminStatus);
-            if (adminStatus) {
-              console.log('🎯 Redirecting admin to admin dashboard');
-              navigate('/admin/dashboard', { replace: true });
-            } else {
-              console.log('🎯 Redirecting regular user to dashboard');
-              navigate('/dashboard', { replace: true });
-            }
+            console.log('📍 User signed in, admin status:', isAdmin);
+            // Use a small delay to ensure state is updated
+            setTimeout(() => {
+              if (isAdmin) {
+                console.log('🎯 Redirecting admin to admin dashboard');
+                navigate('/admin/dashboard', { replace: true });
+              } else {
+                console.log('🎯 Redirecting regular user to dashboard');
+                navigate('/dashboard', { replace: true });
+              }
+            }, 100);
           }
         } else {
           setIsAdmin(false);
