@@ -8,28 +8,33 @@ export const makeAdmin = async (email: string) => {
   try {
     console.log(`🔄 Starting admin conversion for: ${email}`);
     
-    // First, get the user ID by email from auth.users via the admin_users view
-    const { data: userData, error: userError } = await supabase
-      .from('admin_users')
-      .select('id')
-      .eq('email', email)
-      .single();
+    // Get the current user's session to access their ID
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
     
-    if (userError || !userData) {
-      console.error('❌ User not found:', userError);
+    if (sessionError || !session?.user) {
+      console.error('❌ No authenticated user found:', sessionError);
       return { 
         success: false, 
-        message: `User with email ${email} not found or not verified`
+        message: 'You must be logged in to convert to admin'
       };
     }
     
-    console.log('✅ Found user:', userData.id);
+    // Check if the email matches the current user's email
+    if (session.user.email !== email) {
+      console.error('❌ Email mismatch');
+      return { 
+        success: false, 
+        message: 'You can only convert your own account to admin'
+      };
+    }
     
-    // Add the admin role
+    console.log('✅ Found user:', session.user.id);
+    
+    // Add the admin role using the current user's ID
     const { error: roleError } = await supabase
       .from('user_roles')
       .insert({
-        user_id: userData.id,
+        user_id: session.user.id,
         role: 'admin'
       });
     
@@ -41,6 +46,7 @@ export const makeAdmin = async (email: string) => {
           message: `User ${email} is already an admin`
         };
       }
+      console.error('❌ Error adding admin role:', roleError);
       throw roleError;
     }
     
