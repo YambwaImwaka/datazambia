@@ -5,7 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { BarChart3, LineChart, Map, Activity, Crown, AlertCircle } from 'lucide-react';
+import { BarChart3, LineChart, Map, Activity, Crown, AlertCircle, Database } from 'lucide-react';
 import { provinces } from '@/utils/data';
 import PageLayout from '@/components/layout/PageLayout';
 import { makeAdmin } from '@/utils/makeAdmin';
