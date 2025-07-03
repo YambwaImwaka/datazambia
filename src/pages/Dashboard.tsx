@@ -1,22 +1,23 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import Header from '@/components/layout/Header';
-import Footer from '@/components/layout/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { BarChart3, LineChart, Map, FileText, Users, Settings, Database, Activity, UserPlus, Crown } from 'lucide-react';
+import { BarChart3, LineChart, Map, Activity, Crown, AlertCircle } from 'lucide-react';
 import { provinces } from '@/utils/data';
 import PageLayout from '@/components/layout/PageLayout';
 import { makeAdmin } from '@/utils/makeAdmin';
 import { toast } from 'sonner';
+import { supabase } from '@/integrations/supabase/client';
 
 const Dashboard = () => {
   const { user, isAdmin, signOut, refreshUserRoles } = useAuth();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('overview');
   const [isConverting, setIsConverting] = useState(false);
+  const [debugInfo, setDebugInfo] = useState<any>(null);
 
   // Redirect admins to admin dashboard
   useEffect(() => {
@@ -25,6 +26,42 @@ const Dashboard = () => {
       navigate('/admin/dashboard', { replace: true });
     }
   }, [isAdmin, navigate]);
+
+  // Debug function to check current user status
+  const checkUserStatus = async () => {
+    if (!user) return;
+    
+    try {
+      console.log('🔍 Debugging user status...');
+      
+      const { data: roleData, error: roleError } = await supabase
+        .from('user_roles')
+        .select('*')
+        .eq('user_id', user.id);
+      
+      const { data: adminData, error: adminError } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('email', user.email);
+      
+      const debugData = {
+        userId: user.id,
+        userEmail: user.email,
+        isAdmin,
+        roles: roleData,
+        roleError: roleError?.message,
+        adminData,
+        adminError: adminError?.message,
+        timestamp: new Date().toISOString()
+      };
+      
+      console.log('🔍 Debug info:', debugData);
+      setDebugInfo(debugData);
+      
+    } catch (error) {
+      console.error('Debug error:', error);
+    }
+  };
 
   // Don't render if user is admin (they should be redirected)
   if (isAdmin) {
@@ -46,7 +83,7 @@ const Dashboard = () => {
         // Force a page reload to ensure all state is updated
         setTimeout(() => {
           window.location.reload();
-        }, 1000);
+        }, 1500);
       } else {
         toast.error(result.message);
       }
@@ -62,7 +99,7 @@ const Dashboard = () => {
     { title: 'Provinces', icon: <Map className="h-6 w-6" />, onClick: () => navigate('/provinces') },
     { title: 'Health Stats', icon: <Activity className="h-6 w-6" />, onClick: () => navigate('/explore/health') },
     { title: 'Economy', icon: <LineChart className="h-6 w-6" />, onClick: () => navigate('/explore/economy') },
-    { title: 'Agriculture', icon: <Database className="h-6 w-6" />, onClick: () => navigate('/explore/agriculture') },
+    { title: 'Agriculture', icon: <BarChart3 className="h-6 w-6" />, onClick: () => navigate('/explore/agriculture') },
   ];
 
   return (
@@ -73,24 +110,46 @@ const Dashboard = () => {
           User Dashboard - Access Zambia's key data insights
         </p>
         
-        {/* Debug/Admin Conversion Section - Remove this in production */}
-        <div className="mt-4 p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
-          <h3 className="text-sm font-medium text-yellow-800 dark:text-yellow-200 mb-2">
-            Admin Access Testing
-          </h3>
-          <p className="text-xs text-yellow-700 dark:text-yellow-300 mb-3">
-            If you should have admin access, click the button below to convert your account:
-          </p>
-          <Button 
-            onClick={handleMakeAdmin} 
-            disabled={isConverting}
-            variant="outline"
-            size="sm"
-            className="border-yellow-300 text-yellow-700 hover:bg-yellow-100 dark:border-yellow-600 dark:text-yellow-300 dark:hover:bg-yellow-900/50"
-          >
-            <Crown className="h-4 w-4 mr-2" />
-            {isConverting ? 'Converting...' : 'Make Me Admin'}
-          </Button>
+        {/* Admin Conversion Section */}
+        <div className="mt-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+          <div className="flex items-start gap-3">
+            <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400 mt-0.5" />
+            <div className="flex-1">
+              <h3 className="text-sm font-medium text-amber-800 dark:text-amber-200 mb-2">
+                Admin Access Testing
+              </h3>
+              <p className="text-xs text-amber-700 dark:text-amber-300 mb-3">
+                If you need admin access, use the button below to convert your account:
+              </p>
+              <div className="flex gap-2">
+                <Button 
+                  onClick={handleMakeAdmin} 
+                  disabled={isConverting}
+                  variant="outline"
+                  size="sm"
+                  className="border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-600 dark:text-amber-300 dark:hover:bg-amber-900/50"
+                >
+                  <Crown className="h-4 w-4 mr-2" />
+                  {isConverting ? 'Converting...' : 'Make Me Admin'}
+                </Button>
+                <Button 
+                  onClick={checkUserStatus} 
+                  variant="outline"
+                  size="sm"
+                  className="border-amber-300 text-amber-700 hover:bg-amber-100 dark:border-amber-600 dark:text-amber-300 dark:hover:bg-amber-900/50"
+                >
+                  Debug Status
+                </Button>
+              </div>
+              {debugInfo && (
+                <div className="mt-3 p-2 bg-amber-100 dark:bg-amber-900/30 rounded text-xs">
+                  <pre className="whitespace-pre-wrap text-amber-800 dark:text-amber-200">
+                    {JSON.stringify(debugInfo, null, 2)}
+                  </pre>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       </div>
 

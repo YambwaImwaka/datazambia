@@ -34,89 +34,117 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Function to check and refresh user roles
   const refreshUserRoles = async () => {
-    const currentSession = await supabase.auth.getSession();
-    if (currentSession.data.session?.user) {
-      console.log('🔍 Checking admin role for user:', currentSession.data.session.user.email);
-      
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', currentSession.data.session.user.id)
-        .eq('role', 'admin')
-        .single();
+    try {
+      const currentSession = await supabase.auth.getSession();
+      if (currentSession.data.session?.user) {
+        console.log('🔍 Checking admin role for user:', currentSession.data.session.user.email);
+        
+        const { data, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', currentSession.data.session.user.id)
+          .eq('role', 'admin')
+          .single();
 
-      const adminStatus = !!data && !error;
-      console.log('👑 Admin check result:', adminStatus, 'for user:', currentSession.data.session.user.email);
-      
-      setIsAdmin(adminStatus);
-      
-      if (adminStatus) {
-        setUser(currentUser => currentUser ? {...currentUser, isAdmin: true} : null);
-        console.log('🎯 User is admin, updating state');
+        const adminStatus = !!data && !error;
+        console.log('👑 Admin check result:', adminStatus, 'for user:', currentSession.data.session.user.email);
+        
+        setIsAdmin(adminStatus);
+        
+        if (adminStatus) {
+          setUser(currentUser => currentUser ? {...currentUser, isAdmin: true} : null);
+          console.log('🎯 User is admin, updating state');
+        } else {
+          console.log('👤 User is not admin, regular user access');
+        }
       } else {
-        console.log('👤 User is not admin, regular user access');
+        setIsAdmin(false);
       }
+    } catch (error) {
+      console.error('Error refreshing user roles:', error);
+      setIsAdmin(false);
     }
   };
 
   useEffect(() => {
+    let mounted = true;
+
+    const initializeAuth = async () => {
+      try {
+        // Get initial session
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (mounted) {
+          console.log('🔍 Initial session check:', session?.user?.email);
+          setSession(session);
+          setUser(session?.user as User ?? null);
+          
+          if (session?.user) {
+            await refreshUserRoles();
+          } else {
+            setIsAdmin(false);
+          }
+          
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Error initializing auth:', error);
+        if (mounted) {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (event, session) => {
+        if (!mounted) return;
+        
         console.log('🔄 Auth state change:', event, session?.user?.email);
         setSession(session);
         setUser(session?.user as User ?? null);
         
         if (session?.user) {
-          // Check admin role immediately when user is authenticated
-          await refreshUserRoles();
-          
-          // Handle navigation based on event
-          if (event === 'SIGNED_IN') {
-            console.log('📍 User signed in, checking admin status...');
-            // Use a delay to ensure admin status is properly updated
-            setTimeout(async () => {
-              // Re-check admin status right before navigation
-              const { data } = await supabase
-                .from('user_roles')
-                .select('role')
-                .eq('user_id', session.user.id)
-                .eq('role', 'admin')
-                .single();
+          // Check admin role when user is authenticated
+          setTimeout(async () => {
+            if (mounted) {
+              await refreshUserRoles();
               
-              const currentAdminStatus = !!data;
-              console.log('🎯 Final admin check before navigation:', currentAdminStatus);
-              
-              if (currentAdminStatus) {
-                console.log('🎯 Redirecting admin to admin dashboard');
-                navigate('/admin/dashboard', { replace: true });
-              } else {
-                console.log('🎯 Redirecting regular user to dashboard');
-                navigate('/dashboard', { replace: true });
+              // Handle navigation based on event
+              if (event === 'SIGNED_IN') {
+                console.log('📍 User signed in, checking admin status...');
+                // Re-check admin status for navigation
+                const { data } = await supabase
+                  .from('user_roles')
+                  .select('role')
+                  .eq('user_id', session.user.id)
+                  .eq('role', 'admin')
+                  .single();
+                
+                const currentAdminStatus = !!data;
+                console.log('🎯 Final admin check before navigation:', currentAdminStatus);
+                
+                if (currentAdminStatus) {
+                  console.log('🎯 Redirecting admin to admin dashboard');
+                  navigate('/admin/dashboard', { replace: true });
+                } else {
+                  console.log('🎯 Redirecting regular user to dashboard');
+                  navigate('/dashboard', { replace: true });
+                }
               }
-            }, 500); // Increased delay to ensure role is properly set
-          }
+            }
+          }, 100);
         } else {
           setIsAdmin(false);
         }
-        
-        setIsLoading(false);
       }
     );
 
-    // Initial session check
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      console.log('🔍 Initial session check:', session?.user?.email);
-      setSession(session);
-      setUser(session?.user as User ?? null);
-      
-      if (session?.user) {
-        await refreshUserRoles();
-      }
-      
-      setIsLoading(false);
-    });
+    // Initialize auth
+    initializeAuth();
 
     return () => {
+      mounted = false;
       subscription.unsubscribe();
     };
   }, [navigate]);
@@ -129,6 +157,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         password,
         options: {
           data: metadata,
+          emailRedirectTo: `${window.location.origin}/`
         },
       });
 
@@ -185,17 +214,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const makeUserAdmin = async (email: string) => {
-    if (!isAdmin) {
-      return { success: false, message: "Only administrators can promote users" };
-    }
-    
     try {
+      console.log('🔄 Making user admin:', email);
       const result = await makeAdmin(email);
+      
       if (result.success) {
         toast.success(`User ${email} has been granted admin privileges`);
         // Refresh roles if the current user was promoted
         if (user?.email === email) {
           await refreshUserRoles();
+          // Force a page reload to ensure all state is updated
+          setTimeout(() => {
+            window.location.reload();
+          }, 1000);
         }
       } else {
         toast.error(result.message);

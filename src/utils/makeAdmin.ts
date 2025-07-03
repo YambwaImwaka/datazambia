@@ -1,88 +1,66 @@
 
 import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
 
 /**
  * This utility function can be used to create an admin user programmatically
- * 
- * Usage: 
- * 1. Call this function from your browser console or from your application
- * 2. Pass the email of the user you want to make an admin
- * 
- * Example:
- * import { makeAdmin } from '@/utils/makeAdmin';
- * makeAdmin('user@example.com').then(console.log);
  */
 export const makeAdmin = async (email: string) => {
   try {
     console.log(`🔄 Starting admin conversion for: ${email}`);
     
-    // First, try to use the database function which handles everything
-    const { data, error } = await supabase.rpc('make_admin', { email });
+    // First, get the user ID by email from auth.users via the admin_users view
+    const { data: userData, error: userError } = await supabase
+      .from('admin_users')
+      .select('id')
+      .eq('email', email)
+      .single();
     
-    if (error) {
-      console.error('❌ Database function error:', error);
-      throw error;
+    if (userError || !userData) {
+      console.error('❌ User not found:', userError);
+      return { 
+        success: false, 
+        message: `User with email ${email} not found or not verified`
+      };
     }
     
-    console.log('✅ Admin conversion successful via database function');
-    return { success: true, message: `User ${email} has been granted admin privileges` };
+    console.log('✅ Found user:', userData.id);
+    
+    // Add the admin role
+    const { error: roleError } = await supabase
+      .from('user_roles')
+      .insert({
+        user_id: userData.id,
+        role: 'admin'
+      });
+    
+    if (roleError) {
+      if (roleError.code === '23505') { // Unique violation - user is already admin
+        console.log('ℹ️ User is already an admin');
+        return { 
+          success: true, 
+          message: `User ${email} is already an admin`
+        };
+      }
+      throw roleError;
+    }
+    
+    console.log('✅ Admin role granted successfully');
+    return { 
+      success: true, 
+      message: `User ${email} has been granted admin privileges` 
+    };
     
   } catch (error: any) {
     console.error('❌ Error making admin:', error);
-    
-    // If the database function fails, try manual approach
-    try {
-      console.log('🔄 Trying manual approach...');
-      
-      // Get current user to check if they're the one being promoted
-      const { data: { user: currentUser } } = await supabase.auth.getUser();
-      
-      if (currentUser && currentUser.email === email) {
-        // If it's the current user, add the role directly
-        const { error: roleError } = await supabase
-          .from('user_roles')
-          .insert({
-            user_id: currentUser.id,
-            role: 'admin'
-          });
-        
-        if (roleError) {
-          if (roleError.code === '23505') { // Unique violation
-            console.log('ℹ️ User is already an admin');
-            return { 
-              success: true, 
-              message: `User ${email} is already an admin`, 
-            };
-          }
-          throw roleError;
-        }
-        
-        console.log('✅ Manual admin conversion successful');
-        return { success: true, message: `User ${email} has been granted admin privileges` };
-      }
-      
-      return { 
-        success: false, 
-        message: `Cannot convert ${email} - user not found or not current user`, 
-      };
-      
-    } catch (manualError: any) {
-      console.error('❌ Manual approach failed:', manualError);
-      return { 
-        success: false, 
-        message: error.message || 'Failed to grant admin privileges', 
-        error 
-      };
-    }
+    return { 
+      success: false, 
+      message: error.message || 'Failed to grant admin privileges'
+    };
   }
 };
 
 /**
  * This utility function can be used to remove admin privileges from a user
- * 
- * @param userId - The user ID of the admin to demote
- * @returns Promise with success/error information
  */
 export const removeAdmin = async (userId: string) => {
   try {
@@ -99,8 +77,7 @@ export const removeAdmin = async (userId: string) => {
     console.error('Error removing admin:', error);
     return { 
       success: false, 
-      message: error.message || 'Failed to remove admin privileges', 
-      error 
+      message: error.message || 'Failed to remove admin privileges'
     };
   }
 };
