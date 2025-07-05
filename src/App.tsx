@@ -12,6 +12,7 @@ import AdminDashboard from '@/pages/admin/AdminDashboard';
 import UsersAdmin from '@/pages/admin/Users';
 import Signin from '@/pages/auth/SignIn';
 import Signup from '@/pages/auth/SignUp';
+import Explore from '@/pages/Explore';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AnalyticsProvider } from '@/components/analytics/AnalyticsProvider';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -32,6 +33,8 @@ function App() {
                 <Routes>
                   {/* Public routes */}
                   <Route path="/" element={<Index />} />
+                  <Route path="/explore" element={<Explore />} />
+                  <Route path="/explore/:categoryId" element={<Explore />} />
                   
                   {/* Public auth routes */}
                   <Route 
