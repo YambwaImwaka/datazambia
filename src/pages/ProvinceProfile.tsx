@@ -11,7 +11,7 @@ import { provinces, healthMetrics, educationMetrics, agricultureMetrics, histori
 import PageLayout from "@/components/layout/PageLayout";
 
 const ProvinceProfile = () => {
-  const { provinceId } = useParams<{ provinceId: string }>();
+  const { id } = useParams<{ id: string }>();
   const [province, setProvince] = useState<typeof provinces[0] | undefined>(undefined);
   const [activeTab, setActiveTab] = useState("overview");
   const [isLoading, setIsLoading] = useState(true);
@@ -21,7 +21,7 @@ const ProvinceProfile = () => {
     window.scrollTo(0, 0);
     
     // Find province by ID
-    const foundProvince = provinces.find(p => p.id === provinceId);
+    const foundProvince = provinces.find(p => p.id === id);
     setProvince(foundProvince);
     
     // Simulate data loading
@@ -30,7 +30,7 @@ const ProvinceProfile = () => {
     }, 500);
     
     return () => clearTimeout(timer);
-  }, [provinceId]);
+  }, [id]);
 
   if (!province && !isLoading) {
     return (
@@ -602,7 +602,7 @@ const ProvinceProfile = () => {
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {provinces.filter(p => p.id !== provinceId).slice(0, 3).map((relatedProvince) => (
+            {provinces.filter(p => p.id !== id).slice(0, 3).map((relatedProvince) => (
               <Card 
                 key={relatedProvince.id}
                 className="overflow-hidden border border-gray-200 dark:border-gray-700 hover:shadow-lg transition-shadow"
