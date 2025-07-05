@@ -27,13 +27,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     currentPath: location.pathname
   });
 
-  // Store the attempted URL in localStorage when redirecting to login
-  useEffect(() => {
-    if (requireAuth && !isLoading && !user) {
-      localStorage.setItem('redirectAfterLogin', location.pathname);
-    }
-  }, [requireAuth, isLoading, user, location.pathname]);
-
+  // Show loading spinner while authentication state is being determined
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -43,28 +37,23 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     );
   }
 
-  // If authentication is required and user is not logged in, redirect to login
+  // Handle auth pages - redirect authenticated users away from signin/signup
+  if (!requireAuth && user && (location.pathname === '/auth/signin' || location.pathname === '/auth/signup')) {
+    console.log('🔄 Authenticated user on auth page, redirecting based on role');
+    const redirectTo = isAdmin ? '/admin/dashboard' : '/dashboard';
+    return <Navigate to={redirectTo} replace />;
+  }
+
+  // Handle protected routes that require authentication
   if (requireAuth && !user) {
     console.log('🔒 Redirecting to signin - no user');
     return <Navigate to="/auth/signin" state={{ from: location }} replace />;
   }
 
-  // If admin access is required and user is not an admin, redirect to user dashboard
-  if (requireAdmin && !isAdmin) {
-    console.log('🚫 Redirecting to dashboard - not admin, user:', user?.email, 'isAdmin:', isAdmin);
+  // Handle admin-only routes
+  if (requireAdmin && user && !isAdmin) {
+    console.log('🚫 Redirecting to dashboard - not admin');
     return <Navigate to="/dashboard" replace />;
-  }
-
-  // If user is authenticated but on a public auth page, redirect based on role
-  if (user && !requireAuth && (location.pathname === '/auth/signin' || location.pathname === '/auth/signup')) {
-    console.log('🔄 Authenticated user on auth page, redirecting based on role');
-    if (isAdmin) {
-      console.log('👑 Admin user, redirecting to admin dashboard');
-      return <Navigate to="/admin/dashboard" replace />;
-    } else {
-      console.log('👤 Regular user, redirecting to dashboard');
-      return <Navigate to="/dashboard" replace />;
-    }
   }
 
   console.log('✅ Access granted to:', location.pathname);

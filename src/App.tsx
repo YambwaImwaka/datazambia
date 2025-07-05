@@ -36,7 +36,7 @@ function App() {
                   <Route path="/explore" element={<Explore />} />
                   <Route path="/explore/:categoryId" element={<Explore />} />
                   
-                  {/* Public auth routes */}
+                  {/* Auth routes - public but redirect if already authenticated */}
                   <Route 
                     path="/auth/signin" 
                     element={
@@ -64,7 +64,7 @@ function App() {
                     } 
                   />
                   
-                  {/* Admin routes */}
+                  {/* Admin-only routes */}
                   <Route 
                     path="/admin/dashboard" 
                     element={
