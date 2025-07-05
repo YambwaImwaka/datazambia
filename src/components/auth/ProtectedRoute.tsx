@@ -56,8 +56,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
   }
 
   // If user is authenticated but on a public auth page, redirect based on role
-  if (user && !requireAuth) {
-    console.log('🔄 Authenticated user on public page, redirecting based on role');
+  if (user && !requireAuth && (location.pathname === '/auth/signin' || location.pathname === '/auth/signup')) {
+    console.log('🔄 Authenticated user on auth page, redirecting based on role');
     if (isAdmin) {
       console.log('👑 Admin user, redirecting to admin dashboard');
       return <Navigate to="/admin/dashboard" replace />;
@@ -65,12 +65,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
       console.log('👤 Regular user, redirecting to dashboard');
       return <Navigate to="/dashboard" replace />;
     }
-  }
-
-  // If user is admin but trying to access regular dashboard, redirect to admin dashboard
-  if (user && isAdmin && location.pathname === '/dashboard') {
-    console.log('👑 Admin user accessing regular dashboard, redirecting to admin dashboard');
-    return <Navigate to="/admin/dashboard" replace />;
   }
 
   console.log('✅ Access granted to:', location.pathname);

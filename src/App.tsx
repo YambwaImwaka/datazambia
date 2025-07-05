@@ -5,6 +5,7 @@ import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider } from 'next-themes';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Toaster } from '@/components/ui/toaster';
+import Index from '@/pages/Index';
 import Dashboard from '@/pages/Dashboard';
 import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
@@ -29,6 +30,9 @@ function App() {
               <Toaster />
               <TooltipProvider>
                 <Routes>
+                  {/* Public routes */}
+                  <Route path="/" element={<Index />} />
+                  
                   {/* Public auth routes */}
                   <Route 
                     path="/auth/signin" 
@@ -48,14 +52,6 @@ function App() {
                   />
                   
                   {/* Protected user routes */}
-                  <Route 
-                    path="/" 
-                    element={
-                      <ProtectedRoute requireAuth={true}>
-                        <Dashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
                   <Route 
                     path="/dashboard" 
                     element={
