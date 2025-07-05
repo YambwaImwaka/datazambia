@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -89,7 +90,7 @@ const Dashboard = () => {
                     <div key={i} className="flex items-start pb-4 last:pb-0 border-b last:border-0 border-gray-200 dark:border-gray-700">
                       <div className="mr-4 mt-1 bg-primary/10 p-2 rounded-full">
                         {i === 0 ? <BarChart3 className="h-4 w-4 text-primary" /> : 
-                         i === 1 ? <Database className="h-4 w-4 text-primary" /> : 
+                         i === 1 ? <Activity className="h-4 w-4 text-primary" /> : 
                          <LineChart className="h-4 w-4 text-primary" />}
                       </div>
                       <div>
