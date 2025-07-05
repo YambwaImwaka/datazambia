@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           browser: string | null
           city: string | null
+          consent_id: string | null
           country: string | null
           created_at: string
           device_type: string | null
@@ -32,6 +33,7 @@ export type Database = {
         Insert: {
           browser?: string | null
           city?: string | null
+          consent_id?: string | null
           country?: string | null
           created_at?: string
           device_type?: string | null
@@ -51,6 +53,7 @@ export type Database = {
         Update: {
           browser?: string | null
           city?: string | null
+          consent_id?: string | null
           country?: string | null
           created_at?: string
           device_type?: string | null
@@ -68,6 +71,13 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "analytics_events_consent_id_fkey"
+            columns: ["consent_id"]
+            isOneToOne: false
+            referencedRelation: "user_consent"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "analytics_events_user_id_fkey"
             columns: ["user_id"]
@@ -114,6 +124,7 @@ export type Database = {
         Row: {
           browser: string | null
           city: string | null
+          consent_id: string | null
           country: string | null
           device_type: string | null
           ended_at: string | null
@@ -134,6 +145,7 @@ export type Database = {
         Insert: {
           browser?: string | null
           city?: string | null
+          consent_id?: string | null
           country?: string | null
           device_type?: string | null
           ended_at?: string | null
@@ -154,6 +166,7 @@ export type Database = {
         Update: {
           browser?: string | null
           city?: string | null
+          consent_id?: string | null
           country?: string | null
           device_type?: string | null
           ended_at?: string | null
@@ -173,7 +186,55 @@ export type Database = {
         }
         Relationships: [
           {
+            foreignKeyName: "analytics_sessions_consent_id_fkey"
+            columns: ["consent_id"]
+            isOneToOne: false
+            referencedRelation: "user_consent"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "analytics_sessions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      data_processing_log: {
+        Row: {
+          action_type: string
+          created_at: string
+          data_type: string
+          description: string | null
+          id: string
+          ip_address: unknown | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          data_type: string
+          description?: string | null
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          data_type?: string
+          description?: string | null
+          id?: string
+          ip_address?: unknown | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "data_processing_log_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "admin_users"
@@ -400,6 +461,56 @@ export type Database = {
         }
         Relationships: []
       }
+      user_consent: {
+        Row: {
+          consent_date: string
+          consent_given: boolean
+          consent_type: string
+          created_at: string
+          id: string
+          ip_address: unknown | null
+          session_id: string | null
+          updated_at: string
+          user_agent: string | null
+          user_id: string | null
+          withdrawal_date: string | null
+        }
+        Insert: {
+          consent_date?: string
+          consent_given?: boolean
+          consent_type: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          session_id?: string | null
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+          withdrawal_date?: string | null
+        }
+        Update: {
+          consent_date?: string
+          consent_given?: boolean
+          consent_type?: string
+          created_at?: string
+          id?: string
+          ip_address?: unknown | null
+          session_id?: string | null
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string | null
+          withdrawal_date?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_consent_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "admin_users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_favorites: {
         Row: {
           created_at: string
@@ -468,6 +579,14 @@ export type Database = {
       }
     }
     Functions: {
+      anonymize_user_data: {
+        Args: { target_user_id: string }
+        Returns: undefined
+      }
+      export_user_data: {
+        Args: { target_user_id: string }
+        Returns: Json
+      }
       has_role: {
         Args: { _role: Database["public"]["Enums"]["app_role"] }
         Returns: boolean

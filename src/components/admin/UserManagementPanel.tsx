@@ -8,9 +8,14 @@ import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Badge } from '@/components/ui/badge';
-import { Loader2, UserCog, ShieldAlert, Shield, UserX, Search } from 'lucide-react';
+import { Loader2, UserCog, ShieldAlert, Shield, UserX, Search, Download, Trash2, Edit } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Input } from '@/components/ui/input';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Textarea } from '@/components/ui/textarea';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import * as z from 'zod';
 
 interface User {
   id: string;
@@ -21,8 +26,23 @@ interface User {
     full_name?: string;
     avatar_url?: string;
   };
+  profile?: {
+    username?: string;
+    full_name?: string;
+    bio?: string;
+    location?: string;
+  };
   isAdmin?: boolean;
 }
+
+const profileSchema = z.object({
+  full_name: z.string().min(1, 'Full name is required'),
+  username: z.string().min(3, 'Username must be at least 3 characters').optional(),
+  bio: z.string().optional(),
+  location: z.string().optional(),
+});
+
+type ProfileFormValues = z.infer<typeof profileSchema>;
 
 const UserManagementPanel = () => {
   const { user: currentUser } = useAuth();
@@ -30,9 +50,20 @@ const UserManagementPanel = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [processingUserId, setProcessingUserId] = useState<string | null>(null);
-  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
-  const [actionType, setActionType] = useState<'promote' | 'demote' | 'delete' | null>(null);
-  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      full_name: '',
+      username: '',
+      bio: '',
+      location: '',
+    },
+  });
 
   useEffect(() => {
     fetchUsers();
@@ -41,32 +72,32 @@ const UserManagementPanel = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      // Fetch users
+      // Fetch users from auth
       const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
-      
       if (authError) throw authError;
-      
-      if (!authUsers?.users?.length) {
-        setUsers([]);
-        return;
-      }
-      
-      // Fetch admin roles to determine which users are admins
+
+      // Fetch profiles
+      const { data: profiles, error: profilesError } = await supabase
+        .from('profiles')
+        .select('*');
+      if (profilesError) throw profilesError;
+
+      // Fetch admin roles
       const { data: adminRoles, error: rolesError } = await supabase
         .from('user_roles')
         .select('user_id')
         .eq('role', 'admin');
-        
       if (rolesError) throw rolesError;
-      
+
       const adminUserIds = new Set((adminRoles || []).map(role => role.user_id));
-      
-      // Combine the data
+      const profilesMap = new Map(profiles?.map(p => [p.id, p]) || []);
+
       const enrichedUsers = authUsers.users.map(user => ({
         ...user,
+        profile: profilesMap.get(user.id),
         isAdmin: adminUserIds.has(user.id)
       }));
-      
+
       setUsers(enrichedUsers);
     } catch (error) {
       console.error('Error fetching users:', error);
@@ -78,7 +109,8 @@ const UserManagementPanel = () => {
 
   const filteredUsers = users.filter(user => 
     user.email?.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    user.user_metadata?.full_name?.toLowerCase().includes(searchQuery.toLowerCase())
+    user.profile?.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    user.profile?.username?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handlePromoteUser = async (userId: string) => {
@@ -90,17 +122,13 @@ const UserManagementPanel = () => {
         
       if (error) throw error;
       
-      setUsers(users.map(user => 
-        user.id === userId ? { ...user, isAdmin: true } : user
-      ));
-      
+      await fetchUsers();
       toast.success('User promoted to administrator');
     } catch (error) {
       console.error('Error promoting user:', error);
       toast.error('Failed to promote user');
     } finally {
       setProcessingUserId(null);
-      setShowConfirmDialog(false);
     }
   };
 
@@ -115,41 +143,104 @@ const UserManagementPanel = () => {
         
       if (error) throw error;
       
-      setUsers(users.map(user => 
-        user.id === userId ? { ...user, isAdmin: false } : user
-      ));
-      
+      await fetchUsers();
       toast.success('User role updated');
     } catch (error) {
       console.error('Error demoting user:', error);
       toast.error('Failed to update user role');
     } finally {
       setProcessingUserId(null);
-      setShowConfirmDialog(false);
     }
   };
 
-  const confirmAction = (user: User, action: 'promote' | 'demote' | 'delete') => {
-    setSelectedUser(user);
-    setActionType(action);
-    setShowConfirmDialog(true);
+  const handleEditUser = (user: User) => {
+    setEditingUser(user);
+    form.reset({
+      full_name: user.profile?.full_name || user.user_metadata?.full_name || '',
+      username: user.profile?.username || '',
+      bio: user.profile?.bio || '',
+      location: user.profile?.location || '',
+    });
+    setShowEditDialog(true);
   };
 
-  const executeConfirmedAction = () => {
-    if (!selectedUser || !actionType) return;
+  const handleUpdateUser = async (values: ProfileFormValues) => {
+    if (!editingUser) return;
     
-    switch (actionType) {
-      case 'promote':
-        handlePromoteUser(selectedUser.id);
-        break;
-      case 'demote':
-        handleDemoteUser(selectedUser.id);
-        break;
-      case 'delete':
-        // Implement user deletion logic here
-        toast.info('User deletion not yet implemented');
-        setShowConfirmDialog(false);
-        break;
+    setProcessingUserId(editingUser.id);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          id: editingUser.id,
+          ...values,
+          updated_at: new Date().toISOString(),
+        });
+        
+      if (error) throw error;
+      
+      await fetchUsers();
+      setShowEditDialog(false);
+      toast.success('User updated successfully');
+    } catch (error) {
+      console.error('Error updating user:', error);
+      toast.error('Failed to update user');
+    } finally {
+      setProcessingUserId(null);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    if (!userToDelete) return;
+    
+    setProcessingUserId(userToDelete.id);
+    try {
+      // First anonymize the user data
+      const { error: anonymizeError } = await supabase.rpc('anonymize_user_data', {
+        target_user_id: userToDelete.id
+      });
+      
+      if (anonymizeError) throw anonymizeError;
+      
+      // Then delete the auth user
+      const { error: deleteError } = await supabase.auth.admin.deleteUser(userToDelete.id);
+      if (deleteError) throw deleteError;
+      
+      await fetchUsers();
+      setShowDeleteDialog(false);
+      setUserToDelete(null);
+      toast.success('User deleted and data anonymized');
+    } catch (error) {
+      console.error('Error deleting user:', error);
+      toast.error('Failed to delete user');
+    } finally {
+      setProcessingUserId(null);
+    }
+  };
+
+  const handleExportUserData = async (userId: string) => {
+    try {
+      const { data, error } = await supabase.rpc('export_user_data', {
+        target_user_id: userId
+      });
+      
+      if (error) throw error;
+      
+      // Download as JSON file
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `user_data_${userId}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      toast.success('User data exported successfully');
+    } catch (error) {
+      console.error('Error exporting user data:', error);
+      toast.error('Failed to export user data');
     }
   };
 
@@ -158,7 +249,7 @@ const UserManagementPanel = () => {
       <CardHeader>
         <CardTitle>User Management</CardTitle>
         <CardDescription>
-          View and manage user accounts and permissions
+          Manage user accounts, roles, and data with GDPR compliance
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -209,14 +300,19 @@ const UserManagementPanel = () => {
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <Avatar className="h-8 w-8">
-                              <AvatarImage src={user.user_metadata?.avatar_url} />
+                              <AvatarImage src={user.profile?.avatar_url || user.user_metadata?.avatar_url} />
                               <AvatarFallback className="text-xs">
-                                {user.user_metadata?.full_name?.[0] || user.email[0].toUpperCase()}
+                                {(user.profile?.full_name || user.user_metadata?.full_name)?.[0] || user.email[0].toUpperCase()}
                               </AvatarFallback>
                             </Avatar>
-                            <span className="font-medium">
-                              {user.user_metadata?.full_name || 'User'}
-                            </span>
+                            <div>
+                              <span className="font-medium">
+                                {user.profile?.full_name || user.user_metadata?.full_name || 'User'}
+                              </span>
+                              {user.profile?.username && (
+                                <p className="text-sm text-muted-foreground">@{user.profile.username}</p>
+                              )}
+                            </div>
                           </div>
                         </TableCell>
                         <TableCell>{user.email}</TableCell>
@@ -234,15 +330,34 @@ const UserManagementPanel = () => {
                           )}
                         </TableCell>
                         <TableCell className="text-right">
-                          <div className="flex justify-end gap-2">
+                          <div className="flex justify-end gap-1">
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              onClick={() => handleEditUser(user)}
+                              title="Edit User"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            
+                            <Button 
+                              variant="ghost" 
+                              size="icon"
+                              onClick={() => handleExportUserData(user.id)}
+                              title="Export User Data"
+                            >
+                              <Download className="h-4 w-4" />
+                            </Button>
+                            
                             {currentUser?.id !== user.id && (
                               <>
                                 {user.isAdmin ? (
                                   <Button 
                                     variant="ghost" 
                                     size="icon"
-                                    onClick={() => confirmAction(user, 'demote')}
+                                    onClick={() => handleDemoteUser(user.id)}
                                     disabled={processingUserId === user.id}
+                                    title="Remove Admin"
                                   >
                                     {processingUserId === user.id ? (
                                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -254,8 +369,9 @@ const UserManagementPanel = () => {
                                   <Button 
                                     variant="ghost" 
                                     size="icon"
-                                    onClick={() => confirmAction(user, 'promote')}
+                                    onClick={() => handlePromoteUser(user.id)}
                                     disabled={processingUserId === user.id}
+                                    title="Make Admin"
                                   >
                                     {processingUserId === user.id ? (
                                       <Loader2 className="h-4 w-4 animate-spin" />
@@ -264,18 +380,21 @@ const UserManagementPanel = () => {
                                     )}
                                   </Button>
                                 )}
+                                
                                 <Button 
                                   variant="ghost" 
                                   size="icon"
-                                  onClick={() => confirmAction(user, 'delete')}
+                                  onClick={() => {
+                                    setUserToDelete(user);
+                                    setShowDeleteDialog(true);
+                                  }}
+                                  title="Delete User"
+                                  className="text-red-500 hover:text-red-700"
                                 >
-                                  <UserX className="h-4 w-4" />
+                                  <Trash2 className="h-4 w-4" />
                                 </Button>
                               </>
                             )}
-                            <Button variant="ghost" size="icon">
-                              <UserCog className="h-4 w-4" />
-                            </Button>
                           </div>
                         </TableCell>
                       </TableRow>
@@ -293,49 +412,134 @@ const UserManagementPanel = () => {
           )}
         </div>
 
-        <Dialog open={showConfirmDialog} onOpenChange={setShowConfirmDialog}>
+        {/* Edit User Dialog */}
+        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>
-                {actionType === 'promote' ? 'Promote to Administrator' : 
-                 actionType === 'demote' ? 'Remove Administrator Role' : 
-                 'Delete User Account'}
-              </DialogTitle>
+              <DialogTitle>Edit User Profile</DialogTitle>
               <DialogDescription>
-                {actionType === 'promote' 
-                  ? 'This will grant administrative privileges to this user, allowing them to access all areas of the system.'
-                  : actionType === 'demote'
-                  ? 'This will remove administrative privileges from this user, restricting them to standard user access.'
-                  : 'This will permanently delete this user account and all associated data. This action cannot be undone.'}
+                Update user profile information
               </DialogDescription>
             </DialogHeader>
 
-            {selectedUser && (
-              <div className="flex items-center gap-3 py-2">
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(handleUpdateUser)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="full_name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Name</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Username</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Location</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="bio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bio</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setShowEditDialog(false)}>
+                    Cancel
+                  </Button>
+                  <Button 
+                    type="submit" 
+                    disabled={processingUserId === editingUser?.id}
+                  >
+                    {processingUserId === editingUser?.id && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    Update User
+                  </Button>
+                </DialogFooter>
+              </form>
+            </Form>
+          </DialogContent>
+        </Dialog>
+
+        {/* Delete User Dialog */}
+        <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete User Account</DialogTitle>
+              <DialogDescription>
+                This will permanently delete the user account and anonymize all associated data. 
+                This action cannot be undone and complies with GDPR data deletion requirements.
+              </DialogDescription>
+            </DialogHeader>
+
+            {userToDelete && (
+              <div className="flex items-center gap-3 py-4">
                 <Avatar className="h-10 w-10">
-                  <AvatarImage src={selectedUser.user_metadata?.avatar_url} />
+                  <AvatarImage src={userToDelete.profile?.avatar_url || userToDelete.user_metadata?.avatar_url} />
                   <AvatarFallback>
-                    {selectedUser.user_metadata?.full_name?.[0] || selectedUser.email[0].toUpperCase()}
+                    {(userToDelete.profile?.full_name || userToDelete.user_metadata?.full_name)?.[0] || userToDelete.email[0].toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-medium">{selectedUser.user_metadata?.full_name || 'User'}</p>
-                  <p className="text-sm text-muted-foreground">{selectedUser.email}</p>
+                  <p className="font-medium">
+                    {userToDelete.profile?.full_name || userToDelete.user_metadata?.full_name || 'User'}
+                  </p>
+                  <p className="text-sm text-muted-foreground">{userToDelete.email}</p>
                 </div>
               </div>
             )}
 
-            <DialogFooter className="gap-2 sm:justify-end">
-              <Button variant="outline" onClick={() => setShowConfirmDialog(false)}>Cancel</Button>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
+                Cancel
+              </Button>
               <Button 
-                variant={actionType === 'delete' ? 'destructive' : 'default'}
-                onClick={executeConfirmedAction}
-                disabled={processingUserId === selectedUser?.id}
+                variant="destructive"
+                onClick={handleDeleteUser}
+                disabled={processingUserId === userToDelete?.id}
               >
-                {processingUserId === selectedUser?.id && (
+                {processingUserId === userToDelete?.id && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
-                Confirm
+                Delete User
               </Button>
             </DialogFooter>
           </DialogContent>

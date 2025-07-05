@@ -1,105 +1,60 @@
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import { ThemeProvider } from '@/components/theme/ThemeProvider';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { Toaster } from '@/components/ui/toaster';
+import Dashboard from '@/pages/Dashboard';
+import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
+import AdminDashboard from '@/pages/admin/AdminDashboard';
+import UsersAdmin from '@/pages/admin/Users';
+import UserDetails from '@/pages/admin/UserDetails';
+import Signin from '@/pages/auth/Signin';
+import Signup from '@/pages/auth/Signup';
+import ForgotPassword from '@/pages/auth/ForgotPassword';
+import ResetPassword from '@/pages/auth/ResetPassword';
+import { AuthProvider } from '@/contexts/AuthContext';
+import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
+import { AnalyticsProvider } from '@/contexts/AnalyticsContext';
+import { QueryClient } from '@tanstack/react-query';
+import CreateAdmin from '@/pages/admin/CreateAdmin';
+import ConsentBanner from '@/components/gdpr/ConsentBanner';
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { ThemeProvider } from "@/components/theme-provider";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { AnalyticsProvider } from "@/components/analytics/AnalyticsProvider";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import Index from "./pages/Index";
-import ProvinceProfile from "./pages/ProvinceProfile";
-import ProvincesList from "./pages/ProvincesList";
-import Explore from "./pages/Explore";
-import Education from "./pages/explore/Education";
-import Finance from "./pages/Finance";
-import AITools from "./pages/AITools";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
-import SignIn from "./pages/auth/SignIn";
-import SignUp from "./pages/auth/SignUp";
-import AdminSignUp from "./pages/auth/AdminSignUp";
-import Dashboard from "./pages/Dashboard";
-import UserProfile from "./pages/profile/UserProfile";
-import UserFavorites from "./pages/profile/UserFavorites";
-import UsersAdmin from "./pages/admin/Users";
-import AdminDashboard from "./pages/admin/AdminDashboard";
-import Analytics from "./pages/admin/Analytics";
-import NotFound from "./pages/NotFound";
-import CreateAdmin from "./pages/admin/CreateAdmin";
-import { useState } from "react";
-
-const App = () => {
-  // Create a new QueryClient instance inside the component
-  const [queryClient] = useState(() => new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-        staleTime: 300000, // 5 minutes (increased from 1 minute to reduce refreshes)
-        retry: 1,
-      },
-    },
-  }));
-
+function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <AuthProvider>
-            <AnalyticsProvider>
-              <div className="min-h-screen flex flex-col">
-                <Routes>
-                  {/* Public routes */}
-                  <Route path="/" element={<Index />} />
-                  <Route path="/province/:provinceId" element={<ProvinceProfile />} />
-                  <Route path="/provinces" element={<ProvincesList />} />
-                  <Route path="/explore" element={<Explore />} />
-                  <Route path="/explore/:categoryId" element={<Explore />} />
-                  <Route path="/explore/education" element={<Education />} />
-                  <Route path="/finance" element={<Finance />} />
-                  <Route path="/ai-tools" element={<AITools />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/contact" element={<Contact />} />
-                  
-                  {/* Auth routes - accessible only when NOT logged in */}
-                  <Route element={<ProtectedRoute requireAuth={false} />}>
-                    <Route path="/auth/signin" element={<SignIn />} />
-                    <Route path="/auth/signup" element={<SignUp />} />
-                    <Route path="/auth/admin-signup" element={<AdminSignUp />} />
-                  </Route>
-                  
-                  {/* Protected routes - accessible only when logged in */}
-                  <Route element={<ProtectedRoute requireAuth={true} />}>
-                    <Route path="/dashboard" element={<Dashboard />} />
-                    <Route path="/profile" element={<UserProfile />} />
-                    <Route path="/favorites" element={<UserFavorites />} />
-                    {/* Create Admin route - accessible to all users before first admin is created */}
-                    <Route path="/create-admin" element={<CreateAdmin />} />
-                  </Route>
-                  
-                  {/* Admin routes - accessible only to admins */}
-                  <Route element={<ProtectedRoute requireAuth={true} requireAdmin={true} />}>
-                    {/* Redirect /admin to /admin/dashboard for convenience */}
-                    <Route path="/admin" element={<Navigate to="/admin/dashboard" replace />} />
-                    <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                    <Route path="/admin/users" element={<UsersAdmin />} />
-                    <Route path="/admin/users/:userId" element={<UsersAdmin />} />
-                    <Route path="/admin/analytics" element={<Analytics />} />
-                  </Route>
-                  
-                  {/* Catch-all route */}
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
-              </div>
-              <Toaster />
-              <Sonner />
-            </AnalyticsProvider>
-          </AuthProvider>
-        </TooltipProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <AuthProvider>
+        <QueryClient>
+          <ThemeProvider>
+            <Toaster />
+            <TooltipProvider>
+              <AnalyticsProvider>
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/auth/signin" element={<ProtectedRoute requireAuth={false}><Signin /></ProtectedRoute>} />
+                    <Route path="/auth/signup" element={<ProtectedRoute requireAuth={false}><Signup /></ProtectedRoute>} />
+                    <Route path="/auth/forgot-password" element={<ProtectedRoute requireAuth={false}><ForgotPassword /></ProtectedRoute>} />
+                    <Route path="/auth/reset-password" element={<ProtectedRoute requireAuth={false}><ResetPassword /></ProtectedRoute>} />
+                    
+                    <Route path="/" element={<ProtectedRoute requireAuth={true}><Dashboard /></ProtectedRoute>} />
+                    <Route path="/dashboard" element={<ProtectedRoute requireAuth={true}><Dashboard /></ProtectedRoute>} />
+                    
+                    {/* Admin Routes */}
+                    <Route path="/admin/dashboard" element={<ProtectedRoute requireAuth={true} requireAdmin={true}><AdminDashboard /></ProtectedRoute>} />
+                    <Route path="/admin/analytics" element={<ProtectedRoute requireAuth={true} requireAdmin={true}><AnalyticsDashboard /></ProtectedRoute>} />
+                    <Route path="/admin/users" element={<ProtectedRoute requireAuth={true} requireAdmin={true}><UsersAdmin /></ProtectedRoute>} />
+                    <Route path="/admin/users/:userId" element={<ProtectedRoute requireAuth={true} requireAdmin={true}><UserDetails /></ProtectedRoute>} />
+                    <Route path="/create-admin" element={<ProtectedRoute requireAuth={true} requireAdmin={true}><CreateAdmin /></ProtectedRoute>} />
+                  </Routes>
+                  <ConsentBanner />
+                </BrowserRouter>
+              </AnalyticsProvider>
+            </TooltipProvider>
+          </ThemeProvider>
+        </QueryClient>
+      </AuthProvider>
+    </HelmetProvider>
   );
-};
+}
 
 export default App;
