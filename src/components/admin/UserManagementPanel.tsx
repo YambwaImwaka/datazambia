@@ -246,307 +246,309 @@ const UserManagementPanel = () => {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>User Management</CardTitle>
-        <CardDescription>
-          Manage user accounts, roles, and data with GDPR compliance
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-6">
-          <div className="flex items-center justify-between">
-            <div className="relative w-full max-w-sm">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                type="search"
-                placeholder="Search users..."
-                className="pl-8"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>User Management</CardTitle>
+          <CardDescription>
+            Manage user accounts, roles, and data with GDPR compliance
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="relative w-full max-w-sm">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  type="search"
+                  placeholder="Search users..."
+                  className="pl-8"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="rounded-full">
+                  {users.length} Users
+                </Badge>
+                <Badge variant="outline" className="rounded-full">
+                  {users.filter(u => u.isAdmin).length} Admins
+                </Badge>
+              </div>
             </div>
-            
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="rounded-full">
-                {users.length} Users
-              </Badge>
-              <Badge variant="outline" className="rounded-full">
-                {users.filter(u => u.isAdmin).length} Admins
-              </Badge>
-            </div>
-          </div>
 
-          {loading ? (
-            <div className="flex justify-center items-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-            </div>
-          ) : (
-            <div className="border rounded-md">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead>Email</TableHead>
-                    <TableHead>Joined</TableHead>
-                    <TableHead>Last Sign In</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredUsers.length > 0 ? (
-                    filteredUsers.map((user) => (
-                      <TableRow key={user.id}>
-                        <TableCell>
-                          <div className="flex items-center gap-2">
-                            <Avatar className="h-8 w-8">
-                              <AvatarImage src={user.profile?.avatar_url || user.user_metadata?.avatar_url} />
-                              <AvatarFallback className="text-xs">
-                                {(user.profile?.full_name || user.user_metadata?.full_name)?.[0] || user.email[0].toUpperCase()}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <span className="font-medium">
-                                {user.profile?.full_name || user.user_metadata?.full_name || 'User'}
-                              </span>
-                              {user.profile?.username && (
-                                <p className="text-sm text-muted-foreground">@{user.profile.username}</p>
+            {loading ? (
+              <div className="flex justify-center items-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+              </div>
+            ) : (
+              <div className="border rounded-md">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>User</TableHead>
+                      <TableHead>Email</TableHead>
+                      <TableHead>Joined</TableHead>
+                      <TableHead>Last Sign In</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredUsers.length > 0 ? (
+                      filteredUsers.map((user) => (
+                        <TableRow key={user.id}>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              <Avatar className="h-8 w-8">
+                                <AvatarImage src={user.profile?.avatar_url || user.user_metadata?.avatar_url} />
+                                <AvatarFallback className="text-xs">
+                                  {(user.profile?.full_name || user.user_metadata?.full_name)?.[0] || user.email[0].toUpperCase()}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <span className="font-medium">
+                                  {user.profile?.full_name || user.user_metadata?.full_name || 'User'}
+                                </span>
+                                {user.profile?.username && (
+                                  <p className="text-sm text-muted-foreground">@{user.profile.username}</p>
+                                )}
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>{user.email}</TableCell>
+                          <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
+                          <TableCell>
+                            {user.last_sign_in_at 
+                              ? new Date(user.last_sign_in_at).toLocaleDateString() 
+                              : 'Never'}
+                          </TableCell>
+                          <TableCell>
+                            {user.isAdmin ? (
+                              <Badge className="bg-primary">Administrator</Badge>
+                            ) : (
+                              <Badge variant="secondary">Standard User</Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-right">
+                            <div className="flex justify-end gap-1">
+                              <Button 
+                                variant="ghost" 
+                                size="icon"
+                                onClick={() => handleEditUser(user)}
+                                title="Edit User"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              
+                              <Button 
+                                variant="ghost" 
+                                size="icon"
+                                onClick={() => handleExportUserData(user.id)}
+                                title="Export User Data"
+                              >
+                                <Download className="h-4 w-4" />
+                              </Button>
+                              
+                              {currentUser?.id !== user.id && (
+                                <>
+                                  {user.isAdmin ? (
+                                    <Button 
+                                      variant="ghost" 
+                                      size="icon"
+                                      onClick={() => handleDemoteUser(user.id)}
+                                      disabled={processingUserId === user.id}
+                                      title="Remove Admin"
+                                    >
+                                      {processingUserId === user.id ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                      ) : (
+                                        <Shield className="h-4 w-4" />
+                                      )}
+                                    </Button>
+                                  ) : (
+                                    <Button 
+                                      variant="ghost" 
+                                      size="icon"
+                                      onClick={() => handlePromoteUser(user.id)}
+                                      disabled={processingUserId === user.id}
+                                      title="Make Admin"
+                                    >
+                                      {processingUserId === user.id ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                      ) : (
+                                        <ShieldAlert className="h-4 w-4" />
+                                      )}
+                                    </Button>
+                                  )}
+                                  
+                                  <Button 
+                                    variant="ghost" 
+                                    size="icon"
+                                    onClick={() => {
+                                      setUserToDelete(user);
+                                      setShowDeleteDialog(true);
+                                    }}
+                                    title="Delete User"
+                                    className="text-red-500 hover:text-red-700"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </>
                               )}
                             </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>{user.email}</TableCell>
-                        <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
-                        <TableCell>
-                          {user.last_sign_in_at 
-                            ? new Date(user.last_sign_in_at).toLocaleDateString() 
-                            : 'Never'}
-                        </TableCell>
-                        <TableCell>
-                          {user.isAdmin ? (
-                            <Badge className="bg-primary">Administrator</Badge>
-                          ) : (
-                            <Badge variant="secondary">Standard User</Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-right">
-                          <div className="flex justify-end gap-1">
-                            <Button 
-                              variant="ghost" 
-                              size="icon"
-                              onClick={() => handleEditUser(user)}
-                              title="Edit User"
-                            >
-                              <Edit className="h-4 w-4" />
-                            </Button>
-                            
-                            <Button 
-                              variant="ghost" 
-                              size="icon"
-                              onClick={() => handleExportUserData(user.id)}
-                              title="Export User Data"
-                            >
-                              <Download className="h-4 w-4" />
-                            </Button>
-                            
-                            {currentUser?.id !== user.id && (
-                              <>
-                                {user.isAdmin ? (
-                                  <Button 
-                                    variant="ghost" 
-                                    size="icon"
-                                    onClick={() => handleDemoteUser(user.id)}
-                                    disabled={processingUserId === user.id}
-                                    title="Remove Admin"
-                                  >
-                                    {processingUserId === user.id ? (
-                                      <Loader2 className="h-4 w-4 animate-spin" />
-                                    ) : (
-                                      <Shield className="h-4 w-4" />
-                                    )}
-                                  </Button>
-                                ) : (
-                                  <Button 
-                                    variant="ghost" 
-                                    size="icon"
-                                    onClick={() => handlePromoteUser(user.id)}
-                                    disabled={processingUserId === user.id}
-                                    title="Make Admin"
-                                  >
-                                    {processingUserId === user.id ? (
-                                      <Loader2 className="h-4 w-4 animate-spin" />
-                                    ) : (
-                                      <ShieldAlert className="h-4 w-4" />
-                                    )}
-                                  </Button>
-                                )}
-                                
-                                <Button 
-                                  variant="ghost" 
-                                  size="icon"
-                                  onClick={() => {
-                                    setUserToDelete(user);
-                                    setShowDeleteDialog(true);
-                                  }}
-                                  title="Delete User"
-                                  className="text-red-500 hover:text-red-700"
-                                >
-                                  <Trash2 className="h-4 w-4" />
-                                </Button>
-                              </>
-                            )}
-                          </div>
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    ) : (
+                      <TableRow>
+                        <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
+                          No users found matching your search.
                         </TableCell>
                       </TableRow>
-                    ))
-                  ) : (
-                    <TableRow>
-                      <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
-                        No users found matching your search.
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </div>
-          )}
-        </div>
-
-        {/* Edit User Dialog */}
-        <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit User Profile</DialogTitle>
-              <DialogDescription>
-                Update user profile information
-              </DialogDescription>
-            </DialogHeader>
-
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleUpdateUser)} className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="full_name"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Full Name</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="username"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Username</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="location"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Location</FormLabel>
-                      <FormControl>
-                        <Input {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="bio"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Bio</FormLabel>
-                      <FormControl>
-                        <Textarea {...field} />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <DialogFooter>
-                  <Button type="button" variant="outline" onClick={() => setShowEditDialog(false)}>
-                    Cancel
-                  </Button>
-                  <Button 
-                    type="submit" 
-                    disabled={processingUserId === editingUser?.id}
-                  >
-                    {processingUserId === editingUser?.id && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     )}
-                    Update User
-                  </Button>
-                </DialogFooter>
-              </form>
-            </Form>
-          </DialogContent>
-        </Dialog>
-
-        {/* Delete User Dialog */}
-        <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Delete User Account</DialogTitle>
-              <DialogDescription>
-                This will permanently delete the user account and anonymize all associated data. 
-                This action cannot be undone and complies with GDPR data deletion requirements.
-              </DialogDescription>
-            </DialogHeader>
-
-            {userToDelete && (
-              <div className="flex items-center gap-3 py-4">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={userToDelete.profile?.avatar_url || userToDelete.user_metadata?.avatar_url} />
-                  <AvatarFallback>
-                    {(userToDelete.profile?.full_name || userToDelete.user_metadata?.full_name)?.[0] || userToDelete.email[0].toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium">
-                    {userToDelete.profile?.full_name || userToDelete.user_metadata?.full_name || 'User'}
-                  </p>
-                  <p className="text-sm text-muted-foreground">{userToDelete.email}</p>
-                </div>
+                  </TableBody>
+                </Table>
               </div>
             )}
+          </div>
+        </CardContent>
+      </Card>
 
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
-                Cancel
-              </Button>
-              <Button 
-                variant="destructive"
-                onClick={handleDeleteUser}
-                disabled={processingUserId === userToDelete?.id}
-              >
-                {processingUserId === userToDelete?.id && (
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+      {/* Edit User Dialog */}
+      <Dialog open={showEditDialog} onOpenChange={setShowEditDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit User Profile</DialogTitle>
+            <DialogDescription>
+              Update user profile information
+            </DialogDescription>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleUpdateUser)} className="space-y-4">
+              <FormField
+                control={form.control}
+                name="full_name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Full Name</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
                 )}
-                Delete User
-              </Button>
-            </DialogFooter>
-          </Dialog>
-        </Dialog>
-      </CardContent>
-    </Card>
+              />
+
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Username</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="location"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Location</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="bio"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Bio</FormLabel>
+                    <FormControl>
+                      <Textarea {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <DialogFooter>
+                <Button type="button" variant="outline" onClick={() => setShowEditDialog(false)}>
+                  Cancel
+                </Button>
+                <Button 
+                  type="submit" 
+                  disabled={processingUserId === editingUser?.id}
+                >
+                  {processingUserId === editingUser?.id && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
+                  Update User
+                </Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete User Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete User Account</DialogTitle>
+            <DialogDescription>
+              This will permanently delete the user account and anonymize all associated data. 
+              This action cannot be undone and complies with GDPR data deletion requirements.
+            </DialogDescription>
+          </DialogHeader>
+
+          {userToDelete && (
+            <div className="flex items-center gap-3 py-4">
+              <Avatar className="h-10 w-10">
+                <AvatarImage src={userToDelete.profile?.avatar_url || userToDelete.user_metadata?.avatar_url} />
+                <AvatarFallback>
+                  {(userToDelete.profile?.full_name || userToDelete.user_metadata?.full_name)?.[0] || userToDelete.email[0].toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="font-medium">
+                  {userToDelete.profile?.full_name || userToDelete.user_metadata?.full_name || 'User'}
+                </p>
+                <p className="text-sm text-muted-foreground">{userToDelete.email}</p>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDeleteDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              variant="destructive"
+              onClick={handleDeleteUser}
+              disabled={processingUserId === userToDelete?.id}
+            >
+              {processingUserId === userToDelete?.id && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Delete User
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 
