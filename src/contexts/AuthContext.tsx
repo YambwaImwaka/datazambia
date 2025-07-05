@@ -94,7 +94,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user as User ?? null);
         
         if (session?.user) {
-          // Refresh roles after a short delay to ensure the session is fully established
           setTimeout(async () => {
             if (mounted) {
               await refreshUserRoles();
@@ -143,7 +142,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { error, data } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -152,7 +151,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw error;
       }
 
+      console.log('✅ Sign in successful for:', email);
       toast.success('Successfully signed in!');
+      
+      // Let the auth state change handler and ProtectedRoute handle the navigation
     } catch (error: any) {
       toast.error(error.message || 'An error occurred during sign in');
       console.error('Error during sign in:', error);

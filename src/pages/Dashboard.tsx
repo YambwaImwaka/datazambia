@@ -1,37 +1,21 @@
-
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
-import { BarChart3, LineChart, Map, Activity, Database } from 'lucide-react';
+import { BarChart3, LineChart, Map, Activity } from 'lucide-react';
 import { provinces } from '@/utils/data';
 import PageLayout from '@/components/layout/PageLayout';
 
 const Dashboard = () => {
-  const { user, isAdmin, signOut } = useAuth();
-  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
 
-  // Redirect admins to admin dashboard
-  useEffect(() => {
-    if (isAdmin) {
-      console.log('👑 Admin detected, redirecting to admin dashboard');
-      navigate('/admin/dashboard', { replace: true });
-    }
-  }, [isAdmin, navigate]);
-
-  // Don't render if user is admin (they should be redirected)
-  if (isAdmin) {
-    return null;
-  }
-
   const quickLinks = [
-    { title: 'Provinces', icon: <Map className="h-6 w-6" />, onClick: () => navigate('/provinces') },
-    { title: 'Health Stats', icon: <Activity className="h-6 w-6" />, onClick: () => navigate('/explore/health') },
-    { title: 'Economy', icon: <LineChart className="h-6 w-6" />, onClick: () => navigate('/explore/economy') },
-    { title: 'Agriculture', icon: <BarChart3 className="h-6 w-6" />, onClick: () => navigate('/explore/agriculture') },
+    { title: 'Provinces', icon: <Map className="h-6 w-6" />, onClick: () => console.log('Navigate to provinces') },
+    { title: 'Health Stats', icon: <Activity className="h-6 w-6" />, onClick: () => console.log('Navigate to health') },
+    { title: 'Economy', icon: <LineChart className="h-6 w-6" />, onClick: () => console.log('Navigate to economy') },
+    { title: 'Agriculture', icon: <BarChart3 className="h-6 w-6" />, onClick: () => console.log('Navigate to agriculture') },
   ];
 
   return (
