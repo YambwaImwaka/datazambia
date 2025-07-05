@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { Session, User as SupabaseUser } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { makeAdmin } from '@/utils/makeAdmin';
 
 // Extend the User type to include isAdmin property
 interface User extends SupabaseUser {
@@ -19,7 +18,6 @@ type AuthContextType = {
   signUp: (email: string, password: string, metadata?: { full_name?: string, username?: string }) => Promise<void>;
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
-  makeUserAdmin: (email: string) => Promise<{success: boolean; message: string}>;
   refreshUserRoles: () => Promise<void>;
 };
 
@@ -213,35 +211,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const makeUserAdmin = async (email: string) => {
-    try {
-      console.log('🔄 Making user admin:', email);
-      const result = await makeAdmin(email);
-      
-      if (result.success) {
-        toast.success(`User ${email} has been granted admin privileges`);
-        // Refresh roles if the current user was promoted
-        if (user?.email === email) {
-          await refreshUserRoles();
-          // Force a page reload to ensure all state is updated
-          setTimeout(() => {
-            window.location.reload();
-          }, 1000);
-        }
-      } else {
-        toast.error(result.message);
-      }
-      return result;
-    } catch (error: any) {
-      console.error('Error making admin:', error);
-      toast.error(error.message || 'Failed to grant admin privileges');
-      return { 
-        success: false, 
-        message: error.message || 'Failed to grant admin privileges'
-      };
-    }
-  };
-
   return (
     <AuthContext.Provider
       value={{
@@ -252,7 +221,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signUp,
         signIn,
         signOut,
-        makeUserAdmin,
         refreshUserRoles,
       }}
     >

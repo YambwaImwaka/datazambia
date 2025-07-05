@@ -15,7 +15,6 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { AnalyticsProvider } from '@/components/analytics/AnalyticsProvider';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import CreateAdmin from '@/pages/admin/CreateAdmin';
 import ConsentBanner from '@/components/gdpr/ConsentBanner';
 
 const queryClient = new QueryClient();
@@ -88,14 +87,6 @@ function App() {
                     element={
                       <ProtectedRoute requireAuth={true} requireAdmin={true}>
                         <UsersAdmin />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/create-admin" 
-                    element={
-                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                        <CreateAdmin />
                       </ProtectedRoute>
                     } 
                   />
