@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -9,7 +10,6 @@ import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
 import { User, Settings, Search, ArrowLeft, Shield, ShieldX } from 'lucide-react';
-import { makeAdmin, removeAdmin } from '@/utils/makeAdmin';
 
 interface ProfileWithRole {
   id: string;
@@ -95,6 +95,33 @@ const UsersAdmin = () => {
     }
   };
 
+  const makeAdmin = async (email: string) => {
+    try {
+      const { error } = await supabase.rpc('make_admin', { email });
+      if (error) throw error;
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error making admin:', error);
+      return { success: false, message: error.message };
+    }
+  };
+
+  const removeAdmin = async (userId: string) => {
+    try {
+      const { error } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId)
+        .eq('role', 'admin');
+
+      if (error) throw error;
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error removing admin:', error);
+      return { success: false, message: error.message };
+    }
+  };
+
   const toggleAdminRole = async (userId: string, isCurrentlyAdmin: boolean) => {
     try {
       if (isCurrentlyAdmin) {
@@ -138,7 +165,7 @@ const UsersAdmin = () => {
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center mb-6">
             <div className="flex items-center space-x-4">
-              <Button variant="outline" size="icon" onClick={() => navigate('/dashboard')}>
+              <Button variant="outline" size="icon" onClick={() => navigate('/admin/dashboard')}>
                 <ArrowLeft className="h-4 w-4" />
               </Button>
               <h1 className="text-2xl font-bold">User Management</h1>

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,7 +11,6 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Loader2, Search, Shield, ShieldCheck, UserX, Plus } from 'lucide-react';
-import { removeAdmin } from '@/utils/makeAdmin';
 import { useAuth } from '@/contexts/AuthContext';
 
 type AdminUser = {
@@ -76,15 +76,17 @@ const AdminAccountsPanel = () => {
 
   const handleRemoveAdmin = async (userId: string, username: string) => {
     try {
-      const result = await removeAdmin(userId);
-      
-      if (result.success) {
-        toast.success(`Admin privileges removed from ${username}`);
-        // Refresh the admin users list
-        fetchAdminUsers();
-      } else {
-        toast.error(result.message);
-      }
+      const { error } = await supabase
+        .from('user_roles')
+        .delete()
+        .eq('user_id', userId)
+        .eq('role', 'admin');
+
+      if (error) throw error;
+
+      toast.success(`Admin privileges removed from ${username}`);
+      // Refresh the admin users list
+      fetchAdminUsers();
     } catch (error: any) {
       console.error('Error removing admin:', error);
       toast.error(error.message || 'An error occurred while removing admin privileges');
@@ -118,10 +120,6 @@ const AdminAccountsPanel = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
           </div>
-          <Button className="ml-auto" onClick={() => navigate('/create-admin')}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Admin
-          </Button>
         </div>
 
         {isLoading ? (
@@ -199,23 +197,15 @@ const AdminAccountsPanel = () => {
               <Shield className="mx-auto h-12 w-12 text-muted-foreground" />
               <h3 className="mt-2 text-lg font-medium">No admin accounts found</h3>
               <p className="mt-1 text-muted-foreground">
-                {searchTerm ? "No admins match your search criteria." : "Add your first admin user to get started."}
+                {searchTerm ? "No admins match your search criteria." : "Contact a system administrator to add admin users."}
               </p>
-              {searchTerm ? (
+              {searchTerm && (
                 <Button 
                   variant="outline" 
                   className="mt-4"
                   onClick={() => setSearchTerm('')}
                 >
                   Clear Search
-                </Button>
-              ) : (
-                <Button 
-                  className="mt-4"
-                  onClick={() => navigate('/create-admin')}
-                >
-                  <Plus className="mr-2 h-4 w-4" />
-                  Add Admin
                 </Button>
               )}
             </div>
