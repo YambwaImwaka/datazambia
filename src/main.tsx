@@ -20,10 +20,8 @@ const root = createRoot(container);
 
 root.render(
   <React.StrictMode>
-    <HelmetProvider>
-      <BrowserRouter basename={basePath}>
-        <App />
-      </BrowserRouter>
-    </HelmetProvider>
+    <BrowserRouter basename={basePath}>
+      <App />
+    </BrowserRouter>
   </React.StrictMode>
 );

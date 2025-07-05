@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider } from 'next-themes';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -27,80 +27,78 @@ function App() {
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <Toaster />
             <TooltipProvider>
-              <BrowserRouter>
-                <Routes>
-                  {/* Public auth routes */}
-                  <Route 
-                    path="/auth/signin" 
-                    element={
-                      <ProtectedRoute requireAuth={false}>
-                        <Signin />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/auth/signup" 
-                    element={
-                      <ProtectedRoute requireAuth={false}>
-                        <Signup />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  
-                  {/* Protected user routes */}
-                  <Route 
-                    path="/" 
-                    element={
-                      <ProtectedRoute requireAuth={true}>
-                        <Dashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/dashboard" 
-                    element={
-                      <ProtectedRoute requireAuth={true}>
-                        <Dashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  
-                  {/* Admin routes */}
-                  <Route 
-                    path="/admin/dashboard" 
-                    element={
-                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                        <AdminDashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin/analytics" 
-                    element={
-                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                        <AnalyticsDashboard />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/admin/users" 
-                    element={
-                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                        <UsersAdmin />
-                      </ProtectedRoute>
-                    } 
-                  />
-                  <Route 
-                    path="/create-admin" 
-                    element={
-                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                        <CreateAdmin />
-                      </ProtectedRoute>
-                    } 
-                  />
-                </Routes>
-                <ConsentBanner />
-              </BrowserRouter>
+              <Routes>
+                {/* Public auth routes */}
+                <Route 
+                  path="/auth/signin" 
+                  element={
+                    <ProtectedRoute requireAuth={false}>
+                      <Signin />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/auth/signup" 
+                  element={
+                    <ProtectedRoute requireAuth={false}>
+                      <Signup />
+                    </ProtectedRoute>
+                  } 
+                />
+                
+                {/* Protected user routes */}
+                <Route 
+                  path="/" 
+                  element={
+                    <ProtectedRoute requireAuth={true}>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/dashboard" 
+                  element={
+                    <ProtectedRoute requireAuth={true}>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                
+                {/* Admin routes */}
+                <Route 
+                  path="/admin/dashboard" 
+                  element={
+                    <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/analytics" 
+                  element={
+                    <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                      <AnalyticsDashboard />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin/users" 
+                  element={
+                    <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                      <UsersAdmin />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/create-admin" 
+                  element={
+                    <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                      <CreateAdmin />
+                    </ProtectedRoute>
+                  } 
+                />
+              </Routes>
+              <ConsentBanner />
             </TooltipProvider>
           </ThemeProvider>
         </QueryClientProvider>
