@@ -13,6 +13,13 @@ import UsersAdmin from '@/pages/admin/Users';
 import Signin from '@/pages/auth/SignIn';
 import Signup from '@/pages/auth/SignUp';
 import Explore from '@/pages/Explore';
+import About from '@/pages/About';
+import Contact from '@/pages/Contact';
+import Finance from '@/pages/Finance';
+import ProvincesList from '@/pages/ProvincesList';
+import ProvinceProfile from '@/pages/ProvinceProfile';
+import AITools from '@/pages/AITools';
+import NotFound from '@/pages/NotFound';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AnalyticsProvider } from '@/components/analytics/AnalyticsProvider';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
@@ -33,6 +40,12 @@ function App() {
                 <Routes>
                   {/* Public routes */}
                   <Route path="/" element={<Index />} />
+                  <Route path="/about" element={<About />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/finance" element={<Finance />} />
+                  <Route path="/provinces" element={<ProvincesList />} />
+                  <Route path="/province/:id" element={<ProvinceProfile />} />
+                  <Route path="/ai-tools" element={<AITools />} />
                   <Route path="/explore" element={<Explore />} />
                   <Route path="/explore/:categoryId" element={<Explore />} />
                   
@@ -89,6 +102,9 @@ function App() {
                       </ProtectedRoute>
                     } 
                   />
+                  
+                  {/* 404 route */}
+                  <Route path="*" element={<NotFound />} />
                 </Routes>
                 <ConsentBanner />
               </TooltipProvider>
