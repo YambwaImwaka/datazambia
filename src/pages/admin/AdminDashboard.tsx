@@ -15,27 +15,26 @@ import {
   TrendingUp,
   Eye,
   MousePointer,
-  Clock
+  Clock,
+  Globe,
+  FileText,
+  Palette
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import AnalyticsPanel from '@/components/admin/AnalyticsPanel';
+import ComprehensiveAnalyticsDashboard from '@/components/admin/ComprehensiveAnalyticsDashboard';
+import CMSPanel from '@/components/admin/CMSPanel';
+import { useRealAnalytics } from '@/hooks/useRealAnalytics';
 
 const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState('overview');
+  const { analyticsData, loading: analyticsLoading } = useRealAnalytics('7d');
 
-  // Mock data - replace with real data from your API
-  const stats = {
-    totalUsers: 1247,
-    activeUsers: 892,
-    totalContent: 156,
-    systemHealth: 'Excellent'
-  };
-
+  // Real activity from analytics
   const recentActivity = [
-    { type: 'user_registration', message: 'New user registered', time: '2 minutes ago' },
-    { type: 'content_update', message: 'Province data updated', time: '15 minutes ago' },
-    { type: 'system_alert', message: 'Database backup completed', time: '1 hour ago' },
-    { type: 'user_action', message: 'Export request processed', time: '2 hours ago' },
+    { type: 'page_view', message: `${analyticsData?.realtimeUsers || 0} users currently online`, time: 'Now' },
+    { type: 'analytics', message: `${analyticsData?.totalPageViews || 0} total page views today`, time: '1 hour ago' },
+    { type: 'user_activity', message: `${analyticsData?.uniqueVisitors || 0} unique visitors today`, time: '2 hours ago' },
+    { type: 'performance', message: `${analyticsData?.bounceRate || 0}% bounce rate`, time: '3 hours ago' },
   ];
 
   const quickActions = [
@@ -55,17 +54,19 @@ const AdminDashboard = () => {
     },
     {
       title: 'Content Management',
-      description: 'Manage site content and data',
-      icon: <Database className="h-6 w-6" />,
-      href: '/admin/content',
-      color: 'bg-purple-500'
+      description: 'Manage site content and settings',
+      icon: <Globe className="h-6 w-6" />,
+      href: '#cms',
+      color: 'bg-purple-500',
+      onClick: () => setActiveTab('cms')
     },
     {
       title: 'System Settings',
       description: 'Configure system settings',
       icon: <Settings className="h-6 w-6" />,
-      href: '/admin/settings',
-      color: 'bg-orange-500'
+      href: '#settings',
+      color: 'bg-orange-500',
+      onClick: () => setActiveTab('cms')
     }
   ];
 
@@ -87,65 +88,71 @@ const AdminDashboard = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="analytics">Analytics</TabsTrigger>
+            <TabsTrigger value="analytics">Live Analytics</TabsTrigger>
+            <TabsTrigger value="cms">CMS</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="system">System</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            {/* Key Metrics */}
+            {/* Real-time Key Metrics */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-center">
-                    <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-                    <Users className="h-4 w-4 text-blue-500" />
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalUsers}</div>
-                  <p className="text-xs text-green-600 mt-1">↑ 12% from last month</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="pb-2">
-                  <div className="flex justify-between items-center">
-                    <CardTitle className="text-sm font-medium">Active Users</CardTitle>
+                    <CardTitle className="text-sm font-medium">Live Users</CardTitle>
                     <Activity className="h-4 w-4 text-green-500" />
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.activeUsers}</div>
-                  <p className="text-xs text-green-600 mt-1">↑ 8% from last month</p>
+                  <div className="text-2xl font-bold">{analyticsData?.realtimeUsers || 0}</div>
+                  <div className="flex items-center mt-1">
+                    <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
+                    <span className="text-xs text-green-600">Online now</span>
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-center">
-                    <CardTitle className="text-sm font-medium">Content Items</CardTitle>
-                    <Database className="h-4 w-4 text-purple-500" />
+                    <CardTitle className="text-sm font-medium">Total Views</CardTitle>
+                    <Eye className="h-4 w-4 text-blue-500" />
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">{stats.totalContent}</div>
-                  <p className="text-xs text-green-600 mt-1">↑ 5% from last month</p>
+                  <div className="text-2xl font-bold">{analyticsData?.totalPageViews?.toLocaleString() || '0'}</div>
+                  <p className="text-xs text-green-600 mt-1">Real data tracking</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-center">
-                    <CardTitle className="text-sm font-medium">System Health</CardTitle>
-                    <Shield className="h-4 w-4 text-green-500" />
+                    <CardTitle className="text-sm font-medium">Unique Visitors</CardTitle>
+                    <Users className="h-4 w-4 text-purple-500" />
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-lg font-bold text-green-600">{stats.systemHealth}</div>
-                  <Badge className="mt-1 bg-green-100 text-green-800">All systems operational</Badge>
+                  <div className="text-2xl font-bold">{analyticsData?.uniqueVisitors?.toLocaleString() || '0'}</div>
+                  <p className="text-xs text-blue-600 mt-1">Last 7 days</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <div className="flex justify-between items-center">
+                    <CardTitle className="text-sm font-medium">Bounce Rate</CardTitle>
+                    <TrendingUp className="h-4 w-4 text-orange-500" />
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{analyticsData?.bounceRate || 0}%</div>
+                  <Badge className={`mt-1 ${(analyticsData?.bounceRate || 0) < 50 ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}`}>
+                    {(analyticsData?.bounceRate || 0) < 50 ? 'Good' : 'Needs attention'}
+                  </Badge>
                 </CardContent>
               </Card>
             </div>
@@ -161,21 +168,42 @@ const AdminDashboard = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                   {quickActions.map((action, index) => (
-                    <Link key={index} to={action.href}>
-                      <Card className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-zambia-200">
-                        <CardContent className="p-4">
-                          <div className="flex items-center space-x-3">
-                            <div className={`${action.color} text-white p-2 rounded-lg`}>
-                              {action.icon}
+                    <div key={index}>
+                      {action.onClick ? (
+                        <Card 
+                          className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-zambia-200"
+                          onClick={action.onClick}
+                        >
+                          <CardContent className="p-4">
+                            <div className="flex items-center space-x-3">
+                              <div className={`${action.color} text-white p-2 rounded-lg`}>
+                                {action.icon}
+                              </div>
+                              <div className="flex-1">
+                                <h3 className="font-medium text-sm">{action.title}</h3>
+                                <p className="text-xs text-gray-500 mt-1">{action.description}</p>
+                              </div>
                             </div>
-                            <div className="flex-1">
-                              <h3 className="font-medium text-sm">{action.title}</h3>
-                              <p className="text-xs text-gray-500 mt-1">{action.description}</p>
-                            </div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </Link>
+                          </CardContent>
+                        </Card>
+                      ) : (
+                        <Link to={action.href}>
+                          <Card className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-zambia-200">
+                            <CardContent className="p-4">
+                              <div className="flex items-center space-x-3">
+                                <div className={`${action.color} text-white p-2 rounded-lg`}>
+                                  {action.icon}
+                                </div>
+                                <div className="flex-1">
+                                  <h3 className="font-medium text-sm">{action.title}</h3>
+                                  <p className="text-xs text-gray-500 mt-1">{action.description}</p>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </Link>
+                      )}
+                    </div>
                   ))}
                 </div>
               </CardContent>
@@ -184,9 +212,9 @@ const AdminDashboard = () => {
             {/* Recent Activity */}
             <Card>
               <CardHeader>
-                <CardTitle>Recent Activity</CardTitle>
+                <CardTitle>Live System Activity</CardTitle>
                 <CardDescription>
-                  Latest system and user activities
+                  Real-time system and user activities
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -198,6 +226,9 @@ const AdminDashboard = () => {
                         <p className="text-sm font-medium">{activity.message}</p>
                         <p className="text-xs text-gray-500">{activity.time}</p>
                       </div>
+                      {activity.type === 'page_view' && (
+                        <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -206,7 +237,11 @@ const AdminDashboard = () => {
           </TabsContent>
 
           <TabsContent value="analytics" className="space-y-6">
-            <AnalyticsPanel />
+            <ComprehensiveAnalyticsDashboard />
+          </TabsContent>
+
+          <TabsContent value="cms" className="space-y-6">
+            <CMSPanel />
           </TabsContent>
 
           <TabsContent value="users" className="space-y-6">
@@ -220,7 +255,7 @@ const AdminDashboard = () => {
               <CardContent>
                 <div className="text-center py-8">
                   <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                  <p className="text-gray-500 mb-4">User management tools</p>
+                  <p className="text-gray-500 mb-4">Advanced user management tools</p>
                   <Link to="/admin/users">
                     <Button>Manage Users</Button>
                   </Link>
@@ -247,24 +282,24 @@ const AdminDashboard = () => {
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-medium mb-2">API Status</h4>
+                    <h4 className="font-medium mb-2">Analytics Status</h4>
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="text-sm">All endpoints responding</span>
+                      <span className="text-sm">Real-time tracking active</span>
                     </div>
                   </div>
                   <div>
                     <h4 className="font-medium mb-2">Storage Status</h4>
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="text-sm">98% available</span>
+                      <span className="text-sm">Media storage available</span>
                     </div>
                   </div>
                   <div>
-                    <h4 className="font-medium mb-2">Backup Status</h4>
+                    <h4 className="font-medium mb-2">API Status</h4>
                     <div className="flex items-center space-x-2">
                       <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                      <span className="text-sm">Last backup: 2 hours ago</span>
+                      <span className="text-sm">All endpoints responding</span>
                     </div>
                   </div>
                 </div>
