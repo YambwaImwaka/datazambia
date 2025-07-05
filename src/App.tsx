@@ -12,6 +12,7 @@ import UsersAdmin from '@/pages/admin/Users';
 import Signin from '@/pages/auth/SignIn';
 import Signup from '@/pages/auth/SignUp';
 import { AuthProvider } from '@/contexts/AuthContext';
+import { AnalyticsProvider } from '@/components/analytics/AnalyticsProvider';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import CreateAdmin from '@/pages/admin/CreateAdmin';
@@ -24,83 +25,85 @@ function App() {
     <HelmetProvider>
       <AuthProvider>
         <QueryClientProvider client={queryClient}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <Toaster />
-            <TooltipProvider>
-              <Routes>
-                {/* Public auth routes */}
-                <Route 
-                  path="/auth/signin" 
-                  element={
-                    <ProtectedRoute requireAuth={false}>
-                      <Signin />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/auth/signup" 
-                  element={
-                    <ProtectedRoute requireAuth={false}>
-                      <Signup />
-                    </ProtectedRoute>
-                  } 
-                />
-                
-                {/* Protected user routes */}
-                <Route 
-                  path="/" 
-                  element={
-                    <ProtectedRoute requireAuth={true}>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/dashboard" 
-                  element={
-                    <ProtectedRoute requireAuth={true}>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                
-                {/* Admin routes */}
-                <Route 
-                  path="/admin/dashboard" 
-                  element={
-                    <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                      <AdminDashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/analytics" 
-                  element={
-                    <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                      <AnalyticsDashboard />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/admin/users" 
-                  element={
-                    <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                      <UsersAdmin />
-                    </ProtectedRoute>
-                  } 
-                />
-                <Route 
-                  path="/create-admin" 
-                  element={
-                    <ProtectedRoute requireAuth={true} requireAdmin={true}>
-                      <CreateAdmin />
-                    </ProtectedRoute>
-                  } 
-                />
-              </Routes>
-              <ConsentBanner />
-            </TooltipProvider>
-          </ThemeProvider>
+          <AnalyticsProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+              <Toaster />
+              <TooltipProvider>
+                <Routes>
+                  {/* Public auth routes */}
+                  <Route 
+                    path="/auth/signin" 
+                    element={
+                      <ProtectedRoute requireAuth={false}>
+                        <Signin />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/auth/signup" 
+                    element={
+                      <ProtectedRoute requireAuth={false}>
+                        <Signup />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  
+                  {/* Protected user routes */}
+                  <Route 
+                    path="/" 
+                    element={
+                      <ProtectedRoute requireAuth={true}>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <ProtectedRoute requireAuth={true}>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  
+                  {/* Admin routes */}
+                  <Route 
+                    path="/admin/dashboard" 
+                    element={
+                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                        <AdminDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/analytics" 
+                    element={
+                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                        <AnalyticsDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/users" 
+                    element={
+                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                        <UsersAdmin />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/create-admin" 
+                    element={
+                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                        <CreateAdmin />
+                      </ProtectedRoute>
+                    } 
+                  />
+                </Routes>
+                <ConsentBanner />
+              </TooltipProvider>
+            </ThemeProvider>
+          </AnalyticsProvider>
         </QueryClientProvider>
       </AuthProvider>
     </HelmetProvider>
