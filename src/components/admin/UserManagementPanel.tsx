@@ -31,6 +31,7 @@ interface User {
     full_name?: string;
     bio?: string;
     location?: string;
+    avatar_url?: string;
   };
   isAdmin?: boolean;
 }
@@ -542,7 +543,7 @@ const UserManagementPanel = () => {
                 Delete User
               </Button>
             </DialogFooter>
-          </DialogContent>
+          </Dialog>
         </Dialog>
       </CardContent>
     </Card>

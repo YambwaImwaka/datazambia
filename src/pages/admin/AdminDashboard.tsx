@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import PageLayout from '@/components/layout/PageLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -22,6 +23,7 @@ import {
 import { Link } from 'react-router-dom';
 import ComprehensiveAnalyticsDashboard from '@/components/admin/ComprehensiveAnalyticsDashboard';
 import CMSPanel from '@/components/admin/CMSPanel';
+import UserManagementPanel from '@/components/admin/UserManagementPanel';
 import { useRealAnalytics } from '@/hooks/useRealAnalytics';
 
 const AdminDashboard = () => {
