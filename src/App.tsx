@@ -29,22 +29,75 @@ function App() {
             <TooltipProvider>
               <BrowserRouter>
                 <Routes>
-                  <Route element={<ProtectedRoute requireAuth={false} />}>
-                    <Route path="/auth/signin" element={<Signin />} />
-                    <Route path="/auth/signup" element={<Signup />} />
-                  </Route>
+                  {/* Public auth routes */}
+                  <Route 
+                    path="/auth/signin" 
+                    element={
+                      <ProtectedRoute requireAuth={false}>
+                        <Signin />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/auth/signup" 
+                    element={
+                      <ProtectedRoute requireAuth={false}>
+                        <Signup />
+                      </ProtectedRoute>
+                    } 
+                  />
                   
-                  <Route element={<ProtectedRoute requireAuth={true} />}>
-                    <Route path="/" element={<Dashboard />} />
-                    <Route path="/dashboard" element={<Dashboard />} />
-                  </Route>
+                  {/* Protected user routes */}
+                  <Route 
+                    path="/" 
+                    element={
+                      <ProtectedRoute requireAuth={true}>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/dashboard" 
+                    element={
+                      <ProtectedRoute requireAuth={true}>
+                        <Dashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
                   
-                  <Route element={<ProtectedRoute requireAuth={true} requireAdmin={true} />}>
-                    <Route path="/admin/dashboard" element={<AdminDashboard />} />
-                    <Route path="/admin/analytics" element={<AnalyticsDashboard />} />
-                    <Route path="/admin/users" element={<UsersAdmin />} />
-                    <Route path="/create-admin" element={<CreateAdmin />} />
-                  </Route>
+                  {/* Admin routes */}
+                  <Route 
+                    path="/admin/dashboard" 
+                    element={
+                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                        <AdminDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/analytics" 
+                    element={
+                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                        <AnalyticsDashboard />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/users" 
+                    element={
+                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                        <UsersAdmin />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/create-admin" 
+                    element={
+                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                        <CreateAdmin />
+                      </ProtectedRoute>
+                    } 
+                  />
                 </Routes>
                 <ConsentBanner />
               </BrowserRouter>
