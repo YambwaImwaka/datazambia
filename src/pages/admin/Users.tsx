@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -65,9 +64,9 @@ const UsersAdmin = () => {
         const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
         
         if (!authError && authData?.users) {
-          authData.users.forEach(user => {
-            if (user.id && user.email) {
-              emailMap.set(user.id, user.email);
+          authData.users.forEach((authUser: any) => {
+            if (authUser?.id && authUser?.email) {
+              emailMap.set(authUser.id, authUser.email);
             }
           });
         }
