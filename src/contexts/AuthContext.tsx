@@ -18,6 +18,7 @@ type AuthContextType = {
   signIn: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
   refreshUserRoles: () => Promise<void>;
+  makeUserAdmin: (email: string) => Promise<{ success: boolean; message?: string }>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -38,14 +39,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('🔍 Checking admin role for user:', session.user.email);
       
-      const { data, error } = await supabase
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', session.user.id)
-        .eq('role', 'admin')
-        .single();
+      // Use the new is_admin function
+      const { data, error } = await supabase.rpc('is_admin', { 
+        check_user_id: session.user.id 
+      });
 
-      const adminStatus = !!data && !error;
+      if (error) {
+        console.error('Error checking admin status:', error);
+        setIsAdmin(false);
+        return;
+      }
+
+      const adminStatus = !!data;
       console.log('👑 Admin check result:', adminStatus, 'for user:', session.user.email);
       
       setIsAdmin(adminStatus);
@@ -56,6 +61,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (error) {
       console.error('Error refreshing user roles:', error);
       setIsAdmin(false);
+    }
+  };
+
+  const makeUserAdmin = async (email: string) => {
+    try {
+      const { error } = await supabase.rpc('make_admin', { email });
+      
+      if (error) {
+        console.error('Error making user admin:', error);
+        return { success: false, message: error.message };
+      }
+      
+      toast.success(`Successfully made ${email} an admin`);
+      return { success: true };
+    } catch (error: any) {
+      console.error('Error making user admin:', error);
+      return { success: false, message: error.message || 'Failed to make user admin' };
     }
   };
 
@@ -72,7 +94,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(session?.user as User ?? null);
           
           if (session?.user) {
-            await refreshUserRoles();
+            // Delay role check slightly to avoid conflicts
+            setTimeout(() => {
+              if (mounted) {
+                refreshUserRoles();
+              }
+            }, 100);
           }
           
           setIsLoading(false);
@@ -94,11 +121,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user as User ?? null);
         
         if (session?.user) {
-          setTimeout(async () => {
+          // Delay role check to avoid conflicts
+          setTimeout(() => {
             if (mounted) {
-              await refreshUserRoles();
+              refreshUserRoles();
             }
-          }, 100);
+          }, 200);
         } else {
           setIsAdmin(false);
         }
@@ -154,7 +182,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('✅ Sign in successful for:', email);
       toast.success('Successfully signed in!');
       
-      // Let the auth state change handler and ProtectedRoute handle the navigation
     } catch (error: any) {
       toast.error(error.message || 'An error occurred during sign in');
       console.error('Error during sign in:', error);
@@ -189,6 +216,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         signIn,
         signOut,
         refreshUserRoles,
+        makeUserAdmin,
       }}
     >
       {children}

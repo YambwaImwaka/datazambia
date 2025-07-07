@@ -9,7 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
-import { User, Settings, Search, ArrowLeft, Shield, ShieldX } from 'lucide-react';
+import { User, Settings, Search, ArrowLeft, Shield, ShieldX, Plus } from 'lucide-react';
 
 interface ProfileWithRole {
   id: string;
@@ -20,18 +20,14 @@ interface ProfileWithRole {
   created_at: string;
 }
 
-interface SupabaseAuthUser {
-  id: string;
-  email?: string;
-  [key: string]: any;
-}
-
 const UsersAdmin = () => {
-  const { isAdmin } = useAuth();
+  const { isAdmin, makeUserAdmin } = useAuth();
   const navigate = useNavigate();
   const [users, setUsers] = useState<ProfileWithRole[]>([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
+  const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [isAddingAdmin, setIsAddingAdmin] = useState(false);
 
   useEffect(() => {
     if (!isAdmin) {
@@ -46,40 +42,42 @@ const UsersAdmin = () => {
     try {
       setIsLoading(true);
       
+      // Get all profiles
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
         .select('id, username, full_name, created_at');
       
       if (profilesError) throw profilesError;
       
-      const { data: roles, error: rolesError } = await supabase
+      // Get admin users
+      const { data: adminUsers, error: adminError } = await supabase
         .from('user_roles')
-        .select('user_id, role')
+        .select('user_id')
         .eq('role', 'admin');
       
-      if (rolesError) throw rolesError;
+      if (adminError) throw adminError;
       
+      const adminIds = new Set(adminUsers.map(r => r.user_id));
+      
+      // Get user emails from auth (this might not work with RLS, so we'll handle gracefully)
       let emailMap = new Map<string, string>();
       try {
         const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
         
-        if (!authError && authData && authData.users) {
-          const authUsers = authData.users as SupabaseAuthUser[];
-          authUsers.forEach(user => {
-            if (user && user.id && user.email) {
+        if (!authError && authData?.users) {
+          authData.users.forEach(user => {
+            if (user.id && user.email) {
               emailMap.set(user.id, user.email);
             }
           });
         }
       } catch (error) {
-        console.error('Error fetching auth users:', error);
+        console.warn('Could not fetch user emails:', error);
       }
-      
-      const adminIds = new Set(roles.map(r => r.user_id));
       
       const mappedUsers: ProfileWithRole[] = profiles.map(profile => ({
         id: profile.id,
-        email: emailMap.get(profile.id) || 'Email hidden',
+        email: emailMap.get(profile.id) || 'Email not available',
         username: profile.username,
         full_name: profile.full_name,
         is_admin: adminIds.has(profile.id),
@@ -95,14 +93,30 @@ const UsersAdmin = () => {
     }
   };
 
-  const makeAdmin = async (email: string) => {
+  const handleMakeAdmin = async (email: string) => {
+    const result = await makeUserAdmin(email);
+    if (result.success) {
+      await fetchUsers(); // Refresh the list
+    } else {
+      toast.error(result.message || 'Failed to make user admin');
+    }
+  };
+
+  const handleAddNewAdmin = async () => {
+    if (!newAdminEmail.trim()) {
+      toast.error('Please enter an email address');
+      return;
+    }
+
+    setIsAddingAdmin(true);
     try {
-      const { error } = await supabase.rpc('make_admin', { email });
-      if (error) throw error;
-      return { success: true };
-    } catch (error: any) {
-      console.error('Error making admin:', error);
-      return { success: false, message: error.message };
+      const result = await makeUserAdmin(newAdminEmail.trim());
+      if (result.success) {
+        setNewAdminEmail('');
+        await fetchUsers();
+      }
+    } finally {
+      setIsAddingAdmin(false);
     }
   };
 
@@ -115,39 +129,12 @@ const UsersAdmin = () => {
         .eq('role', 'admin');
 
       if (error) throw error;
-      return { success: true };
+      
+      toast.success('Admin role removed');
+      await fetchUsers();
     } catch (error: any) {
       console.error('Error removing admin:', error);
-      return { success: false, message: error.message };
-    }
-  };
-
-  const toggleAdminRole = async (userId: string, isCurrentlyAdmin: boolean) => {
-    try {
-      if (isCurrentlyAdmin) {
-        const result = await removeAdmin(userId);
-        
-        if (!result.success) throw new Error(result.message);
-        
-        toast.success('Admin role removed');
-      } else {
-        const userEmail = users.find(u => u.id === userId)?.email;
-        
-        if (!userEmail || userEmail === 'Email hidden') {
-          throw new Error('Could not find user email. Please try again later.');
-        }
-        
-        const result = await makeAdmin(userEmail);
-        
-        if (!result.success) throw new Error(result.message);
-        
-        toast.success('Admin role added');
-      }
-      
-      fetchUsers();
-    } catch (error: any) {
-      console.error('Error toggling admin role:', error);
-      toast.error(error.message || 'Failed to update user role');
+      toast.error('Failed to remove admin role');
     }
   };
 
@@ -181,6 +168,35 @@ const UsersAdmin = () => {
               />
             </div>
           </div>
+
+          {/* Add Admin Section */}
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="flex items-center space-x-2">
+                <Plus className="h-5 w-5" />
+                <span>Make User Admin</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex space-x-2">
+                <Input
+                  placeholder="Enter user email..."
+                  value={newAdminEmail}
+                  onChange={(e) => setNewAdminEmail(e.target.value)}
+                  className="flex-1"
+                />
+                <Button 
+                  onClick={handleAddNewAdmin}
+                  disabled={isAddingAdmin || !newAdminEmail.trim()}
+                >
+                  {isAddingAdmin ? 'Adding...' : 'Make Admin'}
+                </Button>
+              </div>
+              <p className="text-sm text-muted-foreground mt-2">
+                Enter the email address of the user you want to make an admin.
+              </p>
+            </CardContent>
+          </Card>
           
           <Card>
             <CardHeader>
@@ -238,26 +254,26 @@ const UsersAdmin = () => {
                             </td>
                             <td className="py-4 px-4">
                               <div className="flex space-x-2">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  onClick={() => toggleAdminRole(user.id, user.is_admin)}
-                                >
-                                  {user.is_admin ? (
-                                    <>
-                                      <ShieldX className="h-4 w-4 mr-1" />
-                                      Remove Admin
-                                    </>
-                                  ) : (
-                                    <>
-                                      <Shield className="h-4 w-4 mr-1" />
-                                      Make Admin
-                                    </>
-                                  )}
-                                </Button>
-                                <Button variant="outline" size="sm" onClick={() => navigate(`/admin/users/${user.id}`)}>
-                                  <Settings className="h-4 w-4" />
-                                </Button>
+                                {user.is_admin ? (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => removeAdmin(user.id)}
+                                  >
+                                    <ShieldX className="h-4 w-4 mr-1" />
+                                    Remove Admin
+                                  </Button>
+                                ) : (
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => handleMakeAdmin(user.email)}
+                                    disabled={user.email === 'Email not available'}
+                                  >
+                                    <Shield className="h-4 w-4 mr-1" />
+                                    Make Admin
+                                  </Button>
+                                )}
                               </div>
                             </td>
                           </tr>

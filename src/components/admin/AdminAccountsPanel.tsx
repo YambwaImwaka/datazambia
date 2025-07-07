@@ -17,22 +17,18 @@ type AdminUser = {
   id: string;
   username: string | null;
   full_name: string | null;
-  avatar_url: string | null;
-  bio: string | null;
+  email: string;
   created_at: string;
-  location: string | null;
-  notification_preferences: any;
-  preferences: any;
-  theme: string | null;
-  updated_at: string;
 };
 
 const AdminAccountsPanel = () => {
   const [adminUsers, setAdminUsers] = useState<AdminUser[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [newAdminEmail, setNewAdminEmail] = useState('');
+  const [isAddingAdmin, setIsAddingAdmin] = useState(false);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, makeUserAdmin } = useAuth();
 
   useEffect(() => {
     fetchAdminUsers();
@@ -41,7 +37,7 @@ const AdminAccountsPanel = () => {
   const fetchAdminUsers = async () => {
     setIsLoading(true);
     try {
-      // First, get all users with admin role
+      // Get all users with admin role
       const { data: roleData, error: roleError } = await supabase
         .from('user_roles')
         .select('user_id')
@@ -60,12 +56,34 @@ const AdminAccountsPanel = () => {
       // Fetch user profiles for these IDs
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
-        .select('*')
+        .select('id, username, full_name, created_at')
         .in('id', userIds);
 
       if (profilesError) throw profilesError;
 
-      setAdminUsers(profilesData || []);
+      // Try to get emails from auth.users (might not work with RLS)
+      let emailMap = new Map<string, string>();
+      try {
+        const { data: authData, error: authError } = await supabase.auth.admin.listUsers();
+        
+        if (!authError && authData?.users) {
+          authData.users.forEach(authUser => {
+            if (authUser.id && authUser.email) {
+              emailMap.set(authUser.id, authUser.email);
+            }
+          });
+        }
+      } catch (error) {
+        console.warn('Could not fetch auth emails:', error);
+      }
+
+      // Combine profile data with emails
+      const adminsWithEmails = profilesData.map(profile => ({
+        ...profile,
+        email: emailMap.get(profile.id) || 'Email not available'
+      }));
+
+      setAdminUsers(adminsWithEmails);
     } catch (error) {
       console.error('Error fetching admin users:', error);
       toast.error('Failed to load admin users');
@@ -93,11 +111,30 @@ const AdminAccountsPanel = () => {
     }
   };
 
+  const handleAddAdmin = async () => {
+    if (!newAdminEmail.trim()) {
+      toast.error('Please enter an email address');
+      return;
+    }
+
+    setIsAddingAdmin(true);
+    try {
+      const result = await makeUserAdmin(newAdminEmail.trim());
+      if (result.success) {
+        setNewAdminEmail('');
+        await fetchAdminUsers();
+      }
+    } finally {
+      setIsAddingAdmin(false);
+    }
+  };
+
   // Filter admin users based on search term
   const filteredAdmins = adminUsers.filter((admin) => {
     return (
       admin.username?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      admin.full_name?.toLowerCase().includes(searchTerm.toLowerCase())
+      admin.full_name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      admin.email?.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
 
@@ -110,6 +147,27 @@ const AdminAccountsPanel = () => {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
+        {/* Add New Admin Section */}
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center space-x-2">
+              <Input
+                placeholder="Enter email to make admin..."
+                value={newAdminEmail}
+                onChange={(e) => setNewAdminEmail(e.target.value)}
+                className="flex-1"
+              />
+              <Button 
+                onClick={handleAddAdmin}
+                disabled={isAddingAdmin || !newAdminEmail.trim()}
+              >
+                <Plus className="h-4 w-4 mr-1" />
+                {isAddingAdmin ? 'Adding...' : 'Add Admin'}
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
         <div className="flex items-center justify-between">
           <div className="relative w-full md:w-96">
             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -135,6 +193,7 @@ const AdminAccountsPanel = () => {
                   <TableRow>
                     <TableHead>Username</TableHead>
                     <TableHead>Full Name</TableHead>
+                    <TableHead>Email</TableHead>
                     <TableHead>Status</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
@@ -144,6 +203,7 @@ const AdminAccountsPanel = () => {
                     <TableRow key={admin.id}>
                       <TableCell className="font-medium">{admin.username || 'N/A'}</TableCell>
                       <TableCell>{admin.full_name || 'N/A'}</TableCell>
+                      <TableCell>{admin.email}</TableCell>
                       <TableCell>
                         <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
                           <ShieldCheck className="mr-1 h-3 w-3" />
@@ -197,7 +257,7 @@ const AdminAccountsPanel = () => {
               <Shield className="mx-auto h-12 w-12 text-muted-foreground" />
               <h3 className="mt-2 text-lg font-medium">No admin accounts found</h3>
               <p className="mt-1 text-muted-foreground">
-                {searchTerm ? "No admins match your search criteria." : "Contact a system administrator to add admin users."}
+                {searchTerm ? "No admins match your search criteria." : "Use the form above to add admin users."}
               </p>
               {searchTerm && (
                 <Button 
