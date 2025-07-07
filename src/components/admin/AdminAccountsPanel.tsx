@@ -78,7 +78,7 @@ const AdminAccountsPanel = () => {
       }
 
       // Combine profile data with emails
-      const adminsWithEmails = profilesData.map(profile => ({
+      const adminsWithEmails = (profilesData || []).map(profile => ({
         ...profile,
         email: emailMap.get(profile.id) || 'Email not available'
       }));

@@ -57,7 +57,7 @@ const UsersAdmin = () => {
       
       if (adminError) throw adminError;
       
-      const adminIds = new Set(adminUsers.map(r => r.user_id));
+      const adminIds = new Set((adminUsers || []).map(r => r.user_id));
       
       // Get user emails from auth (this might not work with RLS, so we'll handle gracefully)
       let emailMap = new Map<string, string>();
@@ -75,7 +75,7 @@ const UsersAdmin = () => {
         console.warn('Could not fetch user emails:', error);
       }
       
-      const mappedUsers: ProfileWithRole[] = profiles.map(profile => ({
+      const mappedUsers: ProfileWithRole[] = (profiles || []).map(profile => ({
         id: profile.id,
         email: emailMap.get(profile.id) || 'Email not available',
         username: profile.username,
