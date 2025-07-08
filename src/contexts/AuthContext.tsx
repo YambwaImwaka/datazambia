@@ -93,12 +93,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(session?.user as User ?? null);
           
           if (session?.user) {
-            // Check admin status after setting the session
+            // Check admin status after setting the session with a longer delay
             setTimeout(async () => {
               if (mounted) {
                 await refreshUserRoles();
               }
-            }, 100);
+            }, 2000); // Increased delay to ensure role assignment is complete
           }
           
           setIsLoading(false);
@@ -112,7 +112,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         if (!mounted) return;
         
         console.log('🔄 Auth state change:', event, session?.user?.email);
@@ -120,12 +120,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user as User ?? null);
         
         if (session?.user) {
-          // Update admin status when session changes
+          // For signup events, wait longer before checking roles
+          const delay = event === 'SIGNED_UP' ? 3000 : 1000;
           setTimeout(async () => {
             if (mounted) {
               await refreshUserRoles();
             }
-          }, 200);
+          }, delay);
         } else {
           setIsAdmin(false);
         }

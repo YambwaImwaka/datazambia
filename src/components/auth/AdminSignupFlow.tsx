@@ -64,7 +64,10 @@ export const AdminSignupFlow: React.FC<AdminSignupFlowProps> = ({
 
       console.log('✅ User created successfully:', authData.user.id);
 
-      // Step 2: Assign admin role immediately
+      // Step 2: Wait a moment for user creation to fully process
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      // Step 3: Assign admin role immediately
       console.log('👑 Assigning admin role...');
       const { error: roleError } = await supabase.rpc('make_admin', { email });
       
@@ -76,6 +79,27 @@ export const AdminSignupFlow: React.FC<AdminSignupFlowProps> = ({
       }
 
       console.log('✅ Admin role assigned successfully');
+
+      // Step 4: Verify the role was assigned
+      const { data: roleCheck, error: roleCheckError } = await supabase.rpc('is_admin', { 
+        check_user_id: authData.user.id 
+      });
+
+      if (roleCheckError) {
+        console.error('❌ Role verification error:', roleCheckError);
+        toast.error('Role assignment verification failed');
+        onError('Role verification failed');
+        return;
+      }
+
+      if (!roleCheck) {
+        console.error('❌ Role assignment failed - user is not admin after assignment');
+        toast.error('Admin role assignment was not successful');
+        onError('Admin role assignment failed verification');
+        return;
+      }
+
+      console.log('✅ Admin role verified successfully');
       toast.success('Admin account created successfully! Please check your email to verify your account.');
       onSuccess();
       
