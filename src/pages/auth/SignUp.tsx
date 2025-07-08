@@ -42,44 +42,30 @@ const SignUp = () => {
   const onSubmit = async (data: FormValues) => {
     const { email, password, full_name, username, isAdmin } = data;
     
-    if (isAdmin) {
-      // Handle admin signup separately
-      try {
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { full_name, username },
-            emailRedirectTo: `${window.location.origin}/`
-          },
-        });
-
-        if (authError) {
-          throw authError;
-        }
-
-        if (authData.user) {
-          // Make the user an admin immediately after signup
-          const { error: roleError } = await supabase
-            .from('user_roles')
-            .insert({
-              user_id: authData.user.id,
-              role: 'admin'
-            });
-
-          if (roleError && roleError.code !== '23505') { // Ignore duplicate key errors
-            console.error('Error adding admin role:', roleError);
-          }
-
-          toast.success('Admin account created successfully! Please check your email to verify your account.');
-        }
-      } catch (error: any) {
-        toast.error(error.message || 'An error occurred during admin sign up');
-        console.error('Error during admin sign up:', error);
-      }
-    } else {
-      // Use the regular signup process
+    try {
+      // First, create the user account
       await signUp(email, password, { full_name, username });
+      
+      // If admin signup was requested, add admin role after successful signup
+      if (isAdmin) {
+        // Wait a moment for the user to be created, then add admin role
+        setTimeout(async () => {
+          try {
+            const { error: roleError } = await supabase.rpc('make_admin', { email });
+            if (roleError) {
+              console.error('Error adding admin role:', roleError);
+              toast.error('Account created but admin role could not be assigned. Contact support.');
+            } else {
+              toast.success('Admin account created successfully!');
+            }
+          } catch (error) {
+            console.error('Error adding admin role:', error);
+            toast.error('Account created but admin role could not be assigned. Contact support.');
+          }
+        }, 2000);
+      }
+    } catch (error: any) {
+      console.error('Error during sign up:', error);
     }
   };
 
@@ -230,12 +216,6 @@ const SignUp = () => {
           </CardContent>
           
           <CardFooter className="flex flex-col space-y-2">
-            <div className="text-center">
-              <Link to="/auth/admin-signup" className="text-sm text-primary hover:underline flex items-center justify-center gap-1">
-                <Crown className="h-4 w-4" />
-                Need admin access? Use dedicated admin signup
-              </Link>
-            </div>
             <Link to="/" className="text-sm text-muted-foreground hover:underline">
               Back to Home
             </Link>

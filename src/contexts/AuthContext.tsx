@@ -121,12 +121,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user as User ?? null);
         
         if (session?.user) {
-          // Delay role check to avoid conflicts
-          setTimeout(() => {
-            if (mounted) {
-              refreshUserRoles();
-            }
-          }, 200);
+          // For sign-in events, refresh roles and redirect appropriately
+          if (event === 'SIGNED_IN') {
+            setTimeout(async () => {
+              if (mounted) {
+                await refreshUserRoles();
+                // Check admin status and redirect accordingly
+                const { data: isAdminData } = await supabase.rpc('is_admin', { 
+                  check_user_id: session.user.id 
+                });
+                
+                if (isAdminData) {
+                  console.log('👑 Redirecting admin to admin dashboard');
+                  navigate('/admin/dashboard');
+                } else {
+                  console.log('👤 Redirecting user to user dashboard');
+                  navigate('/dashboard');
+                }
+              }
+            }, 500);
+          }
         } else {
           setIsAdmin(false);
         }
@@ -139,7 +153,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       mounted = false;
       subscription.unsubscribe();
     };
-  }, []);
+  }, [navigate]);
 
   const signUp = async (email: string, password: string, metadata?: { full_name?: string, username?: string }) => {
     setIsLoading(true);
