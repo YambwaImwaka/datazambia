@@ -61,10 +61,7 @@ export const AdminSignupFlow: React.FC<AdminSignupFlowProps> = ({
 
       console.log('✅ User created successfully:', authData.user.id);
 
-      // Step 2: Wait for user creation to fully process
-      await new Promise(resolve => setTimeout(resolve, 2000));
-
-      // Step 3: Assign admin role
+      // Step 2: Assign admin role immediately after user creation
       console.log('👑 Assigning admin role...');
       const { error: roleError } = await supabase.rpc('make_admin', { email });
       
@@ -77,41 +74,21 @@ export const AdminSignupFlow: React.FC<AdminSignupFlowProps> = ({
 
       console.log('✅ Admin role assigned successfully');
 
-      // Step 4: Verify the role was assigned with retries
-      let roleVerified = false;
-      let attempts = 0;
-      const maxAttempts = 3;
+      // Step 3: Force sign in the user to get fresh session with admin role
+      console.log('🔄 Signing in user to refresh session...');
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
 
-      while (!roleVerified && attempts < maxAttempts) {
-        attempts++;
-        console.log(`🔍 Role verification attempt ${attempts}/${maxAttempts}`);
-        
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const { data: roleCheck, error: roleCheckError } = await supabase.rpc('is_admin', { 
-          check_user_id: authData.user.id 
-        });
-
-        if (roleCheckError) {
-          console.error('❌ Role verification error:', roleCheckError);
-          if (attempts === maxAttempts) {
-            toast.error('Role assignment verification failed after multiple attempts');
-            onError('Role verification failed: ' + roleCheckError.message);
-            return;
-          }
-          continue;
-        }
-
-        if (roleCheck) {
-          roleVerified = true;
-          console.log('✅ Admin role verified successfully');
-        } else if (attempts === maxAttempts) {
-          console.error('❌ Role assignment failed - user is not admin after assignment');
-          toast.error('Admin role assignment was not successful after verification');
-          onError('Admin role assignment failed verification');
-          return;
-        }
+      if (signInError) {
+        console.error('❌ Sign in after admin role assignment failed:', signInError);
+        toast.error('Admin role assigned but sign in failed. Please sign in manually.');
+        onError('Sign in failed: ' + signInError.message);
+        return;
       }
+
+      console.log('✅ User signed in successfully with admin role');
 
       toast.success('Admin account created successfully! Please check your email to verify your account.');
       onSuccess();

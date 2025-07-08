@@ -120,13 +120,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user as User ?? null);
         
         if (session?.user) {
-          // For signin events after signup, wait longer before checking roles
-          const delay = event === 'SIGNED_IN' ? 2000 : 1000;
-          setTimeout(async () => {
-            if (mounted) {
-              await refreshUserRoles();
-            }
-          }, delay);
+          // Immediately check roles, then recheck after delay for admin signups
+          refreshUserRoles();
+          
+          // For signin events, also check again after delay in case of admin signup
+          if (event === 'SIGNED_IN') {
+            setTimeout(async () => {
+              if (mounted) {
+                await refreshUserRoles();
+              }
+            }, 1000);
+          }
         } else {
           setIsAdmin(false);
         }
