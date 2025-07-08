@@ -1,9 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -12,8 +12,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from '@/components/ui/checkbox';
 import { Mail, Lock, User, Loader2, Crown } from 'lucide-react';
 import PageLayout from '@/components/layout/PageLayout';
-import { supabase } from '@/integrations/supabase/client';
-import { toast } from 'sonner';
+import { AdminSignupFlow } from '@/components/auth/AdminSignupFlow';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
@@ -26,7 +26,16 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const SignUp = () => {
-  const { signUp, isLoading } = useAuth();
+  const { signUp, isLoading, user } = useAuth();
+  const location = useLocation();
+  const [adminSignupData, setAdminSignupData] = useState<FormValues | null>(null);
+  
+  // Handle auth redirects
+  useAuthRedirect({ 
+    user, 
+    isLoading: false, 
+    currentPath: location.pathname 
+  });
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -44,42 +53,25 @@ const SignUp = () => {
     
     try {
       if (isAdmin) {
-        // For admin signup, handle the process directly
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { full_name, username },
-            emailRedirectTo: `${window.location.origin}/`
-          },
-        });
-
-        if (authError) {
-          throw authError;
-        }
-
-        if (authData.user) {
-          // Immediately try to make the user an admin
-          try {
-            const { error: roleError } = await supabase.rpc('make_admin', { email });
-            if (roleError) {
-              console.error('Error adding admin role:', roleError);
-              toast.error('Account created but admin role could not be assigned. Contact support.');
-            } else {
-              toast.success('Admin account created successfully! Please check your email to verify your account.');
-            }
-          } catch (error) {
-            console.error('Error adding admin role:', error);
-            toast.error('Account created but admin role could not be assigned. Contact support.');
-          }
-        }
+        console.log('🔧 Initiating admin signup flow');
+        setAdminSignupData(data);
       } else {
-        // Use the regular signup process for non-admin users
+        console.log('👤 Initiating regular user signup');
         await signUp(email, password, { full_name, username });
       }
     } catch (error: any) {
-      console.error('Error during sign up:', error);
+      console.error('❌ Signup error:', error);
     }
+  };
+
+  const handleAdminSignupSuccess = () => {
+    setAdminSignupData(null);
+    form.reset();
+  };
+
+  const handleAdminSignupError = (error: string) => {
+    setAdminSignupData(null);
+    console.error('Admin signup failed:', error);
   };
 
   return (
@@ -207,8 +199,8 @@ const SignUp = () => {
                   )}
                 />
                 
-                <Button type="submit" className="w-full" disabled={isLoading}>
-                  {isLoading ? (
+                <Button type="submit" className="w-full" disabled={isLoading || !!adminSignupData}>
+                  {isLoading || adminSignupData ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Creating Account...
@@ -235,6 +227,20 @@ const SignUp = () => {
           </CardFooter>
         </Card>
       </div>
+
+      {/* Admin signup flow component */}
+      {adminSignupData && (
+        <AdminSignupFlow
+          email={adminSignupData.email}
+          password={adminSignupData.password}
+          metadata={{ 
+            full_name: adminSignupData.full_name, 
+            username: adminSignupData.username 
+          }}
+          onSuccess={handleAdminSignupSuccess}
+          onError={handleAdminSignupError}
+        />
+      )}
     </PageLayout>
   );
 };
