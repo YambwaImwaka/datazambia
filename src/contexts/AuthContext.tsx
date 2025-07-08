@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Session, User as SupabaseUser } from '@supabase/supabase-js';
@@ -121,8 +120,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user as User ?? null);
         
         if (session?.user) {
-          // For signup events, wait longer before checking roles
-          const delay = event === 'SIGNED_UP' ? 3000 : 1000;
+          // For signin events after signup, wait longer before checking roles
+          const delay = event === 'SIGNED_IN' ? 2000 : 1000;
           setTimeout(async () => {
             if (mounted) {
               await refreshUserRoles();
