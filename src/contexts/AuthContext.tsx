@@ -94,10 +94,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(session?.user as User ?? null);
           
           if (session?.user) {
-            // Delay role check slightly to avoid conflicts
-            setTimeout(() => {
+            // Check admin status after setting the session
+            setTimeout(async () => {
               if (mounted) {
-                refreshUserRoles();
+                await refreshUserRoles();
               }
             }, 100);
           }
@@ -121,25 +121,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user as User ?? null);
         
         if (session?.user) {
-          // For sign-in events, refresh roles and redirect appropriately
+          // For sign-in events, check admin status and redirect
           if (event === 'SIGNED_IN') {
+            // First refresh roles
             setTimeout(async () => {
               if (mounted) {
-                await refreshUserRoles();
-                // Check admin status and redirect accordingly
-                const { data: isAdminData } = await supabase.rpc('is_admin', { 
-                  check_user_id: session.user.id 
-                });
-                
-                if (isAdminData) {
-                  console.log('👑 Redirecting admin to admin dashboard');
-                  navigate('/admin/dashboard');
-                } else {
-                  console.log('👤 Redirecting user to user dashboard');
+                try {
+                  const { data: isAdminData } = await supabase.rpc('is_admin', { 
+                    check_user_id: session.user.id 
+                  });
+                  
+                  const userIsAdmin = !!isAdminData;
+                  setIsAdmin(userIsAdmin);
+                  
+                  console.log('🔄 Sign in redirect check - isAdmin:', userIsAdmin);
+                  
+                  // Navigate based on admin status
+                  if (userIsAdmin) {
+                    console.log('👑 Redirecting admin to admin dashboard');
+                    navigate('/admin/dashboard');
+                  } else {
+                    console.log('👤 Redirecting user to user dashboard');
+                    navigate('/dashboard');
+                  }
+                } catch (error) {
+                  console.error('Error checking admin status for redirect:', error);
+                  // Default to user dashboard if there's an error
                   navigate('/dashboard');
                 }
               }
-            }, 500);
+            }, 1000); // Increased delay to ensure role is properly set
           }
         } else {
           setIsAdmin(false);

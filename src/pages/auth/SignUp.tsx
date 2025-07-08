@@ -43,26 +43,39 @@ const SignUp = () => {
     const { email, password, full_name, username, isAdmin } = data;
     
     try {
-      // First, create the user account
-      await signUp(email, password, { full_name, username });
-      
-      // If admin signup was requested, add admin role after successful signup
       if (isAdmin) {
-        // Wait a moment for the user to be created, then add admin role
-        setTimeout(async () => {
+        // For admin signup, handle the process directly
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { full_name, username },
+            emailRedirectTo: `${window.location.origin}/`
+          },
+        });
+
+        if (authError) {
+          throw authError;
+        }
+
+        if (authData.user) {
+          // Immediately try to make the user an admin
           try {
             const { error: roleError } = await supabase.rpc('make_admin', { email });
             if (roleError) {
               console.error('Error adding admin role:', roleError);
               toast.error('Account created but admin role could not be assigned. Contact support.');
             } else {
-              toast.success('Admin account created successfully!');
+              toast.success('Admin account created successfully! Please check your email to verify your account.');
             }
           } catch (error) {
             console.error('Error adding admin role:', error);
             toast.error('Account created but admin role could not be assigned. Contact support.');
           }
-        }, 2000);
+        }
+      } else {
+        // Use the regular signup process for non-admin users
+        await signUp(email, password, { full_name, username });
       }
     } catch (error: any) {
       console.error('Error during sign up:', error);
