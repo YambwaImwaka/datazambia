@@ -10,14 +10,20 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Mail, Lock, User, Loader2, Crown } from 'lucide-react';
+import { Mail, Lock, User, Loader2, Crown, Info } from 'lucide-react';
 import PageLayout from '@/components/layout/PageLayout';
 import { AdminSignupFlow } from '@/components/auth/AdminSignupFlow';
 import { useAuthRedirect } from '@/hooks/useAuthRedirect';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Please enter a valid email address' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters' }),
+  password: z.string()
+    .min(8, { message: 'Password must be at least 8 characters long' })
+    .regex(/[a-z]/, { message: 'Password must contain at least one lowercase letter' })
+    .regex(/[A-Z]/, { message: 'Password must contain at least one uppercase letter' })
+    .regex(/[0-9]/, { message: 'Password must contain at least one number' })
+    .regex(/[^a-zA-Z0-9]/, { message: 'Password must contain at least one special character' }),
   full_name: z.string().min(2, { message: 'Full name must be at least 2 characters' }).optional(),
   username: z.string().min(3, { message: 'Username must be at least 3 characters' }).optional(),
   isAdmin: z.boolean().default(false),
@@ -86,6 +92,13 @@ const SignUp = () => {
           </CardHeader>
           
           <CardContent>
+            <Alert className="mb-4">
+              <Info className="h-4 w-4" />
+              <AlertDescription>
+                Password must contain at least 8 characters with uppercase, lowercase, numbers, and special characters.
+              </AlertDescription>
+            </Alert>
+
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                 <FormField
@@ -164,7 +177,7 @@ const SignUp = () => {
                           <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                           <Input
                             type="password"
-                            placeholder="******"
+                            placeholder="Create a strong password"
                             className="pl-10"
                             {...field}
                           />
