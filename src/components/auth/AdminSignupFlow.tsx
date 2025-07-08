@@ -35,17 +35,14 @@ export const AdminSignupFlow: React.FC<AdminSignupFlowProps> = ({
       if (authError) {
         console.error('❌ Auth signup error:', authError);
         
-        // Handle specific password validation error
-        if (authError.message.includes('Password should contain at least one character')) {
-          toast.error('Password must contain at least one lowercase letter, uppercase letter, number, and special character');
-          onError('Password must contain at least one lowercase letter, uppercase letter, number, and special character');
-          return;
-        }
-        
-        // Handle other auth errors with user-friendly messages
+        // Handle specific errors with user-friendly messages
         let errorMessage = authError.message;
         if (authError.message.includes('User already registered')) {
           errorMessage = 'An account with this email already exists';
+        } else if (authError.message.includes('Password should be at least')) {
+          errorMessage = 'Password must be at least 6 characters long';
+        } else if (authError.message.includes('Signup requires a valid password')) {
+          errorMessage = 'Please enter a valid password';
         } else if (authError.message.includes('Invalid email')) {
           errorMessage = 'Please enter a valid email address';
         }
@@ -64,42 +61,58 @@ export const AdminSignupFlow: React.FC<AdminSignupFlowProps> = ({
 
       console.log('✅ User created successfully:', authData.user.id);
 
-      // Step 2: Wait a moment for user creation to fully process
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Step 2: Wait for user creation to fully process
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      // Step 3: Assign admin role immediately
+      // Step 3: Assign admin role
       console.log('👑 Assigning admin role...');
       const { error: roleError } = await supabase.rpc('make_admin', { email });
       
       if (roleError) {
         console.error('❌ Admin role assignment error:', roleError);
         toast.error('Account created but admin role assignment failed. Please contact support.');
-        onError('Admin role assignment failed');
+        onError('Admin role assignment failed: ' + roleError.message);
         return;
       }
 
       console.log('✅ Admin role assigned successfully');
 
-      // Step 4: Verify the role was assigned
-      const { data: roleCheck, error: roleCheckError } = await supabase.rpc('is_admin', { 
-        check_user_id: authData.user.id 
-      });
+      // Step 4: Verify the role was assigned with retries
+      let roleVerified = false;
+      let attempts = 0;
+      const maxAttempts = 3;
 
-      if (roleCheckError) {
-        console.error('❌ Role verification error:', roleCheckError);
-        toast.error('Role assignment verification failed');
-        onError('Role verification failed');
-        return;
+      while (!roleVerified && attempts < maxAttempts) {
+        attempts++;
+        console.log(`🔍 Role verification attempt ${attempts}/${maxAttempts}`);
+        
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const { data: roleCheck, error: roleCheckError } = await supabase.rpc('is_admin', { 
+          check_user_id: authData.user.id 
+        });
+
+        if (roleCheckError) {
+          console.error('❌ Role verification error:', roleCheckError);
+          if (attempts === maxAttempts) {
+            toast.error('Role assignment verification failed after multiple attempts');
+            onError('Role verification failed: ' + roleCheckError.message);
+            return;
+          }
+          continue;
+        }
+
+        if (roleCheck) {
+          roleVerified = true;
+          console.log('✅ Admin role verified successfully');
+        } else if (attempts === maxAttempts) {
+          console.error('❌ Role assignment failed - user is not admin after assignment');
+          toast.error('Admin role assignment was not successful after verification');
+          onError('Admin role assignment failed verification');
+          return;
+        }
       }
 
-      if (!roleCheck) {
-        console.error('❌ Role assignment failed - user is not admin after assignment');
-        toast.error('Admin role assignment was not successful');
-        onError('Admin role assignment failed verification');
-        return;
-      }
-
-      console.log('✅ Admin role verified successfully');
       toast.success('Admin account created successfully! Please check your email to verify your account.');
       onSuccess();
       

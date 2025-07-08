@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Session, User as SupabaseUser } from '@supabase/supabase-js';
@@ -38,7 +39,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('🔍 Checking admin role for user:', session.user.email);
       
-      // Use the new is_admin function
+      // Use the is_admin function
       const { data, error } = await supabase.rpc('is_admin', { 
         check_user_id: session.user.id 
       });
@@ -93,12 +94,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(session?.user as User ?? null);
           
           if (session?.user) {
-            // Check admin status after setting the session with a longer delay
+            // Check admin status after setting the session
             setTimeout(async () => {
               if (mounted) {
                 await refreshUserRoles();
               }
-            }, 2000); // Increased delay to ensure role assignment is complete
+            }, 1000);
           }
           
           setIsLoading(false);
@@ -112,7 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         if (!mounted) return;
         
         console.log('🔄 Auth state change:', event, session?.user?.email);
