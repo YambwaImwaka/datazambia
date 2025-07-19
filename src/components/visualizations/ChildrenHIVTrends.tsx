@@ -1,152 +1,102 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { AreaChart, Area, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { childrenHIVData } from "@/utils/data";
-import { TrendingDown, Shield } from "lucide-react";
+
+import React from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
+
+// Real data for children newly infected with HIV
+const childrenHIVData = [
+  { year: 1990, infections: 14000 },
+  { year: 1995, infections: 21000 },
+  { year: 2000, infections: 22000 },
+  { year: 2003, infections: 22000 }, // Peak
+  { year: 2005, infections: 18000 },
+  { year: 2010, infections: 12000 },
+  { year: 2015, infections: 9800 },
+  { year: 2020, infections: 5100 },
+  { year: 2021, infections: 4800 },
+  { year: 2022, infections: 4400 }
+];
 
 const ChildrenHIVTrends = () => {
-  const peakYear = childrenHIVData.reduce((prev, current) => 
-    (prev.infections > current.infections) ? prev : current
-  );
-  const latestYear = childrenHIVData[childrenHIVData.length - 1];
-  const reduction = Math.round(((peakYear.infections - latestYear.infections) / peakYear.infections) * 100);
+  const peakYear = 2003;
+  const peakInfections = 22000;
+  const latestInfections = 4400;
+  const reductionPercentage = Math.round(((peakInfections - latestInfections) / peakInfections) * 100);
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Current (2022)</CardDescription>
-            <CardTitle className="text-2xl">{latestYear.infections.toLocaleString()}</CardTitle>
-          </CardHeader>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Reduction from Peak</CardDescription>
-            <CardTitle className="text-2xl text-green-600 flex items-center gap-2">
-              <TrendingDown className="h-5 w-5" />
-              -{reduction}%
-            </CardTitle>
-          </CardHeader>
-        </Card>
-        
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>Prevention Success</CardDescription>
-            <CardTitle className="text-2xl text-green-600 flex items-center gap-2">
-              <Shield className="h-5 w-5" />
-              High
-            </CardTitle>
-          </CardHeader>
-        </Card>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Children HIV Infections (Ages 0-14)</CardTitle>
-          <CardDescription>
-            Progress in preventing HIV transmission to children (1990-2022)
-          </CardDescription>
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <Card className="p-6">
+        <CardHeader className="p-0 mb-4">
+          <CardTitle className="text-lg">Children HIV Infections Trend (1990-2022)</CardTitle>
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            New HIV infections among children aged 0-14 years
+          </p>
         </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={350}>
-            <AreaChart data={childrenHIVData}>
-              <XAxis dataKey="year" />
-              <YAxis />
-              <Tooltip 
-                formatter={(value) => [`${value.toLocaleString()}`, 'New Infections']}
-                labelFormatter={(year) => `Year: ${year}`}
-              />
-              <Area 
-                type="monotone" 
-                dataKey="infections" 
-                stroke="hsl(var(--destructive))" 
-                fill="hsl(var(--destructive)/20)"
-                strokeWidth={2}
-              />
-            </AreaChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Prevention Milestones</CardTitle>
-          <CardDescription>
-            Key achievements in reducing pediatric HIV
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div className="flex justify-between items-center p-3 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-800">
-              <span className="font-medium">Peak Infections</span>
-              <span className="text-sm text-red-600">{peakYear.year}: {peakYear.infections.toLocaleString()}</span>
-            </div>
-            <div className="flex justify-between items-center p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg border border-orange-200 dark:border-orange-800">
-              <span className="font-medium">50% Reduction</span>
-              <span className="text-sm text-orange-600">2010: 12,000 (-45%)</span>
-            </div>
-            <div className="flex justify-between items-center p-3 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg border border-yellow-200 dark:border-yellow-800">
-              <span className="font-medium">75% Reduction</span>
-              <span className="text-sm text-yellow-600">2015: 9,800 (-55%)</span>
-            </div>
-            <div className="flex justify-between items-center p-3 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-800">
-              <span className="font-medium">80% Reduction</span>
-              <span className="text-sm text-green-600">2022: 4,400 (-80%)</span>
-            </div>
+        <CardContent className="p-0">
+          <div className="h-80">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={childrenHIVData}>
+                <defs>
+                  <linearGradient id="hivGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#dc2626" stopOpacity={0.8}/>
+                    <stop offset="95%" stopColor="#dc2626" stopOpacity={0.1}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="year" />
+                <YAxis />
+                <Tooltip formatter={(value: number) => [value.toLocaleString(), 'New infections']} />
+                <Area
+                  type="monotone"
+                  dataKey="infections"
+                  stroke="#dc2626"
+                  fillOpacity={1}
+                  fill="url(#hivGradient)"
+                />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Success Factors</CardTitle>
-          <CardDescription>
-            Key interventions that contributed to reducing pediatric HIV
-          </CardDescription>
+      <Card className="p-6">
+        <CardHeader className="p-0 mb-4">
+          <CardTitle className="text-lg">HIV Prevention Success</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-3">
-              <h4 className="font-semibold text-primary">Prevention Programs</h4>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start gap-2">
-                  <span className="text-primary">•</span>
-                  Prevention of Mother-to-Child Transmission (PMTCT)
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary">•</span>
-                  Antiretroviral therapy for pregnant mothers
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary">•</span>
-                  Safe delivery practices
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-primary">•</span>
-                  Infant feeding counseling
-                </li>
-              </ul>
+        <CardContent className="p-0">
+          <div className="space-y-6">
+            <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-semibold text-green-800 dark:text-green-200">Overall Reduction</span>
+                <span className="text-3xl font-bold text-green-600">-{reductionPercentage}%</span>
+              </div>
+              <div className="text-sm text-green-700 dark:text-green-300">
+                From peak of {peakInfections.toLocaleString()} in {peakYear} to {latestInfections.toLocaleString()} in 2022
+              </div>
+              <div className="w-full bg-green-200 rounded-full h-2 mt-2">
+                <div className="bg-green-600 h-2 rounded-full" style={{ width: `${reductionPercentage}%` }}></div>
+              </div>
             </div>
-            <div className="space-y-3">
-              <h4 className="font-semibold text-secondary">Support Systems</h4>
-              <ul className="space-y-2 text-sm">
-                <li className="flex items-start gap-2">
-                  <span className="text-secondary">•</span>
-                  Enhanced testing and counseling
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-secondary">•</span>
-                  Community health worker programs
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-secondary">•</span>
-                  Partner involvement initiatives
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-secondary">•</span>
-                  Healthcare infrastructure improvements
-                </li>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div className="p-3 bg-red-50 dark:bg-red-900/20 rounded-lg text-center">
+                <div className="text-xl font-bold text-red-600">22,000</div>
+                <div className="text-xs text-red-700 dark:text-red-300">Peak (2003)</div>
+              </div>
+              <div className="p-3 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
+                <div className="text-xl font-bold text-blue-600">4,400</div>
+                <div className="text-xs text-blue-700 dark:text-blue-300">Current (2022)</div>
+              </div>
+            </div>
+
+            <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
+              <h4 className="font-semibold mb-2">Prevention Milestones</h4>
+              <ul className="text-sm space-y-1 text-gray-600 dark:text-gray-300">
+                <li>• 2003: Peak infections (22,000)</li>
+                <li>• 2005-2010: Rapid decline begins</li>
+                <li>• 2015: Below 10,000 infections</li>
+                <li>• 2020: Achieved 5,100 infections</li>
+                <li>• 2022: Further reduced to 4,400</li>
               </ul>
             </div>
           </div>

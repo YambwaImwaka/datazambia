@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,6 +16,8 @@ import ChildrenHIVTrends from "@/components/visualizations/ChildrenHIVTrends";
 import HealthSpendingProjections from "@/components/visualizations/HealthSpendingProjections";
 import LifeExpectancyTrends from "@/components/visualizations/LifeExpectancyTrends";
 import PopulationPyramid from "@/components/visualizations/PopulationPyramid";
+import ChildMortalityTrends from "@/components/visualizations/ChildMortalityTrends";
+import PopulationForecast from "@/components/visualizations/PopulationForecast";
 
 // Real health data for Zambia
 const healthData = {
@@ -193,15 +194,17 @@ const HealthDashboard = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-8 mb-8">
+            <TabsList className="grid w-full grid-cols-10 mb-8">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="diseases">Diseases</TabsTrigger>
               <TabsTrigger value="hiv">HIV Trends</TabsTrigger>
+              <TabsTrigger value="mortality">Child Mortality</TabsTrigger>
               <TabsTrigger value="facilities">Facilities</TabsTrigger>
               <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
               <TabsTrigger value="workforce">Workforce</TabsTrigger>
               <TabsTrigger value="spending">Health Spending</TabsTrigger>
               <TabsTrigger value="demographics">Demographics</TabsTrigger>
+              <TabsTrigger value="population">Population</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
@@ -381,6 +384,10 @@ const HealthDashboard = () => {
               <ChildrenHIVTrends />
             </TabsContent>
 
+            <TabsContent value="mortality" className="space-y-6">
+              <ChildMortalityTrends />
+            </TabsContent>
+
             <TabsContent value="nutrition" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 <Card className="p-6">
@@ -510,6 +517,10 @@ const HealthDashboard = () => {
 
             <TabsContent value="demographics" className="space-y-6">
               <PopulationPyramid />
+            </TabsContent>
+
+            <TabsContent value="population" className="space-y-6">
+              <PopulationForecast />
             </TabsContent>
           </Tabs>
         </>
