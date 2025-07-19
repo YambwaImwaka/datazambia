@@ -120,37 +120,35 @@ const Education: React.FC = () => {
     },
   ];
 
-  // Mock data for sections not available in the educationStatistics
-  const mockRegionalData = {
-    Urban_Literacy_Rate: { "2024": 89.5 },
-    Rural_Literacy_Rate: { "2024": 62.8 }
-  };
-
-  const mockGenderData = {
-    Male_Literacy_Rate: { "2024": 85.3 },
-    Female_Literacy_Rate: { "2024": 75.6 },
-    Primary_Gender_Parity_Index: { "2024": 0.98 },
-    Secondary_Gender_Parity_Index: { "2024": 0.92 },
-    Tertiary_Gender_Parity_Index: { "2024": 0.79 }
-  };
-
-  const mockInfrastructureData = {
-    Number_of_Primary_Schools: { "2024": 9120 },
-    Number_of_Secondary_Schools: { "2024": 1245 },
-    Number_of_Universities_and_Colleges: { "2024": 65 },
-    Number_of_Vocational_Training_Centers: { "2024": 138 }
-  };
-
-  const mockTeacherData = {
-    Teacher_Student_Ratio_Primary: { "2024": 42 },
-    Teacher_Student_Ratio_Secondary: { "2024": 28 },
-    Percent_of_Trained_Primary_Teachers: { "2024": "87.5*" },
-    Percent_of_Trained_Secondary_Teachers: { "2024": "92.3*" }
-  };
-
-  const mockFundingData = {
-    Education_Budget_as_Percent_of_GDP: { "2024": 4.8 },
-    Education_Budget_as_Percent_of_National_Budget: { "2024": 16.5 }
+  // Placeholder data - should be replaced with real education ministry data
+  const additionalEducationData = {
+    regional: {
+      Urban_Literacy_Rate: { "2024": 89.5 },
+      Rural_Literacy_Rate: { "2024": 62.8 }
+    },
+    gender: {
+      Male_Literacy_Rate: { "2024": 85.3 },
+      Female_Literacy_Rate: { "2024": 75.6 },
+      Primary_Gender_Parity_Index: { "2024": 0.98 },
+      Secondary_Gender_Parity_Index: { "2024": 0.92 },
+      Tertiary_Gender_Parity_Index: { "2024": 0.79 }
+    },
+    infrastructure: {
+      Number_of_Primary_Schools: { "2024": 9120 },
+      Number_of_Secondary_Schools: { "2024": 1245 },
+      Number_of_Universities_and_Colleges: { "2024": 65 },
+      Number_of_Vocational_Training_Centers: { "2024": 138 }
+    },
+    teachers: {
+      Teacher_Student_Ratio_Primary: { "2024": 42 },
+      Teacher_Student_Ratio_Secondary: { "2024": 28 },
+      Percent_of_Trained_Primary_Teachers: { "2024": "87.5*" },
+      Percent_of_Trained_Secondary_Teachers: { "2024": "92.3*" }
+    },
+    funding: {
+      Education_Budget_as_Percent_of_GDP: { "2024": 4.8 },
+      Education_Budget_as_Percent_of_National_Budget: { "2024": 16.5 }
+    }
   };
 
   return (
@@ -236,7 +234,7 @@ const Education: React.FC = () => {
                   </CardHeader>
                   <CardContent className="pt-4">
                     <div className="text-2xl font-bold">
-                      1:{mockTeacherData.Teacher_Student_Ratio_Primary["2024"]}
+                       1:{additionalEducationData.teachers.Teacher_Student_Ratio_Primary["2024"]}
                     </div>
                     <p className="text-xs text-muted-foreground">
                       Primary school ratio in 2024
@@ -255,7 +253,7 @@ const Education: React.FC = () => {
                   </CardHeader>
                   <CardContent className="pt-4">
                     <div className="text-2xl font-bold">
-                      {mockTeacherData.Percent_of_Trained_Primary_Teachers["2024"]}%
+                       {additionalEducationData.teachers.Percent_of_Trained_Primary_Teachers["2024"]}%
                     </div>
                     <p className="text-xs text-muted-foreground">
                       Of primary teachers are trained
@@ -321,12 +319,12 @@ const Education: React.FC = () => {
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-blue-500 h-2.5 rounded-full"
-                          style={{ width: `${mockRegionalData.Urban_Literacy_Rate["2024"]}%` }}
+                          style={{ width: `${additionalEducationData.regional.Urban_Literacy_Rate["2024"]}%` }}
                         ></div>
                       </div>
                       <div className="flex justify-between text-xs mt-1">
                         <span>0%</span>
-                        <span className="font-medium">{mockRegionalData.Urban_Literacy_Rate["2024"]}%</span>
+                        <span className="font-medium">{additionalEducationData.regional.Urban_Literacy_Rate["2024"]}%</span>
                         <span>100%</span>
                       </div>
                     </div>
@@ -336,12 +334,12 @@ const Education: React.FC = () => {
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-green-500 h-2.5 rounded-full"
-                          style={{ width: `${mockRegionalData.Rural_Literacy_Rate["2024"]}%` }}
+                          style={{ width: `${additionalEducationData.regional.Rural_Literacy_Rate["2024"]}%` }}
                         ></div>
                       </div>
                       <div className="flex justify-between text-xs mt-1">
                         <span>0%</span>
-                        <span className="font-medium">{mockRegionalData.Rural_Literacy_Rate["2024"]}%</span>
+                        <span className="font-medium">{additionalEducationData.regional.Rural_Literacy_Rate["2024"]}%</span>
                         <span>100%</span>
                       </div>
                     </div>
@@ -349,8 +347,8 @@ const Education: React.FC = () => {
                     <div className="pt-4">
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         The urban-rural literacy gap stands at {(
-                          mockRegionalData.Urban_Literacy_Rate["2024"] -
-                          mockRegionalData.Rural_Literacy_Rate["2024"]
+                          additionalEducationData.regional.Urban_Literacy_Rate["2024"] -
+                           additionalEducationData.regional.Rural_Literacy_Rate["2024"]
                         ).toFixed(1)}%, highlighting regional educational disparities.
                       </p>
                     </div>
@@ -369,12 +367,12 @@ const Education: React.FC = () => {
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-blue-500 h-2.5 rounded-full"
-                          style={{ width: `${mockGenderData.Male_Literacy_Rate["2024"]}%` }}
+                          style={{ width: `${additionalEducationData.gender.Male_Literacy_Rate["2024"]}%` }}
                         ></div>
                       </div>
                       <div className="flex justify-between text-xs mt-1">
                         <span>0%</span>
-                        <span className="font-medium">{mockGenderData.Male_Literacy_Rate["2024"]}%</span>
+                        <span className="font-medium">{additionalEducationData.gender.Male_Literacy_Rate["2024"]}%</span>
                         <span>100%</span>
                       </div>
                     </div>
@@ -384,12 +382,12 @@ const Education: React.FC = () => {
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-purple-500 h-2.5 rounded-full"
-                          style={{ width: `${mockGenderData.Female_Literacy_Rate["2024"]}%` }}
+                          style={{ width: `${additionalEducationData.gender.Female_Literacy_Rate["2024"]}%` }}
                         ></div>
                       </div>
                       <div className="flex justify-between text-xs mt-1">
                         <span>0%</span>
-                        <span className="font-medium">{mockGenderData.Female_Literacy_Rate["2024"]}%</span>
+                        <span className="font-medium">{additionalEducationData.gender.Female_Literacy_Rate["2024"]}%</span>
                         <span>100%</span>
                       </div>
                     </div>
@@ -397,8 +395,8 @@ const Education: React.FC = () => {
                     <div className="pt-4">
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         The gender literacy gap stands at {(
-                          mockGenderData.Male_Literacy_Rate["2024"] -
-                          mockGenderData.Female_Literacy_Rate["2024"]
+                          additionalEducationData.gender.Male_Literacy_Rate["2024"] -
+                           additionalEducationData.gender.Female_Literacy_Rate["2024"]
                         ).toFixed(1)}%, with ongoing initiatives to close this gap.
                       </p>
                     </div>
@@ -463,12 +461,12 @@ const Education: React.FC = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <h3 className="text-sm font-medium">Primary School Gender Parity Index</h3>
-                      <span className="text-sm font-medium">{mockGenderData.Primary_Gender_Parity_Index["2024"]}</span>
+                      <span className="text-sm font-medium">{additionalEducationData.gender.Primary_Gender_Parity_Index["2024"]}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                       <div
                         className="bg-blue-500 h-2.5 rounded-full"
-                        style={{ width: `${(mockGenderData.Primary_Gender_Parity_Index["2024"] / 2) * 100}%` }}
+                        style={{ width: `${(additionalEducationData.gender.Primary_Gender_Parity_Index["2024"] / 2) * 100}%` }}
                       ></div>
                     </div>
                     <div className="flex justify-between text-xs mt-1">
@@ -481,12 +479,12 @@ const Education: React.FC = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <h3 className="text-sm font-medium">Secondary School Gender Parity Index</h3>
-                      <span className="text-sm font-medium">{mockGenderData.Secondary_Gender_Parity_Index["2024"]}</span>
+                      <span className="text-sm font-medium">{additionalEducationData.gender.Secondary_Gender_Parity_Index["2024"]}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                       <div
                         className="bg-green-500 h-2.5 rounded-full"
-                        style={{ width: `${(mockGenderData.Secondary_Gender_Parity_Index["2024"] / 2) * 100}%` }}
+                        style={{ width: `${(additionalEducationData.gender.Secondary_Gender_Parity_Index["2024"] / 2) * 100}%` }}
                       ></div>
                     </div>
                     <div className="flex justify-between text-xs mt-1">
@@ -499,12 +497,12 @@ const Education: React.FC = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <h3 className="text-sm font-medium">Tertiary Education Gender Parity Index</h3>
-                      <span className="text-sm font-medium">{mockGenderData.Tertiary_Gender_Parity_Index["2024"]}</span>
+                      <span className="text-sm font-medium">{additionalEducationData.gender.Tertiary_Gender_Parity_Index["2024"]}</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                       <div
                         className="bg-purple-500 h-2.5 rounded-full"
-                        style={{ width: `${(mockGenderData.Tertiary_Gender_Parity_Index["2024"] / 2) * 100}%` }}
+                        style={{ width: `${(additionalEducationData.gender.Tertiary_Gender_Parity_Index["2024"] / 2) * 100}%` }}
                       ></div>
                     </div>
                     <div className="flex justify-between text-xs mt-1">
@@ -537,7 +535,7 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Primary Schools</h3>
-                        <span className="text-sm font-medium">{mockInfrastructureData.Number_of_Primary_Schools["2024"].toLocaleString()}</span>
+                        <span className="text-sm font-medium">{additionalEducationData.infrastructure.Number_of_Primary_Schools["2024"].toLocaleString()}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
@@ -550,12 +548,12 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Secondary Schools</h3>
-                        <span className="text-sm font-medium">{mockInfrastructureData.Number_of_Secondary_Schools["2024"].toLocaleString()}</span>
+                        <span className="text-sm font-medium">{additionalEducationData.infrastructure.Number_of_Secondary_Schools["2024"].toLocaleString()}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-green-500 h-2.5 rounded-full"
-                          style={{ width: `${(mockInfrastructureData.Number_of_Secondary_Schools["2024"] / mockInfrastructureData.Number_of_Primary_Schools["2024"]) * 100}%` }}
+                          style={{ width: `${(additionalEducationData.infrastructure.Number_of_Secondary_Schools["2024"] / additionalEducationData.infrastructure.Number_of_Primary_Schools["2024"]) * 100}%` }}
                         ></div>
                       </div>
                     </div>
@@ -563,12 +561,12 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Universities & Colleges</h3>
-                        <span className="text-sm font-medium">{mockInfrastructureData.Number_of_Universities_and_Colleges["2024"]}</span>
+                        <span className="text-sm font-medium">{additionalEducationData.infrastructure.Number_of_Universities_and_Colleges["2024"]}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-purple-500 h-2.5 rounded-full"
-                          style={{ width: `${(mockInfrastructureData.Number_of_Universities_and_Colleges["2024"] / mockInfrastructureData.Number_of_Primary_Schools["2024"]) * 100}%` }}
+                          style={{ width: `${(additionalEducationData.infrastructure.Number_of_Universities_and_Colleges["2024"] / additionalEducationData.infrastructure.Number_of_Primary_Schools["2024"]) * 100}%` }}
                         ></div>
                       </div>
                     </div>
@@ -576,12 +574,12 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Vocational Training Centers</h3>
-                        <span className="text-sm font-medium">{mockInfrastructureData.Number_of_Vocational_Training_Centers["2024"]}</span>
+                        <span className="text-sm font-medium">{additionalEducationData.infrastructure.Number_of_Vocational_Training_Centers["2024"]}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-yellow-500 h-2.5 rounded-full"
-                          style={{ width: `${(mockInfrastructureData.Number_of_Vocational_Training_Centers["2024"] / mockInfrastructureData.Number_of_Primary_Schools["2024"]) * 100}%` }}
+                          style={{ width: `${(additionalEducationData.infrastructure.Number_of_Vocational_Training_Centers["2024"] / additionalEducationData.infrastructure.Number_of_Primary_Schools["2024"]) * 100}%` }}
                         ></div>
                       </div>
                     </div>
@@ -598,12 +596,12 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Primary Teacher-Student Ratio</h3>
-                        <span className="text-sm font-medium">1:{mockTeacherData.Teacher_Student_Ratio_Primary["2024"]}</span>
+                        <span className="text-sm font-medium">1:{additionalEducationData.teachers.Teacher_Student_Ratio_Primary["2024"]}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-blue-500 h-2.5 rounded-full"
-                          style={{ width: `${(1 / mockTeacherData.Teacher_Student_Ratio_Primary["2024"]) * 1000}%` }}
+                          style={{ width: `${(1 / additionalEducationData.teachers.Teacher_Student_Ratio_Primary["2024"]) * 1000}%` }}
                         ></div>
                       </div>
                     </div>
@@ -611,12 +609,12 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Secondary Teacher-Student Ratio</h3>
-                        <span className="text-sm font-medium">1:{mockTeacherData.Teacher_Student_Ratio_Secondary["2024"]}</span>
+                        <span className="text-sm font-medium">1:{additionalEducationData.teachers.Teacher_Student_Ratio_Secondary["2024"]}</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-green-500 h-2.5 rounded-full"
-                          style={{ width: `${(1 / mockTeacherData.Teacher_Student_Ratio_Secondary["2024"]) * 1000}%` }}
+                          style={{ width: `${(1 / additionalEducationData.teachers.Teacher_Student_Ratio_Secondary["2024"]) * 1000}%` }}
                         ></div>
                       </div>
                     </div>
@@ -624,12 +622,12 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Trained Primary Teachers</h3>
-                        <span className="text-sm font-medium">{mockTeacherData.Percent_of_Trained_Primary_Teachers["2024"]}%</span>
+                        <span className="text-sm font-medium">{additionalEducationData.teachers.Percent_of_Trained_Primary_Teachers["2024"]}%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-purple-500 h-2.5 rounded-full"
-                          style={{ width: `${parseFloat(mockTeacherData.Percent_of_Trained_Primary_Teachers["2024"].replace('*', ''))}%` }}
+                          style={{ width: `${parseFloat(additionalEducationData.teachers.Percent_of_Trained_Primary_Teachers["2024"].replace('*', ''))}%` }}
                         ></div>
                       </div>
                     </div>
@@ -637,12 +635,12 @@ const Education: React.FC = () => {
                     <div>
                       <div className="flex justify-between mb-1">
                         <h3 className="text-sm font-medium">Trained Secondary Teachers</h3>
-                        <span className="text-sm font-medium">{mockTeacherData.Percent_of_Trained_Secondary_Teachers["2024"]}%</span>
+                        <span className="text-sm font-medium">{additionalEducationData.teachers.Percent_of_Trained_Secondary_Teachers["2024"]}%</span>
                       </div>
                       <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                         <div
                           className="bg-yellow-500 h-2.5 rounded-full"
-                          style={{ width: `${parseFloat(mockTeacherData.Percent_of_Trained_Secondary_Teachers["2024"].replace('*', ''))}%` }}
+                          style={{ width: `${parseFloat(additionalEducationData.teachers.Percent_of_Trained_Secondary_Teachers["2024"].replace('*', ''))}%` }}
                         ></div>
                       </div>
                     </div>
@@ -660,12 +658,12 @@ const Education: React.FC = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <h3 className="text-sm font-medium">Education Budget as % of GDP</h3>
-                      <span className="text-sm font-medium">{mockFundingData.Education_Budget_as_Percent_of_GDP["2024"]}%</span>
+                      <span className="text-sm font-medium">{additionalEducationData.funding.Education_Budget_as_Percent_of_GDP["2024"]}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                       <div
                         className="bg-blue-500 h-2.5 rounded-full"
-                        style={{ width: `${mockFundingData.Education_Budget_as_Percent_of_GDP["2024"] * 10}%` }}
+                        style={{ width: `${additionalEducationData.funding.Education_Budget_as_Percent_of_GDP["2024"] * 10}%` }}
                       ></div>
                     </div>
                   </div>
@@ -673,12 +671,12 @@ const Education: React.FC = () => {
                   <div>
                     <div className="flex justify-between mb-1">
                       <h3 className="text-sm font-medium">Education Budget as % of National Budget</h3>
-                      <span className="text-sm font-medium">{mockFundingData.Education_Budget_as_Percent_of_National_Budget["2024"]}%</span>
+                      <span className="text-sm font-medium">{additionalEducationData.funding.Education_Budget_as_Percent_of_National_Budget["2024"]}%</span>
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
                       <div
                         className="bg-green-500 h-2.5 rounded-full"
-                        style={{ width: `${mockFundingData.Education_Budget_as_Percent_of_National_Budget["2024"]}%` }}
+                        style={{ width: `${additionalEducationData.funding.Education_Budget_as_Percent_of_National_Budget["2024"]}%` }}
                       ></div>
                     </div>
                   </div>

@@ -21,14 +21,20 @@ const EmailSignup = () => {
     
     setLoading(true);
     
-    // In a real implementation, this would connect to MailChimp API
-    // This is a mockup for demonstration
-    setTimeout(() => {
+    try {
+      // Store email subscription in local storage for now
+      const subscriptions = JSON.parse(localStorage.getItem('newsletter_subscriptions') || '[]');
+      subscriptions.push({ email, timestamp: new Date().toISOString() });
+      localStorage.setItem('newsletter_subscriptions', JSON.stringify(subscriptions));
+      
       setLoading(false);
       setSubscribed(true);
       setEmail("");
       toast.success("Thank you for subscribing to our newsletter!");
-    }, 1500);
+    } catch (error) {
+      setLoading(false);
+      toast.error("Failed to subscribe. Please try again.");
+    }
   };
 
   return (

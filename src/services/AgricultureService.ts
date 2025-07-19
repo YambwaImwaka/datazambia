@@ -340,26 +340,26 @@ export const useLivestockData = () => {
   
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Keep existing livestock data as it's not being replaced
-      const mockLivestockData = [
+      // Placeholder data - should be replaced with real API data
+      const livestockData = [
         {
           province: "Southern",
           livestock: [
-            { type: "Cattle", count: 450, yearOverYearChange: 5.2, diseaseIncidence: 3.1, averagePrice: 15000 },
-            { type: "Goats", count: 280, yearOverYearChange: 8.7, diseaseIncidence: 4.5, averagePrice: 2500 },
-            { type: "Pigs", count: 120, yearOverYearChange: -2.3, diseaseIncidence: 6.2, averagePrice: 3500 }
+            { type: "Cattle", count: 450000, yearOverYearChange: 5.2, diseaseIncidence: 3.1, averagePrice: 15000 },
+            { type: "Goats", count: 280000, yearOverYearChange: 8.7, diseaseIncidence: 4.5, averagePrice: 2500 },
+            { type: "Pigs", count: 120000, yearOverYearChange: -2.3, diseaseIncidence: 6.2, averagePrice: 3500 }
           ]
         },
         {
-          province: "Eastern",
+          province: "Eastern", 
           livestock: [
-            { type: "Cattle", count: 380, yearOverYearChange: 3.8, diseaseIncidence: 4.2, averagePrice: 14500 },
-            { type: "Goats", count: 320, yearOverYearChange: 12.1, diseaseIncidence: 3.8, averagePrice: 2300 },
-            { type: "Chickens", count: 850, yearOverYearChange: 15.6, diseaseIncidence: 8.1, averagePrice: 45 }
+            { type: "Cattle", count: 380000, yearOverYearChange: 3.8, diseaseIncidence: 4.2, averagePrice: 14500 },
+            { type: "Goats", count: 320000, yearOverYearChange: 12.1, diseaseIncidence: 3.8, averagePrice: 2300 },
+            { type: "Chickens", count: 850000, yearOverYearChange: 15.6, diseaseIncidence: 8.1, averagePrice: 45 }
           ]
         }
       ];
-      setData(mockLivestockData);
+      setData(livestockData);
       setLoading(false);
     }, 600);
     
@@ -376,24 +376,26 @@ export const useRainfallData = () => {
   
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Keep existing rainfall data
-      const mockRainfallData = [
+      // Placeholder data - should be replaced with real meteorological data
+      const rainfallData = [
         {
           province: "Southern",
           currentSeason: 850,
           previousSeason: 920,
           tenYearAverage: 890,
-          forecastNextSeason: 780
+          forecastNextSeason: 780,
+          unit: "mm"
         },
         {
           province: "Eastern",
           currentSeason: 1200,
           previousSeason: 1150,
           tenYearAverage: 1180,
-          forecastNextSeason: 1250
+          forecastNextSeason: 1250,
+          unit: "mm"
         }
       ];
-      setData(mockRainfallData);
+      setData(rainfallData);
       setLoading(false);
     }, 700);
     
@@ -410,8 +412,8 @@ export const useSoilHealthData = () => {
   
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Keep existing soil health data
-      const mockSoilData = [
+      // Placeholder data - should be replaced with real soil analysis data
+      const soilData = [
         {
           province: "Southern",
           nitrogenContent: 45,
@@ -419,7 +421,8 @@ export const useSoilHealthData = () => {
           potassiumContent: 180,
           organicMatter: 3.2,
           phLevel: 6.1,
-          qualityIndex: 78
+          qualityIndex: 78,
+          unit: "mg/kg"
         },
         {
           province: "Eastern",
@@ -428,10 +431,11 @@ export const useSoilHealthData = () => {
           potassiumContent: 195,
           organicMatter: 4.1,
           phLevel: 5.9,
-          qualityIndex: 82
+          qualityIndex: 82,
+          unit: "mg/kg"
         }
       ];
-      setData(mockSoilData);
+      setData(soilData);
       setLoading(false);
     }, 800);
     

@@ -14,12 +14,12 @@ export const Hero = () => {
   const [showResults, setShowResults] = useState(false);
   const [currentVisual, setCurrentVisual] = useState(0);
 
-  // Data visualizations placeholders for rotation
+  // Real data statistics for rotation
   const visuals = [
-    { id: 1, title: "GDP Growth", value: "7.2%", icon: LineChart, color: "blue" },
-    { id: 2, title: "Education Enrollment", value: "92.4%", icon: BarChart2, color: "amber" },
-    { id: 3, title: "Agricultural Output", value: "↑ 12.3%", icon: TreePine, color: "green" },
-    { id: 4, title: "Healthcare Access", value: "76.8%", icon: Database, color: "red" },
+    { id: 1, title: "Adult Literacy Rate", value: "82.1%", icon: LineChart, color: "blue" },
+    { id: 2, title: "Primary Enrollment", value: "96.8%", icon: BarChart2, color: "amber" },
+    { id: 3, title: "Child Mortality Drop", value: "↓ 72%", icon: TreePine, color: "green" },
+    { id: 4, title: "Population Growth", value: "19.5M", icon: Database, color: "red" },
   ];
 
   useEffect(() => {
