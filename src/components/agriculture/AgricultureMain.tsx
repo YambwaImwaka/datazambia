@@ -8,6 +8,8 @@ import { CropProductionView } from "./CropProductionView";
 import { LivestockView } from "./LivestockView";
 import { RainfallView } from "./RainfallView";
 import { SoilHealthView } from "./SoilHealthView";
+import AquacultureDashboard from "@/components/visualizations/AquacultureDashboard";
+import ArableLandTrends from "@/components/visualizations/ArableLandTrends";
 
 export const AgricultureMain = () => {
   const [selectedProvince, setSelectedProvince] = useState<string>("all");
@@ -57,12 +59,14 @@ export const AgricultureMain = () => {
       </div>
 
       <Tabs defaultValue="crops" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="crops" className="flex items-center gap-2">
             <Wheat className="h-4 w-4" />
-            Crop Production
+            Crops
           </TabsTrigger>
           <TabsTrigger value="livestock">Livestock</TabsTrigger>
+          <TabsTrigger value="aquaculture">Aquaculture</TabsTrigger>
+          <TabsTrigger value="land">Land Use</TabsTrigger>
           <TabsTrigger value="rainfall">Rainfall</TabsTrigger>
           <TabsTrigger value="soil">Soil Health</TabsTrigger>
         </TabsList>
@@ -79,6 +83,14 @@ export const AgricultureMain = () => {
             selectedProvince={selectedProvince} 
             selectedYear={selectedYear} 
           />
+        </TabsContent>
+
+        <TabsContent value="aquaculture" className="mt-6">
+          <AquacultureDashboard />
+        </TabsContent>
+
+        <TabsContent value="land" className="mt-6">
+          <ArableLandTrends />
         </TabsContent>
 
         <TabsContent value="rainfall" className="mt-6">

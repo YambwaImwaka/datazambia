@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import DataExport from "@/components/ui/DataExport";
+import ChildrenHIVTrends from "@/components/visualizations/ChildrenHIVTrends";
 
 // Real health data for Zambia
 const healthData = {
@@ -189,9 +190,10 @@ const HealthDashboard = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-5 mb-8">
+            <TabsList className="grid w-full grid-cols-6 mb-8">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="diseases">Diseases</TabsTrigger>
+              <TabsTrigger value="hiv">HIV Trends</TabsTrigger>
               <TabsTrigger value="facilities">Facilities</TabsTrigger>
               <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
               <TabsTrigger value="workforce">Workforce</TabsTrigger>
@@ -368,6 +370,10 @@ const HealthDashboard = () => {
                   <p className="text-sm text-gray-600 dark:text-gray-300">Total Health Posts</p>
                 </Card>
               </div>
+            </TabsContent>
+
+            <TabsContent value="hiv" className="space-y-6">
+              <ChildrenHIVTrends />
             </TabsContent>
 
             <TabsContent value="nutrition" className="space-y-6">

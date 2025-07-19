@@ -865,3 +865,54 @@ export const educationStatistics = {
     }
   }
 };
+
+// New Data: Non-profits by Province (2009-2024)
+export const nonprofitsByProvince = [
+  { region: "LUSAKA", value: 1450, percentage: 68.3 },
+  { region: "CENTRAL", value: 149, percentage: 7.0 },
+  { region: "EASTERN", value: 94, percentage: 4.4 },
+  { region: "LUAPULA", value: 31, percentage: 1.5 },
+  { region: "COPPERBELT", value: 258, percentage: 12.1 },
+  { region: "MUCHINGA", value: 31, percentage: 1.5 },
+  { region: "NORTHERN", value: 27, percentage: 1.3 },
+  { region: "NORTHWESTERN", value: 32, percentage: 1.5 },
+  { region: "WESTERN", value: 34, percentage: 1.6 },
+];
+
+// New Data: Aquaculture Production (1960-2022) - processed key years
+export const aquacultureData = [
+  { year: 1977, production: 3 },
+  { year: 1980, production: 27 },
+  { year: 1985, production: 363 },
+  { year: 1990, production: 1460 },
+  { year: 1995, production: 4081 },
+  { year: 2000, production: 4240 },
+  { year: 2005, production: 5125 },
+  { year: 2010, production: 10290 },
+  { year: 2015, production: 22754 },
+  { year: 2020, production: 45670 },
+  { year: 2022, production: 75648 },
+];
+
+// New Data: Arable Land per Person (selected years)
+export const arableLandData = [
+  { year: 1961, hectares: 0.78 },
+  { year: 1970, hectares: 0.64 },
+  { year: 1980, hectares: 0.40 },
+  { year: 1990, hectares: 0.37 },
+  { year: 2000, hectares: 0.28 },
+  { year: 2010, hectares: 0.24 },
+  { year: 2021, hectares: 0.19 },
+];
+
+// New Data: Children HIV Infections (selected years)
+export const childrenHIVData = [
+  { year: 1990, infections: 14000 },
+  { year: 1995, infections: 21000 },
+  { year: 2000, infections: 22000 },
+  { year: 2005, infections: 18000 },
+  { year: 2010, infections: 12000 },
+  { year: 2015, infections: 9800 },
+  { year: 2020, infections: 5100 },
+  { year: 2022, infections: 4400 },
+];
