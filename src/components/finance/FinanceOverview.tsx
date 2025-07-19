@@ -20,6 +20,7 @@ import SearchResults from "./SearchResults";
 // Import new sections
 import { MarketShareSection } from "./MarketShareSection";
 import ComprehensiveEconomicSection from "./ComprehensiveEconomicSection";
+import CommodityPriceTrends from "./CommodityPriceTrends";
 
 // Import services
 import { fetchExchangeRates } from "@/services/exchange-rates/ExchangeRateService";
@@ -232,6 +233,8 @@ const FinanceOverview = () => {
                   loading={commodityLoading} 
                   isVisible={inView} 
                 />
+
+                <CommodityPriceTrends isVisible={inView} />
 
                 <HistoricalChartSection isVisible={inView} />
 
