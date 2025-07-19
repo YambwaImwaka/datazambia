@@ -14,6 +14,9 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import DataExport from "@/components/ui/DataExport";
 import ChildrenHIVTrends from "@/components/visualizations/ChildrenHIVTrends";
+import HealthSpendingProjections from "@/components/visualizations/HealthSpendingProjections";
+import LifeExpectancyTrends from "@/components/visualizations/LifeExpectancyTrends";
+import PopulationPyramid from "@/components/visualizations/PopulationPyramid";
 
 // Real health data for Zambia
 const healthData = {
@@ -190,13 +193,15 @@ const HealthDashboard = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-6 mb-8">
+            <TabsList className="grid w-full grid-cols-8 mb-8">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="diseases">Diseases</TabsTrigger>
               <TabsTrigger value="hiv">HIV Trends</TabsTrigger>
               <TabsTrigger value="facilities">Facilities</TabsTrigger>
               <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
               <TabsTrigger value="workforce">Workforce</TabsTrigger>
+              <TabsTrigger value="spending">Health Spending</TabsTrigger>
+              <TabsTrigger value="demographics">Demographics</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
@@ -496,6 +501,15 @@ const HealthDashboard = () => {
                   </CardContent>
                 </Card>
               </div>
+            </TabsContent>
+
+            <TabsContent value="spending" className="space-y-6">
+              <HealthSpendingProjections />
+              <LifeExpectancyTrends />
+            </TabsContent>
+
+            <TabsContent value="demographics" className="space-y-6">
+              <PopulationPyramid />
             </TabsContent>
           </Tabs>
         </>
