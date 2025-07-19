@@ -521,7 +521,8 @@ export const dataCategories = [
   { id: "education", name: "Education", description: "Education data and enrollment statistics" },
   { id: "agriculture", name: "Agriculture", description: "Agricultural production and farming statistics" },
   { id: "economy", name: "Economy", description: "Economic indicators and business metrics" },
-  { id: "finance", name: "Finance", description: "Financial data including exchange rates and market indicators" }
+  { id: "finance", name: "Finance", description: "Financial data including exchange rates and market indicators" },
+  { id: "social", name: "Social Development", description: "Civil society organizations and social development indicators" }
 ];
 
 // Time periods for filtering

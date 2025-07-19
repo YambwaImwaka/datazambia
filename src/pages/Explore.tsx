@@ -6,6 +6,7 @@ import AgricultureMain from '@/components/agriculture/AgricultureMain';
 import FinanceOverview from '@/components/finance/FinanceOverview';
 import EconomyDashboard from '@/components/economy/EconomyDashboard';
 import HealthDashboard from '@/components/health/HealthDashboard';
+import SocialData from '@/pages/explore/SocialData';
 import { ArrowUpRight } from 'lucide-react';
 import PageLayout from '@/components/layout/PageLayout';
 
@@ -37,6 +38,8 @@ const Explore = () => {
       return <EconomyDashboard />;
     } else if (currentCategory === "health") {
       return <HealthDashboard />;
+    } else if (currentCategory === "social") {
+      return <SocialData />;
     } else if (currentCategory === "education") {
       return <div className="container mx-auto py-8 px-4">
         <h1 className="text-3xl font-bold mb-6">Education Metrics Dashboard</h1>

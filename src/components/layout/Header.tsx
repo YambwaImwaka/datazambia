@@ -79,6 +79,9 @@ const Header = () => {
               <Link to="/explore/agriculture" onClick={() => handleNavClick('explore_agriculture')}>
                 <DropdownMenuItem className="cursor-pointer">Agriculture</DropdownMenuItem>
               </Link>
+              <Link to="/explore/social" onClick={() => handleNavClick('explore_social')}>
+                <DropdownMenuItem className="cursor-pointer">Social Development</DropdownMenuItem>
+              </Link>
             </DropdownMenuContent>
           </DropdownMenu>
 
