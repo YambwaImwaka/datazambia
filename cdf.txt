@@ -1,0 +1,2194 @@
+{
+  "data": [
+    {
+      "Constituency": "Katuba",
+      "category": "Bursaries",
+      "Sub category": "Secondary Boarding School",
+      "Amount": "126000"
+    },
+    {
+      "Constituency": "Keembe",
+      "category": "Bursaries",
+      "Sub category": "Secondary Boarding School",
+      "Amount": "476011"
+    },
+    {
+      "Constituency": "Keembe",
+      "category": "Bursaries",
+      "Sub category": "Skills Development",
+      "Amount": "165150"
+    },
+    {
+      "Constituency": "Katuba",
+      "category": "Bursaries",
+      "Sub category": "Skills Development",
+      "Amount": "721731.8"
+    },
+    {
+      "Constituency": "Kabwe Central",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,875,699.29"
+    },
+    {
+      "Constituency": "Kabwe Central",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 490,000"
+    },
+    {
+      "Constituency": "Kabwe Central",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Kabwe Central",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Mkushi South",
+      "category": "Bursaries",
+      "Sub category": "Secondary Boarding School",
+      "Amount": "456000"
+    },
+    {
+      "Constituency": "Mkushi South",
+      "category": "Bursaries",
+      "Sub category": "Skills Development",
+      "Amount": "380101"
+    },
+    {
+      "Constituency": "Mumbwa",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 1,000"
+    },
+    {
+      "Constituency": "Mumbwa",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 206,600"
+    },
+    {
+      "Constituency": "Mumbwa",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 3,681,946.91"
+    },
+    {
+      "Constituency": "Mumbwa",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Lufubu",
+      "category": "Community Projects",
+      "Sub category": "N/A",
+      "Amount": "1520000"
+    },
+    {
+      "Constituency": "Chililabombwe",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 49,500"
+    },
+    {
+      "Constituency": "Chililabombwe",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 2,855,198"
+    },
+    {
+      "Constituency": "Chililabombwe",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 15,114,024.68"
+    },
+    {
+      "Constituency": "Chililabombwe",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,199.8"
+    },
+    {
+      "Constituency": "Chingola",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 33,000"
+    },
+    {
+      "Constituency": "Chingola",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,203,270"
+    },
+    {
+      "Constituency": "Chingola",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Chingola",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 488,700"
+    },
+    {
+      "Constituency": "Kalulushi",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 42,000"
+    },
+    {
+      "Constituency": "Kalulushi",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,048,659"
+    },
+    {
+      "Constituency": "Kalulushi",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,620,000"
+    },
+    {
+      "Constituency": "Kalulushi",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,185"
+    },
+    {
+      "Constituency": "Luanshya",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 10,000"
+    },
+    {
+      "Constituency": "Luanshya",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 4,282,822"
+    },
+    {
+      "Constituency": "Luanshya",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 11,878,581.74"
+    },
+    {
+      "Constituency": "Luanshya",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "Lufwanyama",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 103,000"
+    },
+    {
+      "Constituency": "Lufwanyama",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 2,347,237"
+    },
+    {
+      "Constituency": "Lufwanyama",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,935,384.84"
+    },
+    {
+      "Constituency": "Lufwanyama",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,955,843.48"
+    },
+    {
+      "Constituency": "Masaiti",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 274,000"
+    },
+    {
+      "Constituency": "Masaiti",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,610,194.5"
+    },
+    {
+      "Constituency": "Masaiti",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,953,384.84"
+    },
+    {
+      "Constituency": "Masaiti",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,928,961"
+    },
+    {
+      "Constituency": "Mpongwe",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 6,600"
+    },
+    {
+      "Constituency": "Mpongwe",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 82,986"
+    },
+    {
+      "Constituency": "Mpongwe",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Mpongwe",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,199.9"
+    },
+    {
+      "Constituency": "Mufulira",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 42,000"
+    },
+    {
+      "Constituency": "Mufulira",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 4,069,756.5"
+    },
+    {
+      "Constituency": "Mufulira",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Mufulira",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Ndola Central",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 9,000"
+    },
+    {
+      "Constituency": "Ndola Central",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 2,404,468"
+    },
+    {
+      "Constituency": "Ndola Central",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 1,500,000"
+    },
+    {
+      "Constituency": "Ndola Central",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "kitwe",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "Chadiza",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 214,000"
+    },
+    {
+      "Constituency": "Chadiza",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 820,964.47"
+    },
+    {
+      "Constituency": "Chadiza",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,915,938"
+    },
+    {
+      "Constituency": "Chadiza",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "Chipata Central",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 261,600"
+    },
+    {
+      "Constituency": "Chipata Central",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,384,560"
+    },
+    {
+      "Constituency": "Chipata Central",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Chipata Central",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,952,795"
+    },
+    {
+      "Constituency": "KATETE DISTRICT",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "Lundazi",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 106,000"
+    },
+    {
+      "Constituency": "Lundazi",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 279,780"
+    },
+    {
+      "Constituency": "Lundazi",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 12,716,500"
+    },
+    {
+      "Constituency": "Lundazi",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "Nyimba",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 224,000"
+    },
+    {
+      "Constituency": "Nyimba",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 317,870"
+    },
+    {
+      "Constituency": "Nyimba",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Nyimba",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "MAMBWE DISTIRCT",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "sinda district",
+      "category": "burseries",
+      "Sub category": "secondary boarding",
+      "Amount": "9300"
+    },
+    {
+      "Constituency": "sinda",
+      "category": "burseries",
+      "Sub category": "skills development",
+      "Amount": "41590"
+    },
+    {
+      "Constituency": "sinda",
+      "category": "empowerment",
+      "Sub category": "grants",
+      "Amount": "487115"
+    },
+    {
+      "Constituency": "sinda",
+      "category": "community projects",
+      "Sub category": "development",
+      "Amount": "196000"
+    },
+    {
+      "Constituency": "Vubwi district",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "chasefu district",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "chipangeli district",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "lumezi district",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "lusangazi district",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "Kawambwa District",
+      "category": "0",
+      "Sub category": "",
+      "Amount": ""
+    },
+    {
+      "Constituency": "Mansa District",
+      "category": "0",
+      "Sub category": "",
+      "Amount": ""
+    },
+    {
+      "Constituency": "Mwense District",
+      "category": "0",
+      "Sub category": "",
+      "Amount": ""
+    },
+    {
+      "Constituency": "Nchelenge District",
+      "category": "0",
+      "Sub category": "",
+      "Amount": ""
+    },
+    {
+      "Constituency": "Samfya District",
+      "category": "0",
+      "Sub category": "",
+      "Amount": ""
+    },
+    {
+      "Constituency": "Chiengi District",
+      "category": "0",
+      "Sub category": "",
+      "Amount": ""
+    },
+    {
+      "Constituency": "Milenge District",
+      "category": "0",
+      "Sub category": "",
+      "Amount": ""
+    },
+    {
+      "Constituency": "Chembe District",
+      "category": "0",
+      "Sub category": "",
+      "Amount": ""
+    },
+    {
+      "Constituency": "Mwansabombwe District",
+      "category": "0",
+      "Sub category": "",
+      "Amount": ""
+    },
+    {
+      "Constituency": "Chipili District",
+      "category": "0",
+      "Sub category": "",
+      "Amount": ""
+    },
+    {
+      "Constituency": "Lunga District",
+      "category": "0",
+      "Sub category": "",
+      "Amount": ""
+    },
+    {
+      "Constituency": "Chifunabuli District",
+      "category": "0",
+      "Sub category": "",
+      "Amount": ""
+    },
+    {
+      "Constituency": "Kafue",
+      "category": "Bursaries",
+      "Sub category": "Secondary Boarding School",
+      "Amount": "70"
+    },
+    {
+      "Constituency": "Kafue",
+      "category": "Bursaries",
+      "Sub category": "Skills Development",
+      "Amount": "179"
+    },
+    {
+      "Constituency": "Kafue",
+      "category": "Community Projects",
+      "Sub category": "N/A",
+      "Amount": "4"
+    },
+    {
+      "Constituency": "Kafue",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "30"
+    },
+    {
+      "Constituency": "Feira",
+      "category": "Bursaries",
+      "Sub category": "Secondary Boarding School",
+      "Amount": "22"
+    },
+    {
+      "Constituency": "Feira",
+      "category": "Bursaries",
+      "Sub category": "Skills Development",
+      "Amount": "93"
+    },
+    {
+      "Constituency": "Chawama",
+      "category": "Bursaries",
+      "Sub category": "Secondary Boarding School",
+      "Amount": "3"
+    },
+    {
+      "Constituency": "Kanyama",
+      "category": "Bursaries",
+      "Sub category": "Secondary Boarding School",
+      "Amount": "47"
+    },
+    {
+      "Constituency": "Kanyama",
+      "category": "Bursaries",
+      "Sub category": "Skills Development",
+      "Amount": "222"
+    },
+    {
+      "Constituency": "Kanyama",
+      "category": "Community Projects",
+      "Sub category": "N/A",
+      "Amount": "2"
+    },
+    {
+      "Constituency": "Mandevu",
+      "category": "Bursaries",
+      "Sub category": "Secondary Boarding School",
+      "Amount": "17"
+    },
+    {
+      "Constituency": "Mandevu",
+      "category": "Bursaries",
+      "Sub category": "Skills Development",
+      "Amount": "306"
+    },
+    {
+      "Constituency": "Munali",
+      "category": "Bursaries",
+      "Sub category": "Secondary Boarding School",
+      "Amount": "17"
+    },
+    {
+      "Constituency": "Rufunsa",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 2,288,150"
+    },
+    {
+      "Constituency": "Rufunsa",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 252,135"
+    },
+    {
+      "Constituency": "Rufunsa",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 10,383,212.07"
+    },
+    {
+      "Constituency": "Rufunsa",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "Chongwe",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Chongwe",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Chongwe",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 2,844,000"
+    },
+    {
+      "Constituency": "Chongwe",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 470,084.66"
+    },
+    {
+      "Constituency": "Chinsali",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 138,700"
+    },
+    {
+      "Constituency": "Chinsali",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 145,072"
+    },
+    {
+      "Constituency": "Chinsali",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,844,550"
+    },
+    {
+      "Constituency": "Chinsali",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "Isoka",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 44,000"
+    },
+    {
+      "Constituency": "Isoka",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 715,795"
+    },
+    {
+      "Constituency": "Isoka",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Isoka",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "Kanchibiya",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Kanchibiya",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Kanchibiya",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "Mafinga",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Mafinga",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 646,240"
+    },
+    {
+      "Constituency": "Mafinga",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Mafinga",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,950,000"
+    },
+    {
+      "Constituency": "Mpika",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 391,200"
+    },
+    {
+      "Constituency": "Mpika",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,420,021"
+    },
+    {
+      "Constituency": "Mpika",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Mpika",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 583,449"
+    },
+    {
+      "Constituency": "Nakonde",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Nakonde",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 71,124"
+    },
+    {
+      "Constituency": "Nakonde",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Nakonde",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,920"
+    },
+    {
+      "Constituency": "Shiwa Ng'andu",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 71,000"
+    },
+    {
+      "Constituency": "Shiwa Ng'andu",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 2,966,009"
+    },
+    {
+      "Constituency": "Shiwa Ng'andu",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,934,338.38"
+    },
+    {
+      "Constituency": "Shiwa Ng'andu",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,956,233.23"
+    },
+    {
+      "Constituency": "Mfuwe",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 169,200"
+    },
+    {
+      "Constituency": "Mfuwe",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 190,227"
+    },
+    {
+      "Constituency": "Mfuwe",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 12,935,384.94"
+    },
+    {
+      "Constituency": "Mfuwe",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,935,000"
+    },
+    {
+      "Constituency": "Chavuma",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 286,000"
+    },
+    {
+      "Constituency": "Chavuma",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 160,764"
+    },
+    {
+      "Constituency": "Chavuma",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Chavuma",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 450,000"
+    },
+    {
+      "Constituency": "Ikeleng'i",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Ikeleng'i",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 276,370"
+    },
+    {
+      "Constituency": "Ikeleng'i",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 4,376,500"
+    },
+    {
+      "Constituency": "Ikeleng'i",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 985,000"
+    },
+    {
+      "Constituency": "Kabompo",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Kabompo",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Kabompo",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 3,483,845.84"
+    },
+    {
+      "Constituency": "Kabompo",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 488,000"
+    },
+    {
+      "Constituency": "Kasempa",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 236,780"
+    },
+    {
+      "Constituency": "Kasempa",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 974,880"
+    },
+    {
+      "Constituency": "Kasempa",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 14,649,000"
+    },
+    {
+      "Constituency": "Kasempa",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "kalumbila district",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "Manyinga",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 21,000"
+    },
+    {
+      "Constituency": "Manyinga",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 121,972"
+    },
+    {
+      "Constituency": "Manyinga",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Manyinga",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,930,650"
+    },
+    {
+      "Constituency": "Mufumbwe",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 81,000"
+    },
+    {
+      "Constituency": "Mufumbwe",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,941,540"
+    },
+    {
+      "Constituency": "Mufumbwe",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,470,000"
+    },
+    {
+      "Constituency": "Mufumbwe",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,952,459"
+    },
+    {
+      "Constituency": "Mushindamo district",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "Mwinilunga",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 60,000"
+    },
+    {
+      "Constituency": "Mwinilunga",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 673,003"
+    },
+    {
+      "Constituency": "Mwinilunga",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,935,384.84"
+    },
+    {
+      "Constituency": "Mwinilunga",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,955,840"
+    },
+    {
+      "Constituency": "Solwezi Central",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 546,000"
+    },
+    {
+      "Constituency": "Solwezi Central",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 4,324,104"
+    },
+    {
+      "Constituency": "Solwezi Central",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,900,000"
+    },
+    {
+      "Constituency": "Solwezi Central",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 480,000"
+    },
+    {
+      "Constituency": "solwezi east",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "Solwezi West",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 478,200"
+    },
+    {
+      "Constituency": "Solwezi West",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 4,487,900"
+    },
+    {
+      "Constituency": "Solwezi West",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Solwezi West",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,696,250"
+    },
+    {
+      "Constituency": "Zambezi district",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "Chilubi",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 307,530"
+    },
+    {
+      "Constituency": "Chilubi",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 2,000,787.5"
+    },
+    {
+      "Constituency": "Chilubi",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 12,716,000"
+    },
+    {
+      "Constituency": "Chilubi",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,924,999.7"
+    },
+    {
+      "Constituency": "Kaputa",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 11,000"
+    },
+    {
+      "Constituency": "Kaputa",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,973,727"
+    },
+    {
+      "Constituency": "Kaputa",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Kaputa",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Kasama",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 169,500"
+    },
+    {
+      "Constituency": "Kasama",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,782,671.75"
+    },
+    {
+      "Constituency": "Kasama",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Kasama",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,952,845"
+    },
+    {
+      "Constituency": "Lukashya",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 139,100"
+    },
+    {
+      "Constituency": "Lukashya",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,569,530.5"
+    },
+    {
+      "Constituency": "Lukashya",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Lukashya",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,950,866"
+    },
+    {
+      "Constituency": "Lunte",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 9,400"
+    },
+    {
+      "Constituency": "Lunte",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,017,323"
+    },
+    {
+      "Constituency": "Lunte",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 12,716,550"
+    },
+    {
+      "Constituency": "Lunte",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Lupososhi",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Lupososhi",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Lupososhi",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 10,288,810.4"
+    },
+    {
+      "Constituency": "Lupososhi",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,000"
+    },
+    {
+      "Constituency": "Lubansenshi",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 123,000"
+    },
+    {
+      "Constituency": "Lubansenshi",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 415,392"
+    },
+    {
+      "Constituency": "Lubansenshi",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 12,716,550"
+    },
+    {
+      "Constituency": "Lubansenshi",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,372,1"
+    },
+    {
+      "Constituency": "Mbala",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 16,350"
+    },
+    {
+      "Constituency": "Mbala",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 98,950"
+    },
+    {
+      "Constituency": "Mbala",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550.5"
+    },
+    {
+      "Constituency": "Mbala",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,920,000"
+    },
+    {
+      "Constituency": "Mporokoso",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 66,000"
+    },
+    {
+      "Constituency": "Mporokoso",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 120,050"
+    },
+    {
+      "Constituency": "Mporokoso",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Mporokoso",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,949,678"
+    },
+    {
+      "Constituency": "Mpulungu",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 9,000"
+    },
+    {
+      "Constituency": "Mpulungu",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 298,463"
+    },
+    {
+      "Constituency": "Mpulungu",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 12,639,400"
+    },
+    {
+      "Constituency": "Mpulungu",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Chimbamilonga",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 558,000"
+    },
+    {
+      "Constituency": "Chimbamilonga",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 2,148,932"
+    },
+    {
+      "Constituency": "Chimbamilonga",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Chimbamilonga",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,955"
+    },
+    {
+      "Constituency": "Senga Hill",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 132,600"
+    },
+    {
+      "Constituency": "Senga Hill",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 850,408"
+    },
+    {
+      "Constituency": "Senga Hill",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Senga Hill",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,936,625"
+    },
+    {
+      "Constituency": "Chikankata",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Chikankata",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Chikankata",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,150,000"
+    },
+    {
+      "Constituency": "Chikankata",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,955,843.48"
+    },
+    {
+      "Constituency": "Chirundu",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 45,000"
+    },
+    {
+      "Constituency": "Chirundu",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 3,340,994"
+    },
+    {
+      "Constituency": "Chirundu",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,915,193.03"
+    },
+    {
+      "Constituency": "Chirundu",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,466,882.61"
+    },
+    {
+      "Constituency": "Choma",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 430,620"
+    },
+    {
+      "Constituency": "Choma",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 675,785"
+    },
+    {
+      "Constituency": "Choma",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Choma",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Gwembe",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 285,360"
+    },
+    {
+      "Constituency": "Gwembe",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 170,020"
+    },
+    {
+      "Constituency": "Gwembe",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Gwembe",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 488,959.96"
+    },
+    {
+      "Constituency": "Itezhi-Tezhi",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 100,110"
+    },
+    {
+      "Constituency": "Itezhi-Tezhi",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 362,710"
+    },
+    {
+      "Constituency": "Itezhi-Tezhi",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 11,850,000"
+    },
+    {
+      "Constituency": "Itezhi-Tezhi",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,942,719"
+    },
+    {
+      "Constituency": "Kalomo Central",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 589,570"
+    },
+    {
+      "Constituency": "Kalomo Central",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 600,883"
+    },
+    {
+      "Constituency": "Kalomo Central",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,914,505"
+    },
+    {
+      "Constituency": "Kalomo Central",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,199,500"
+    },
+    {
+      "Constituency": "Dundumwenzi",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 23,905"
+    },
+    {
+      "Constituency": "Dundumwenzi",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 129,196"
+    },
+    {
+      "Constituency": "Dundumwenzi",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Dundumwenzi",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 267,000"
+    },
+    {
+      "Constituency": "Katombola",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Katombola",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 4,516,585"
+    },
+    {
+      "Constituency": "Katombola",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 8,271,550"
+    },
+    {
+      "Constituency": "Katombola",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "Livingstone",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 130,070"
+    },
+    {
+      "Constituency": "Livingstone",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,605,325"
+    },
+    {
+      "Constituency": "Livingstone",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 10,968,314.14"
+    },
+    {
+      "Constituency": "Livingstone",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "Mazabuka Central",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Mazabuka Central",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 2,377,018"
+    },
+    {
+      "Constituency": "Mazabuka Central",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Mazabuka Central",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Magoye",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Magoye",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Magoye",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Magoye",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,466,882.61"
+    },
+    {
+      "Constituency": "Monze",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Monze",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Monze",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 3,483,846.21"
+    },
+    {
+      "Constituency": "Monze",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 432,"
+    },
+    {
+      "Constituency": "Bweengwa",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 111,380"
+    },
+    {
+      "Constituency": "Bweengwa",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 438,782"
+    },
+    {
+      "Constituency": "Bweengwa",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Bweengwa",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,464,000"
+    },
+    {
+      "Constituency": "Moomba",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 32,780"
+    },
+    {
+      "Constituency": "Moomba",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 42,548"
+    },
+    {
+      "Constituency": "Moomba",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 10,451,538"
+    },
+    {
+      "Constituency": "Moomba",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,950,840"
+    },
+    {
+      "Constituency": "Namwala",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 102,490"
+    },
+    {
+      "Constituency": "Namwala",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 44,455"
+    },
+    {
+      "Constituency": "Namwala",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 10,760,103"
+    },
+    {
+      "Constituency": "Namwala",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,937,000"
+    },
+    {
+      "Constituency": "Pemba",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Pemba",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Pemba",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,416,550"
+    },
+    {
+      "Constituency": "Pemba",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "Siavonga",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Siavonga",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Siavonga",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Siavonga",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Sinazongwe",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 122,745"
+    },
+    {
+      "Constituency": "Sinazongwe",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 627,875"
+    },
+    {
+      "Constituency": "Sinazongwe",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 12,000,000"
+    },
+    {
+      "Constituency": "Sinazongwe",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,160,000"
+    },
+    {
+      "Constituency": "Mapatizya",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 145,515"
+    },
+    {
+      "Constituency": "Mapatizya",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 160,200"
+    },
+    {
+      "Constituency": "Mapatizya",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,770,516.71"
+    },
+    {
+      "Constituency": "Mapatizya",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,000"
+    },
+    {
+      "Constituency": "Kalabo district",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "Kaoma",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 882,000"
+    },
+    {
+      "Constituency": "Kaoma",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 724,160"
+    },
+    {
+      "Constituency": "Kaoma",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 11,001,617.49"
+    },
+    {
+      "Constituency": "Kaoma",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,466,775"
+    },
+    {
+      "Constituency": "Mwandi Constituency",
+      "category": "0",
+      "Sub category": "0",
+      "Amount": "0"
+    },
+    {
+      "Constituency": "Luampa",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 51,000"
+    },
+    {
+      "Constituency": "Luampa",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 249,000"
+    },
+    {
+      "Constituency": "Luampa",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,649,000"
+    },
+    {
+      "Constituency": "Luampa",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,000"
+    },
+    {
+      "Constituency": "Lukulu East",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 137,865"
+    },
+    {
+      "Constituency": "Lukulu East",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 325,190"
+    },
+    {
+      "Constituency": "Lukulu East",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Lukulu East",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "Mitete",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Mitete",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Mitete",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 14,085,708"
+    },
+    {
+      "Constituency": "Mitete",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 388,960"
+    },
+    {
+      "Constituency": "Mongu Central",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 1,077,000"
+    },
+    {
+      "Constituency": "Mongu Central",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 2,034,872"
+    },
+    {
+      "Constituency": "Mongu Central",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,880,377.43"
+    },
+    {
+      "Constituency": "Mongu Central",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 977,921.74"
+    },
+    {
+      "Constituency": "Mulobezi",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Mulobezi",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 486,500"
+    },
+    {
+      "Constituency": "Mulobezi",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 3,667,206.54"
+    },
+    {
+      "Constituency": "Mulobezi",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 488,960"
+    },
+    {
+      "Constituency": "Mwandi",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 8,000"
+    },
+    {
+      "Constituency": "Mwandi",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 832,590"
+    },
+    {
+      "Constituency": "Mwandi",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Mwandi",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,785,000"
+    },
+    {
+      "Constituency": "Nalolo",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 71,340"
+    },
+    {
+      "Constituency": "Nalolo",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,117,778"
+    },
+    {
+      "Constituency": "Nalolo",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,380,192.88"
+    },
+    {
+      "Constituency": "Nalolo",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,866,000"
+    },
+    {
+      "Constituency": "Nkeyema",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Nkeyema",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Nkeyema",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Nkeyema",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 0"
+    },
+    {
+      "Constituency": "Senanga",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 104,000"
+    },
+    {
+      "Constituency": "Senanga",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 2,081,740"
+    },
+    {
+      "Constituency": "Senanga",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,000.34"
+    },
+    {
+      "Constituency": "Senanga",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,953,200"
+    },
+    {
+      "Constituency": "Sesheke",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 637,000"
+    },
+    {
+      "Constituency": "Sesheke",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 127,431"
+    },
+    {
+      "Constituency": "Sesheke",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 3,483,846.21"
+    },
+    {
+      "Constituency": "Sesheke",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 488,960.87"
+    },
+    {
+      "Constituency": "Shang’ombo",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 6,000"
+    },
+    {
+      "Constituency": "Shang’ombo",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 2,085,902"
+    },
+    {
+      "Constituency": "Shang’ombo",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Shang’ombo",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 640,567.62"
+    },
+    {
+      "Constituency": "Sikongo",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 1,940,000"
+    },
+    {
+      "Constituency": "Sikongo",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 95,810"
+    },
+    {
+      "Constituency": "Sikongo",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,849,550"
+    },
+    {
+      "Constituency": "Sikongo",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 1,940,000"
+    },
+    {
+      "Constituency": "Sioma",
+      "category": "Busaries",
+      "Sub category": "Secondary School",
+      "Amount": "K 16,744"
+    },
+    {
+      "Constituency": "Sioma",
+      "category": "Busaries",
+      "Sub category": "Skills Development",
+      "Amount": "K 1,669,683"
+    },
+    {
+      "Constituency": "Sioma",
+      "category": "Projects",
+      "Sub category": "Community Projects",
+      "Amount": "K 13,916,550"
+    },
+    {
+      "Constituency": "Sioma",
+      "category": "Empowerment",
+      "Sub category": "Grants",
+      "Amount": "K 230,000"
+    }
+  ]
+}

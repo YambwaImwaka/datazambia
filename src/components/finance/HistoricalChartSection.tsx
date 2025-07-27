@@ -102,11 +102,13 @@ const HistoricalChartSection: React.FC<HistoricalChartSectionProps> = ({ isVisib
       <CardContent>
         <div className="space-y-4">
           <Tabs value={selectedType} onValueChange={(value) => setSelectedType(value as any)}>
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="currency">Currencies</TabsTrigger>
-              <TabsTrigger value="commodity">Commodities</TabsTrigger>
-              <TabsTrigger value="indicator">Indicators</TabsTrigger>
-            </TabsList>
+            <div className="overflow-x-auto">
+              <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 min-w-max">
+                <TabsTrigger value="currency" className="text-xs sm:text-sm">Currencies</TabsTrigger>
+                <TabsTrigger value="commodity" className="text-xs sm:text-sm">Commodities</TabsTrigger>
+                <TabsTrigger value="indicator" className="text-xs sm:text-sm">Indicators</TabsTrigger>
+              </TabsList>
+            </div>
           </Tabs>
           
           <div className="flex flex-col sm:flex-row gap-4 sm:items-end">

@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -13,7 +13,6 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Mail, Lock, User, Loader2, Crown, Info } from 'lucide-react';
 import PageLayout from '@/components/layout/PageLayout';
 import { AdminSignupFlow } from '@/components/auth/AdminSignupFlow';
-import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 const formSchema = z.object({
@@ -32,16 +31,8 @@ const formSchema = z.object({
 type FormValues = z.infer<typeof formSchema>;
 
 const SignUp = () => {
-  const { signUp, isLoading, user } = useAuth();
-  const location = useLocation();
+  const { signUp, isLoading } = useAuth();
   const [adminSignupData, setAdminSignupData] = useState<FormValues | null>(null);
-  
-  // Handle auth redirects
-  useAuthRedirect({ 
-    user, 
-    isLoading: false, 
-    currentPath: location.pathname 
-  });
   
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),

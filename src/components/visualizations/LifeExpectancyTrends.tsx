@@ -90,11 +90,13 @@ const LifeExpectancyTrends = () => {
 
       {/* Chart */}
       <Tabs value={selectedPeriod} onValueChange={setSelectedPeriod}>
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="all">All Years</TabsTrigger>
-          <TabsTrigger value="Past">Historical (1990-2021)</TabsTrigger>
-          <TabsTrigger value="Forecasted">Projected (2022-2050)</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 min-w-max">
+            <TabsTrigger value="all" className="text-xs sm:text-sm">All Years</TabsTrigger>
+            <TabsTrigger value="Past" className="text-xs sm:text-sm">Historical (1990-2021)</TabsTrigger>
+            <TabsTrigger value="Forecasted" className="text-xs sm:text-sm">Projected (2022-2050)</TabsTrigger>
+          </TabsList>
+        </div>
         
         <TabsContent value={selectedPeriod} className="mt-6">
           <Card>

@@ -73,30 +73,49 @@ const UserManagementPanel = () => {
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      // Fetch users from auth
-      const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
-      if (authError) throw authError;
-
-      // Fetch profiles
+      // Fetch profiles with user information
       const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select('*');
+        .select(`
+          *,
+          user_roles!inner(role)
+        `);
       if (profilesError) throw profilesError;
 
-      // Fetch admin roles
-      const { data: adminRoles, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('user_id')
-        .eq('role', 'admin');
-      if (rolesError) throw rolesError;
+      // Fetch admin roles separately - using a simpler approach to avoid RLS recursion
+      let adminUserIds = new Set<string>();
+      try {
+        const { data: adminRoles, error: rolesError } = await supabase
+          .from('user_roles')
+          .select('user_id')
+          .eq('role', 'admin');
+        
+        if (!rolesError && adminRoles) {
+          adminUserIds = new Set(adminRoles.map(role => role.user_id));
+        }
+      } catch (error) {
+        console.warn('Could not fetch admin roles, continuing without admin status:', error);
+        // Continue without admin role information rather than failing completely
+      }
 
-      const adminUserIds = new Set((adminRoles || []).map(role => role.user_id));
-      const profilesMap = new Map(profiles?.map(p => [p.id, p]) || []);
-
-      const enrichedUsers = authUsers.users.map(user => ({
-        ...user,
-        profile: profilesMap.get(user.id),
-        isAdmin: adminUserIds.has(user.id)
+      // Create user objects from profiles
+      const enrichedUsers = (profiles || []).map(profile => ({
+        id: profile.id,
+        email: profile.email || 'No email',
+        created_at: profile.created_at,
+        last_sign_in_at: profile.last_sign_in_at,
+        user_metadata: {
+          full_name: profile.full_name,
+          avatar_url: profile.avatar_url
+        },
+        profile: {
+          username: profile.username,
+          full_name: profile.full_name,
+          bio: profile.bio,
+          location: profile.location,
+          avatar_url: profile.avatar_url
+        },
+        isAdmin: adminUserIds.has(profile.id)
       }));
 
       setUsers(enrichedUsers);

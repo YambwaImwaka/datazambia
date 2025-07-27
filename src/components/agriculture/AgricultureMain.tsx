@@ -59,16 +59,19 @@ export const AgricultureMain = () => {
       </div>
 
       <Tabs defaultValue="crops" className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
-          <TabsTrigger value="crops" className="flex items-center gap-2">
+        <TabsList
+          className="w-full min-w-0 overflow-x-auto flex md:grid md:grid-cols-6 gap-1 md:gap-0 no-scrollbar pl-4 pr-2 scroll-snap-x"
+          style={{ WebkitOverflowScrolling: 'touch', scrollSnapType: 'x mandatory' }}
+        >
+          <TabsTrigger value="crops" className="flex items-center gap-2 min-w-[110px] justify-center text-xs md:text-base scroll-snap-align ml-4">
             <Wheat className="h-4 w-4" />
             Crops
           </TabsTrigger>
-          <TabsTrigger value="livestock">Livestock</TabsTrigger>
-          <TabsTrigger value="aquaculture">Aquaculture</TabsTrigger>
-          <TabsTrigger value="land">Land Use</TabsTrigger>
-          <TabsTrigger value="rainfall">Rainfall</TabsTrigger>
-          <TabsTrigger value="soil">Soil Health</TabsTrigger>
+          <TabsTrigger value="livestock" className="min-w-[110px] justify-center text-xs md:text-base scroll-snap-align">Livestock</TabsTrigger>
+          <TabsTrigger value="aquaculture" className="min-w-[110px] justify-center text-xs md:text-base scroll-snap-align">Aquaculture</TabsTrigger>
+          <TabsTrigger value="land" className="min-w-[110px] justify-center text-xs md:text-base scroll-snap-align">Land Use</TabsTrigger>
+          <TabsTrigger value="rainfall" className="min-w-[110px] justify-center text-xs md:text-base scroll-snap-align">Rainfall</TabsTrigger>
+          <TabsTrigger value="soil" className="min-w-[110px] justify-center text-xs md:text-base scroll-snap-align">Soil Health</TabsTrigger>
         </TabsList>
 
         <TabsContent value="crops" className="mt-6">

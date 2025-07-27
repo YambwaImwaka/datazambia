@@ -66,20 +66,22 @@ const SocialData = () => {
       </div>
 
       <Tabs defaultValue="distribution" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="distribution" className="flex items-center gap-2">
-            <MapPin className="h-4 w-4" />
-            Distribution
-          </TabsTrigger>
-          <TabsTrigger value="analysis" className="flex items-center gap-2">
-            <Building className="h-4 w-4" />
-            Analysis
-          </TabsTrigger>
-          <TabsTrigger value="insights" className="flex items-center gap-2">
-            <Users className="h-4 w-4" />
-            Insights
-          </TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 min-w-max">
+            <TabsTrigger value="distribution" className="flex items-center gap-2 text-xs sm:text-sm">
+              <MapPin className="h-4 w-4" />
+              Distribution
+            </TabsTrigger>
+            <TabsTrigger value="analysis" className="flex items-center gap-2 text-xs sm:text-sm">
+              <Building className="h-4 w-4" />
+              Analysis
+            </TabsTrigger>
+            <TabsTrigger value="insights" className="flex items-center gap-2 text-xs sm:text-sm">
+              <Users className="h-4 w-4" />
+              Insights
+            </TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="distribution" className="mt-6">
           <NonprofitDistribution />

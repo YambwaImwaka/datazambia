@@ -71,11 +71,13 @@ export const CropProductionView = ({ selectedProvince, selectedYear }: CropProdu
 
   return (
     <Tabs defaultValue="overview" className="w-full">
-      <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value="overview">Overview</TabsTrigger>
-        <TabsTrigger value="trends">Trends</TabsTrigger>
-        <TabsTrigger value="data">Raw Data</TabsTrigger>
-      </TabsList>
+      <div className="overflow-x-auto">
+        <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 min-w-max">
+          <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+          <TabsTrigger value="trends" className="text-xs sm:text-sm">Trends</TabsTrigger>
+          <TabsTrigger value="data" className="text-xs sm:text-sm">Raw Data</TabsTrigger>
+        </TabsList>
+      </div>
 
       <TabsContent value="overview" className="mt-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">

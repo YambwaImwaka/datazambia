@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -291,6 +291,9 @@ const ContentManagementPanel = () => {
               <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                   <DialogTitle>Edit Province</DialogTitle>
+                  <DialogDescription>
+                    Update province information including name, capital, population, and description.
+                  </DialogDescription>
                 </DialogHeader>
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(handleSaveChanges)} className="space-y-4">
@@ -392,6 +395,9 @@ const ContentManagementPanel = () => {
               <DialogContent className="sm:max-w-[600px]">
                 <DialogHeader>
                   <DialogTitle>Add New Province</DialogTitle>
+                  <DialogDescription>
+                    Create a new province with basic information including name, capital, population, and description.
+                  </DialogDescription>
                 </DialogHeader>
                 <Form {...newProvinceForm}>
                   <form onSubmit={newProvinceForm.handleSubmit(handleCreateProvince)} className="space-y-4">

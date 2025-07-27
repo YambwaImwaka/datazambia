@@ -433,12 +433,14 @@ export const RealCropProductionDashboard = () => {
       </div>
 
       <Tabs defaultValue="trends" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="trends">Yearly Trends</TabsTrigger>
-          <TabsTrigger value="regional">Regional Breakdown</TabsTrigger>
-          <TabsTrigger value="rankings">Top Producers</TabsTrigger>
-          <TabsTrigger value="detailed">Detailed Data</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 min-w-max">
+            <TabsTrigger value="trends" className="text-xs sm:text-sm">Yearly Trends</TabsTrigger>
+            <TabsTrigger value="regional" className="text-xs sm:text-sm">Regional Breakdown</TabsTrigger>
+            <TabsTrigger value="rankings" className="text-xs sm:text-sm">Top Producers</TabsTrigger>
+            <TabsTrigger value="detailed" className="text-xs sm:text-sm">Detailed Data</TabsTrigger>
+          </TabsList>
+        </div>
 
         <TabsContent value="trends" className="mt-6">
           <Card>

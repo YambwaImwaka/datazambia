@@ -74,6 +74,10 @@ export const useAnalytics = () => {
   
   const trackEvent = async (event: AnalyticsEvent) => {
     try {
+      // Temporarily disable analytics to avoid database errors
+      console.log('Analytics tracking disabled temporarily:', event);
+      return;
+      
       const sessionId = getSessionId();
       const deviceType = getDeviceType();
       const browser = getBrowserInfo();
@@ -112,7 +116,8 @@ export const useAnalytics = () => {
         .upsert(sessionData, { onConflict: 'session_id' });
         
     } catch (error) {
-      console.error('Analytics tracking error:', error);
+      // Silently fail analytics tracking to avoid console errors
+      console.debug('Analytics tracking error (ignored):', error);
     }
   };
 

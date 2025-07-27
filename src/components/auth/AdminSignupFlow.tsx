@@ -61,9 +61,9 @@ export const AdminSignupFlow: React.FC<AdminSignupFlowProps> = ({
 
       console.log('✅ User created successfully:', authData.user.id);
 
-      // Step 2: Assign admin role immediately after user creation
+      // Step 2: Assign admin role using promote_user_to_admin function
       console.log('👑 Assigning admin role...');
-      const { error: roleError } = await supabase.rpc('make_admin', { email });
+      const { data: promoteResult, error: roleError } = await supabase.rpc('promote_user_to_admin', { target_email: email });
       
       if (roleError) {
         console.error('❌ Admin role assignment error:', roleError);
@@ -72,7 +72,7 @@ export const AdminSignupFlow: React.FC<AdminSignupFlowProps> = ({
         return;
       }
 
-      console.log('✅ Admin role assigned successfully');
+      console.log('✅ Admin role assigned successfully:', promoteResult);
 
       // Step 3: Force sign in the user to get fresh session with admin role
       console.log('🔄 Signing in user to refresh session...');

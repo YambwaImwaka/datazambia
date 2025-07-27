@@ -125,11 +125,13 @@ export const RainfallView = ({ selectedProvince, selectedYear }: RainfallViewPro
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="patterns">Seasonal Patterns</TabsTrigger>
-            <TabsTrigger value="provincial">Provincial Data</TabsTrigger>
-            <TabsTrigger value="historical">Historical Trends</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto">
+            <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 min-w-max">
+              <TabsTrigger value="patterns" className="text-xs sm:text-sm">Seasonal Patterns</TabsTrigger>
+              <TabsTrigger value="provincial" className="text-xs sm:text-sm">Provincial Data</TabsTrigger>
+              <TabsTrigger value="historical" className="text-xs sm:text-sm">Historical Trends</TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="patterns" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

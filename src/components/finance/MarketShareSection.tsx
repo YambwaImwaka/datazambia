@@ -181,12 +181,14 @@ export const MarketShareSection = ({ isVisible }: MarketShareSectionProps) => {
           </div>
 
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="overview">Market Leaders</TabsTrigger>
-              <TabsTrigger value="breakdown">Industry Breakdown</TabsTrigger>
-              <TabsTrigger value="comparison">Cross-Industry</TabsTrigger>
-              <TabsTrigger value="detailed">Detailed Data</TabsTrigger>
-            </TabsList>
+            <div className="overflow-x-auto">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 min-w-max mb-6">
+                <TabsTrigger value="overview" className="text-xs sm:text-sm">Market Leaders</TabsTrigger>
+                <TabsTrigger value="breakdown" className="text-xs sm:text-sm">Industry Breakdown</TabsTrigger>
+                <TabsTrigger value="comparison" className="text-xs sm:text-sm">Cross-Industry</TabsTrigger>
+                <TabsTrigger value="detailed" className="text-xs sm:text-sm">Detailed Data</TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="overview" className="mt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">

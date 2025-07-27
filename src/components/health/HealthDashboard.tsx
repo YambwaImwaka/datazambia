@@ -194,18 +194,20 @@ const HealthDashboard = () => {
           </div>
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-10 mb-8">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="diseases">Diseases</TabsTrigger>
-              <TabsTrigger value="hiv">HIV Trends</TabsTrigger>
-              <TabsTrigger value="mortality">Child Mortality</TabsTrigger>
-              <TabsTrigger value="facilities">Facilities</TabsTrigger>
-              <TabsTrigger value="nutrition">Nutrition</TabsTrigger>
-              <TabsTrigger value="workforce">Workforce</TabsTrigger>
-              <TabsTrigger value="spending">Health Spending</TabsTrigger>
-              <TabsTrigger value="demographics">Demographics</TabsTrigger>
-              <TabsTrigger value="population">Population</TabsTrigger>
-            </TabsList>
+            <div className="overflow-x-auto">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 min-w-max mb-8">
+                <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+                <TabsTrigger value="diseases" className="text-xs sm:text-sm">Diseases</TabsTrigger>
+                <TabsTrigger value="hiv" className="text-xs sm:text-sm">HIV Trends</TabsTrigger>
+                <TabsTrigger value="mortality" className="text-xs sm:text-sm">Child Mortality</TabsTrigger>
+                <TabsTrigger value="facilities" className="text-xs sm:text-sm">Facilities</TabsTrigger>
+                <TabsTrigger value="nutrition" className="text-xs sm:text-sm">Nutrition</TabsTrigger>
+                <TabsTrigger value="workforce" className="text-xs sm:text-sm">Workforce</TabsTrigger>
+                <TabsTrigger value="spending" className="text-xs sm:text-sm">Health Spending</TabsTrigger>
+                <TabsTrigger value="demographics" className="text-xs sm:text-sm">Demographics</TabsTrigger>
+                <TabsTrigger value="population" className="text-xs sm:text-sm">Population</TabsTrigger>
+              </TabsList>
+            </div>
 
             <TabsContent value="overview" className="space-y-6">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

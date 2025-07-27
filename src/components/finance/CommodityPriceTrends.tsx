@@ -95,24 +95,26 @@ const CommodityPriceTrends: React.FC<CommodityPriceTrendsProps> = ({ isVisible }
       </CardHeader>
       <CardContent>
         <Tabs value={activeCategory} onValueChange={setActiveCategory} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
-            <TabsTrigger value="fuel" className="flex items-center gap-2">
-              {getCategoryIcon('fuel')}
-              Fuel
-            </TabsTrigger>
-            <TabsTrigger value="fish" className="flex items-center gap-2">
-              {getCategoryIcon('fish')}
-              Fish
-            </TabsTrigger>
-            <TabsTrigger value="vegetables" className="flex items-center gap-2">
-              {getCategoryIcon('vegetables')}
-              Vegetables
-            </TabsTrigger>
-            <TabsTrigger value="grains" className="flex items-center gap-2">
-              {getCategoryIcon('grains')}
-              Grains
-            </TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 min-w-max mb-6">
+              <TabsTrigger value="fuel" className="flex items-center gap-2 text-xs sm:text-sm">
+                {getCategoryIcon('fuel')}
+                Fuel
+              </TabsTrigger>
+              <TabsTrigger value="fish" className="flex items-center gap-2 text-xs sm:text-sm">
+                {getCategoryIcon('fish')}
+                Fish
+              </TabsTrigger>
+              <TabsTrigger value="vegetables" className="flex items-center gap-2 text-xs sm:text-sm">
+                {getCategoryIcon('vegetables')}
+                Vegetables
+              </TabsTrigger>
+              <TabsTrigger value="grains" className="flex items-center gap-2 text-xs sm:text-sm">
+                {getCategoryIcon('grains')}
+                Grains
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           {['fuel', 'fish', 'vegetables', 'grains'].map((category) => (
             <TabsContent key={category} value={category}>

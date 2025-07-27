@@ -93,12 +93,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUser(session?.user as User ?? null);
           
           if (session?.user) {
-            // Check admin status after setting the session
-            setTimeout(async () => {
-              if (mounted) {
-                await refreshUserRoles();
-              }
-            }, 1000);
+            // Check admin status immediately
+            await refreshUserRoles();
           }
           
           setIsLoading(false);
@@ -112,7 +108,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         if (!mounted) return;
         
         console.log('🔄 Auth state change:', event, session?.user?.email);
@@ -120,17 +116,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(session?.user as User ?? null);
         
         if (session?.user) {
-          // Immediately check roles, then recheck after delay for admin signups
-          refreshUserRoles();
-          
-          // For signin events, also check again after delay in case of admin signup
-          if (event === 'SIGNED_IN') {
-            setTimeout(async () => {
-              if (mounted) {
-                await refreshUserRoles();
-              }
-            }, 1000);
-          }
+          // Check admin status immediately for all auth events
+          await refreshUserRoles();
         } else {
           setIsAdmin(false);
         }

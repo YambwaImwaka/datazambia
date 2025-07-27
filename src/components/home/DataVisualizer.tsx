@@ -66,11 +66,13 @@ export const DataVisualizer = () => {
                 onValueChange={(value) => setActiveMetric(value as "population" | "gdp" | "inflation")}
                 className="w-full sm:w-auto"
               >
-                <TabsList className="grid grid-cols-3 w-full sm:w-auto">
-                  <TabsTrigger value="population">Population</TabsTrigger>
-                  <TabsTrigger value="gdp">GDP</TabsTrigger>
-                  <TabsTrigger value="inflation">Inflation</TabsTrigger>
-                </TabsList>
+                <div className="overflow-x-auto">
+                  <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 min-w-max">
+                    <TabsTrigger value="population" className="text-xs sm:text-sm">Population</TabsTrigger>
+                    <TabsTrigger value="gdp" className="text-xs sm:text-sm">GDP</TabsTrigger>
+                    <TabsTrigger value="inflation" className="text-xs sm:text-sm">Inflation</TabsTrigger>
+                  </TabsList>
+                </div>
               </Tabs>
             </div>
           </CardHeader>

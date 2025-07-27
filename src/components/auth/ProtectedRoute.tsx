@@ -63,12 +63,6 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/admin/dashboard" replace />;
   }
 
-  // For any authenticated route - check if admin should be redirected
-  if (requireAuth && user && isAdmin && !location.pathname.startsWith('/admin/')) {
-    console.log('👑 Admin accessing non-admin route, redirecting to admin dashboard');
-    return <Navigate to="/admin/dashboard" replace />;
-  }
-
   console.log('✅ Access granted to:', location.pathname);
   return <>{children}</>;
 };

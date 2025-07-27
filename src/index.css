@@ -168,3 +168,21 @@
     padding: 0.75rem !important;
   }
 }
+
+/* Scroll snap utilities for horizontal tab bars */
+.scroll-snap-x {
+  scroll-snap-type: x mandatory;
+  scroll-padding-left: 1rem;
+}
+.scroll-snap-align {
+  scroll-snap-align: start;
+}
+
+/* Hide scrollbars but do not hide content */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Webkit */
+}

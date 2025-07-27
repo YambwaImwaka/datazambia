@@ -13,7 +13,7 @@ import AIChatbot from "@/components/ai/AIChatbot";
 import NewsHighlights from "@/components/home/NewsHighlights";
 import { educationStatistics } from "@/utils/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Book, LineChart, ArrowUpRight } from "lucide-react";
+import { Book, LineChart, ArrowUpRight, Globe, PieChart, BarChart, Users, DollarSign, Cloud, Newspaper, Database, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -27,6 +27,64 @@ const Index: React.FC = () => {
     return dataObj && 'note' in dataObj ? dataObj.note : null;
   };
 
+  // Data sources for creative section
+  const DATA_SOURCES = [
+    {
+      name: 'World Bank',
+      url: 'https://data.worldbank.org/country/zambia',
+      icon: <Globe className="h-8 w-8 text-blue-600" />,
+      description: 'Macroeconomic and development indicators.'
+    },
+    {
+      name: 'IMF',
+      url: 'https://www.imf.org/en/Countries/ZMB',
+      icon: <PieChart className="h-8 w-8 text-green-600" />,
+      description: 'GDP and economic statistics.'
+    },
+    {
+      name: 'ZamStats',
+      url: 'https://www.zamstats.gov.zm/',
+      icon: <BarChart className="h-8 w-8 text-orange-500" />,
+      description: 'Inflation and local statistics.'
+    },
+    {
+      name: 'ILO',
+      url: 'https://www.ilo.org/ilostat/',
+      icon: <Users className="h-8 w-8 text-blue-400" />,
+      description: 'Unemployment and labor data.'
+    },
+    {
+      name: 'Bank of Zambia',
+      url: 'https://www.boz.zm/financial-markets/exchange-rates.htm',
+      icon: <DollarSign className="h-8 w-8 text-green-700" />,
+      description: 'Exchange rates, debt, reserves.'
+    },
+    {
+      name: 'WeatherAPI.com',
+      url: 'https://www.weatherapi.com/',
+      icon: <Cloud className="h-8 w-8 text-blue-500" />,
+      description: 'Weather and forecast data.'
+    },
+    {
+      name: 'Newsdata.io',
+      url: 'https://newsdata.io/',
+      icon: <Newspaper className="h-8 w-8 text-orange-600" />,
+      description: 'Finance and business news.'
+    },
+    {
+      name: 'Supabase',
+      url: 'https://supabase.com/',
+      icon: <Database className="h-8 w-8 text-green-500" />,
+      description: 'User data, analytics, and storage.'
+    },
+    {
+      name: 'Curated/Static Files',
+      url: '#',
+      icon: <FileText className="h-8 w-8 text-gray-500" />,
+      description: 'Locally curated and uploaded datasets.'
+    },
+  ];
+
   return (
     <PageLayout>
       <Helmet>
@@ -35,6 +93,32 @@ const Index: React.FC = () => {
       </Helmet>
 
       <Hero />
+      {/* Our Data Sources Section */}
+      <section className="my-12">
+        <div className="max-w-5xl mx-auto px-4">
+          <h2 className="text-3xl font-bold mb-6 text-blue-700 flex items-center gap-2">
+            <Globe className="h-7 w-7 text-blue-500" />
+            Our Data Sources
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            {DATA_SOURCES.map((source) => (
+              <a
+                key={source.name}
+                href={source.url}
+                target={source.url === '#' ? undefined : '_blank'}
+                rel="noopener noreferrer"
+                className="flex items-start gap-4 p-5 bg-white dark:bg-gray-900 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 border border-blue-50 dark:border-blue-900"
+              >
+                <div>{source.icon}</div>
+                <div>
+                  <div className="font-semibold text-lg text-blue-800 dark:text-blue-200 mb-1">{source.name}</div>
+                  <div className="text-sm text-gray-600 dark:text-gray-300">{source.description}</div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
       <DataHighlights />
       <SectorTiles />
       <FeaturedProvinces />

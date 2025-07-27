@@ -93,11 +93,13 @@ const EconomyDashboard = () => {
       </div>
 
       <Tabs defaultValue="gdp" className="mb-8" onValueChange={setActiveTab}>
-        <TabsList className="grid grid-cols-3 mb-8">
-          <TabsTrigger value="gdp">GDP & Growth</TabsTrigger>
-          <TabsTrigger value="sectors">Economic Sectors</TabsTrigger>
-          <TabsTrigger value="employment">Employment</TabsTrigger>
-        </TabsList>
+        <div className="overflow-x-auto">
+          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 min-w-max mb-8">
+            <TabsTrigger value="gdp" className="text-xs sm:text-sm">GDP & Growth</TabsTrigger>
+            <TabsTrigger value="sectors" className="text-xs sm:text-sm">Economic Sectors</TabsTrigger>
+            <TabsTrigger value="employment" className="text-xs sm:text-sm">Employment</TabsTrigger>
+          </TabsList>
+        </div>
         
         <TabsContent value="gdp" className="space-y-6">
           {isLoading ? (

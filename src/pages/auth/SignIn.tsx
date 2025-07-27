@@ -15,20 +15,7 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { signIn, user, isAdmin } = useAuth();
-  const navigate = useNavigate();
-
-  // Redirect if already logged in
-  React.useEffect(() => {
-    if (user) {
-      console.log('User already logged in, redirecting...', { user: user.email, isAdmin });
-      if (isAdmin) {
-        navigate('/admin/dashboard', { replace: true });
-      } else {
-        navigate('/dashboard', { replace: true });
-      }
-    }
-  }, [user, isAdmin, navigate]);
+  const { signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

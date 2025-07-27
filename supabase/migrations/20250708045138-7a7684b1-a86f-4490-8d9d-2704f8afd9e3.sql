@@ -22,16 +22,13 @@ BEGIN
   FROM public.user_roles 
   WHERE role = 'admin'::app_role;
   
-  -- If admins exist, check if caller is admin (but allow for first admin creation)
+  -- If admins exist, check if caller is admin
   IF admin_count > 0 THEN
     IF NOT EXISTS (
       SELECT 1 FROM public.user_roles 
       WHERE user_roles.user_id = auth.uid() AND role = 'admin'::app_role
     ) THEN
-      -- Allow bypass if no authenticated user (for system/signup operations)
-      IF auth.uid() IS NOT NULL THEN
-        RAISE EXCEPTION 'Only administrators can grant admin privileges';
-      END IF;
+      RAISE EXCEPTION 'Only administrators can grant admin privileges';
     END IF;
   END IF;
   

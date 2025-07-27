@@ -144,6 +144,7 @@ const MobileNav = ({ isOpen, setIsOpen }: MobileNavProps) => {
             {[
               { to: "/provinces", icon: Map, label: "Provinces", bgColor: "from-orange-100 to-red-100 dark:from-orange-800 dark:to-red-800", iconColor: "text-orange-600 dark:text-orange-300" },
               { to: "/finance", icon: DollarSign, label: "Finance", bgColor: "from-green-100 to-emerald-100 dark:from-green-800 dark:to-emerald-800", iconColor: "text-green-600 dark:text-green-300" },
+              { to: "/cdf", icon: Database, label: "CDF", bgColor: "from-blue-100 to-cyan-100 dark:from-blue-800 dark:to-cyan-800", iconColor: "text-blue-600 dark:text-blue-300" },
               { to: "/ai-tools", icon: Sparkles, label: "AI Tools", bgColor: "from-purple-100 to-pink-100 dark:from-purple-800 dark:to-pink-800", iconColor: "text-purple-600 dark:text-purple-300" },
               { to: "/about", icon: Info, label: "About", bgColor: "from-gray-100 to-slate-100 dark:from-gray-800 dark:to-slate-800", iconColor: "text-gray-600 dark:text-gray-300" }
             ].map((item) => (

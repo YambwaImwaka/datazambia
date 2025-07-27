@@ -139,12 +139,14 @@ export const SoilHealthView = ({ selectedProvince, selectedYear }: SoilHealthVie
       </CardHeader>
       <CardContent>
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="ph-levels">pH Levels</TabsTrigger>
-            <TabsTrigger value="nutrients">Nutrients</TabsTrigger>
-            <TabsTrigger value="soil-types">Soil Types</TabsTrigger>
-            <TabsTrigger value="degradation">Degradation</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 min-w-max">
+              <TabsTrigger value="ph-levels" className="text-xs sm:text-sm">pH Levels</TabsTrigger>
+              <TabsTrigger value="nutrients" className="text-xs sm:text-sm">Nutrients</TabsTrigger>
+              <TabsTrigger value="soil-types" className="text-xs sm:text-sm">Soil Types</TabsTrigger>
+              <TabsTrigger value="degradation" className="text-xs sm:text-sm">Degradation</TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="ph-levels" className="space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -10,6 +10,8 @@ import Dashboard from '@/pages/Dashboard';
 import AnalyticsDashboard from '@/components/analytics/AnalyticsDashboard';
 import AdminDashboard from '@/pages/admin/AdminDashboard';
 import UsersAdmin from '@/pages/admin/Users';
+import AdminSettings from '@/pages/admin/AdminSettings';
+import AdminContent from '@/pages/admin/AdminContent';
 import Signin from '@/pages/auth/SignIn';
 import Signup from '@/pages/auth/SignUp';
 import Explore from '@/pages/Explore';
@@ -25,6 +27,8 @@ import { AnalyticsProvider } from '@/components/analytics/AnalyticsProvider';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ConsentBanner from '@/components/gdpr/ConsentBanner';
+import CDF from './pages/CDF';
+import { MaintenanceMode } from '@/components/MaintenanceMode';
 
 const queryClient = new QueryClient();
 
@@ -37,12 +41,14 @@ function App() {
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
               <Toaster />
               <TooltipProvider>
-                <Routes>
+                <MaintenanceMode>
+                  <Routes>
                   {/* Public routes */}
                   <Route path="/" element={<Index />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/finance" element={<Finance />} />
+                  <Route path="/cdf" element={<CDF />} />
                   <Route path="/provinces" element={<ProvincesList />} />
                   <Route path="/province/:id" element={<ProvinceProfile />} />
                   <Route path="/ai-tools" element={<AITools />} />
@@ -102,18 +108,35 @@ function App() {
                       </ProtectedRoute>
                     } 
                   />
+                  <Route 
+                    path="/admin/settings" 
+                    element={
+                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                        <AdminSettings />
+                      </ProtectedRoute>
+                    } 
+                  />
+                  <Route 
+                    path="/admin/content" 
+                    element={
+                      <ProtectedRoute requireAuth={true} requireAdmin={true}>
+                        <AdminContent />
+                      </ProtectedRoute>
+                    } 
+                  />
                   
                   {/* 404 route */}
                   <Route path="*" element={<NotFound />} />
                 </Routes>
                 <ConsentBanner />
-              </TooltipProvider>
-            </ThemeProvider>
-          </AnalyticsProvider>
-        </QueryClientProvider>
-      </AuthProvider>
-    </HelmetProvider>
-  );
+              </MaintenanceMode>
+            </TooltipProvider>
+          </ThemeProvider>
+        </AnalyticsProvider>
+      </QueryClientProvider>
+    </AuthProvider>
+  </HelmetProvider>
+);
 }
 
 export default App;
