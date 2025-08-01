@@ -336,7 +336,7 @@ const UserManagementPanel = () => {
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell>{user.email}</TableCell>
+                          <TableCell>{user.username || 'N/A'}</TableCell>
                           <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                           <TableCell>
                             {user.last_sign_in_at 

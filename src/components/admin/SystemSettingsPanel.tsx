@@ -804,8 +804,9 @@ const SystemSettingsPanel = () => {
                         <p className="text-sm text-muted-foreground">Enable 2FA for users</p>
                       </div>
                       <Switch
-                        checked={securityForm.watch('enable_two_factor')}
-                        onCheckedChange={(checked) => securityForm.setValue('enable_two_factor', checked)}
+                        checked={false}
+                        disabled
+                        onCheckedChange={() => {}}
                       />
                     </div>
 

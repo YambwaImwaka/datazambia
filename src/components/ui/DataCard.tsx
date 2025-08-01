@@ -3,7 +3,7 @@ import { useState, ReactElement, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChevronUp, ChevronDown, HelpCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Tooltip } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { motion } from "framer-motion";
 
 interface DataCardProps {
@@ -111,14 +111,21 @@ export const DataCard = ({
               {title}
             </CardTitle>
             {description && (
-              <Tooltip content={description}>
-                <motion.button 
-                  className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
-                  whileHover={{ rotate: 10 }}
-                >
-                  <HelpCircle size={16} />
-                </motion.button>
-              </Tooltip>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <motion.button 
+                      className="text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 transition-colors"
+                      whileHover={{ rotate: 10 }}
+                    >
+                      <HelpCircle size={16} />
+                    </motion.button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>{description}</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         </CardHeader>

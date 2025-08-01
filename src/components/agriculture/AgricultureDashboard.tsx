@@ -36,7 +36,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Tooltip } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useMediaQuery } from "@/hooks/use-media-query";
 
 export const AgricultureDashboard = () => {
@@ -301,9 +301,16 @@ export const AgricultureDashboard = () => {
                       <TableHead>
                         <div className="flex items-center">
                           Disease Incidence
-                          <Tooltip content="Percentage of animals affected by diseases in the past year">
-                            <Info className="h-4 w-4 ml-1 text-gray-400" />
-                          </Tooltip>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Info className="h-4 w-4 ml-1 text-gray-400" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Percentage of animals affected by diseases in the past year</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                       </TableHead>
                       <TableHead>Avg. Price (ZMW)</TableHead>
@@ -466,49 +473,91 @@ export const AgricultureDashboard = () => {
                       <TableHead>
                         <div className="flex items-center">
                           Nitrogen (ppm)
-                          <Tooltip content="Parts per million - higher values indicate more nitrogen">
-                            <Info className="h-4 w-4 ml-1 text-gray-400" />
-                          </Tooltip>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Info className="h-4 w-4 ml-1 text-gray-400" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Parts per million - higher values indicate more nitrogen</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                       </TableHead>
                       <TableHead>
                         <div className="flex items-center">
                           Phosphorus (ppm)
-                          <Tooltip content="Parts per million - higher values indicate more phosphorus">
-                            <Info className="h-4 w-4 ml-1 text-gray-400" />
-                          </Tooltip>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Info className="h-4 w-4 ml-1 text-gray-400" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Parts per million - higher values indicate more phosphorus</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                       </TableHead>
                       <TableHead>
                         <div className="flex items-center">
                           Potassium (ppm)
-                          <Tooltip content="Parts per million - higher values indicate more potassium">
-                            <Info className="h-4 w-4 ml-1 text-gray-400" />
-                          </Tooltip>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Info className="h-4 w-4 ml-1 text-gray-400" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Parts per million - higher values indicate more potassium</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                       </TableHead>
                       <TableHead>
                         <div className="flex items-center">
                           Organic Matter (%)
-                          <Tooltip content="Percentage of organic material in soil - 3-5% is ideal">
-                            <Info className="h-4 w-4 ml-1 text-gray-400" />
-                          </Tooltip>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Info className="h-4 w-4 ml-1 text-gray-400" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Percentage of organic material in soil - 3-5% is ideal</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                       </TableHead>
                       <TableHead>
                         <div className="flex items-center">
                           pH Level
-                          <Tooltip content="Soil acidity/alkalinity - 5.5-6.5 is optimal for most crops">
-                            <Info className="h-4 w-4 ml-1 text-gray-400" />
-                          </Tooltip>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Info className="h-4 w-4 ml-1 text-gray-400" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Soil acidity/alkalinity - 5.5-6.5 is optimal for most crops</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                       </TableHead>
                       <TableHead>
                         <div className="flex items-center">
                           Quality Index
-                          <Tooltip content="Overall soil health score (0-100)">
-                            <Info className="h-4 w-4 ml-1 text-gray-400" />
-                          </Tooltip>
+                          <TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger>
+                                <Info className="h-4 w-4 ml-1 text-gray-400" />
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Overall soil health score (0-100)</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TooltipProvider>
                         </div>
                       </TableHead>
                     </TableRow>
