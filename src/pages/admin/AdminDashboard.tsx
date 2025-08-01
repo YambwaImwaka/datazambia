@@ -25,7 +25,6 @@ import {
   HardDrive,
   Network,
   Cpu,
-  Memory,
   RefreshCw,
   Eye,
   EyeOff,

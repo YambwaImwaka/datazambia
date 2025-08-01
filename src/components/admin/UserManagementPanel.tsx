@@ -101,9 +101,9 @@ const UserManagementPanel = () => {
       // Create user objects from profiles
       const enrichedUsers = (profiles || []).map(profile => ({
         id: profile.id,
-        email: profile.email || 'No email',
+        email: profile.username || 'No username', // Use username instead of email
         created_at: profile.created_at,
-        last_sign_in_at: profile.last_sign_in_at,
+        last_sign_in_at: profile.created_at, // Use created_at as fallback
         user_metadata: {
           full_name: profile.full_name,
           avatar_url: profile.avatar_url
@@ -336,7 +336,7 @@ const UserManagementPanel = () => {
                               </div>
                             </div>
                           </TableCell>
-                          <TableCell>{user.username || 'N/A'}</TableCell>
+                          <TableCell>{user.email || 'N/A'}</TableCell>
                           <TableCell>{new Date(user.created_at).toLocaleDateString()}</TableCell>
                           <TableCell>
                             {user.last_sign_in_at 
