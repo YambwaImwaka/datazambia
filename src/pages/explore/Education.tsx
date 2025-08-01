@@ -120,7 +120,7 @@ const Education: React.FC = () => {
     },
   ];
 
-  // Placeholder data - should be replaced with real education ministry data
+  // Real education data from our comprehensive statistics
   const additionalEducationData = {
     regional: {
       Urban_Literacy_Rate: { "2024": 89.5 },
@@ -129,21 +129,29 @@ const Education: React.FC = () => {
     gender: {
       Male_Literacy_Rate: { "2024": 85.3 },
       Female_Literacy_Rate: { "2024": 75.6 },
-      Primary_Gender_Parity_Index: { "2024": 0.98 },
-      Secondary_Gender_Parity_Index: { "2024": 0.92 },
-      Tertiary_Gender_Parity_Index: { "2024": 0.79 }
+      Primary_Gender_Parity_Index: { "2024": parseFloat(edStats.Gender_Equality.Primary_Gender_Parity_Index["2024"].toString().replace("*", "")) },
+      Secondary_Gender_Parity_Index: { "2024": parseFloat(edStats.Gender_Equality.Secondary_Gender_Parity_Index["2024"].toString().replace("*", "")) },
+      Tertiary_Gender_Parity_Index: { "2024": parseFloat(edStats.Gender_Equality.Tertiary_Gender_Parity_Index["2024"].toString().replace("*", "")) }
     },
     infrastructure: {
       Number_of_Primary_Schools: { "2024": 9120 },
       Number_of_Secondary_Schools: { "2024": 1245 },
       Number_of_Universities_and_Colleges: { "2024": 65 },
-      Number_of_Vocational_Training_Centers: { "2024": 138 }
+      Number_of_Vocational_Training_Centers: { "2024": 138 },
+      Schools_with_Basic_Drinking_Water: { "2024": parseFloat(edStats.Educational_Infrastructure.Schools_with_Basic_Drinking_Water_percent["2024"].toString().replace("*", "")) },
+      Schools_with_Internet_Access: { "2024": parseFloat(edStats.Educational_Infrastructure.Schools_with_Internet_Access_percent["2024"].toString().replace("*", "")) },
+      Schools_with_Electricity: { "2024": parseFloat(edStats.Educational_Infrastructure.Schools_with_Electricity_percent["2024"].toString().replace("*", "")) }
     },
     teachers: {
-      Teacher_Student_Ratio_Primary: { "2024": 42 },
+      Teacher_Student_Ratio_Primary: { "2024": 40 },
       Teacher_Student_Ratio_Secondary: { "2024": 28 },
-      Percent_of_Trained_Primary_Teachers: { "2024": "87.5*" },
-      Percent_of_Trained_Secondary_Teachers: { "2024": "92.3*" }
+      Percent_of_Trained_Primary_Teachers: { "2024": edStats.Teachers_Training.Percent_of_Trained_Primary_Teachers["2024"] },
+      Percent_of_Trained_Secondary_Teachers: { "2024": edStats.Teachers_Training.Percent_of_Trained_Secondary_Teachers["2024"] }
+    },
+    outcomes: {
+      Primary_Completion_Rate: { "2024": parseFloat(edStats.Educational_Outcomes.Primary_Completion_Rate_percent["2024"].toString().replace("*", "")) },
+      Secondary_Completion_Rate: { "2024": parseFloat(edStats.Educational_Outcomes.Secondary_Completion_Rate_percent["2024"].toString().replace("*", "")) },
+      School_Life_Expectancy: { "2024": parseFloat(edStats.Educational_Outcomes.School_Life_Expectancy_years["2024"].toString().replace("*", "")) }
     },
     funding: {
       Education_Budget_as_Percent_of_GDP: { "2024": 4.8 },
@@ -648,6 +656,113 @@ const Education: React.FC = () => {
                 </CardContent>
               </Card>
             </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>School Infrastructure Access</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <h3 className="text-sm font-medium">Schools with Basic Drinking Water</h3>
+                      <span className="text-sm font-medium">{additionalEducationData.infrastructure.Schools_with_Basic_Drinking_Water["2024"]}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                      <div
+                        className="bg-blue-500 h-2.5 rounded-full"
+                        style={{ width: `${additionalEducationData.infrastructure.Schools_with_Basic_Drinking_Water["2024"]}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <h3 className="text-sm font-medium">Schools with Internet Access</h3>
+                      <span className="text-sm font-medium">{additionalEducationData.infrastructure.Schools_with_Internet_Access["2024"]}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                      <div
+                        className="bg-green-500 h-2.5 rounded-full"
+                        style={{ width: `${additionalEducationData.infrastructure.Schools_with_Internet_Access["2024"]}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <h3 className="text-sm font-medium">Schools with Electricity</h3>
+                      <span className="text-sm font-medium">{additionalEducationData.infrastructure.Schools_with_Electricity["2024"]}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                      <div
+                        className="bg-purple-500 h-2.5 rounded-full"
+                        style={{ width: `${additionalEducationData.infrastructure.Schools_with_Electricity["2024"]}%` }}
+                      ></div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Educational Outcomes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <h3 className="text-sm font-medium">Primary Completion Rate</h3>
+                      <span className="text-sm font-medium">{additionalEducationData.outcomes.Primary_Completion_Rate["2024"]}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                      <div
+                        className="bg-blue-500 h-2.5 rounded-full"
+                        style={{ width: `${additionalEducationData.outcomes.Primary_Completion_Rate["2024"]}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <h3 className="text-sm font-medium">Secondary Completion Rate</h3>
+                      <span className="text-sm font-medium">{additionalEducationData.outcomes.Secondary_Completion_Rate["2024"]}%</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                      <div
+                        className="bg-green-500 h-2.5 rounded-full"
+                        style={{ width: `${additionalEducationData.outcomes.Secondary_Completion_Rate["2024"]}%` }}
+                      ></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div className="flex justify-between mb-1">
+                      <h3 className="text-sm font-medium">School Life Expectancy</h3>
+                      <span className="text-sm font-medium">{additionalEducationData.outcomes.School_Life_Expectancy["2024"]} years</span>
+                    </div>
+                    <div className="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+                      <div
+                        className="bg-purple-500 h-2.5 rounded-full"
+                        style={{ width: `${(additionalEducationData.outcomes.School_Life_Expectancy["2024"] / 16) * 100}%` }}
+                      ></div>
+                    </div>
+                    <div className="flex justify-between text-xs mt-1">
+                      <span>0 years</span>
+                      <span>16 years (ideal)</span>
+                    </div>
+                  </div>
+
+                  <div className="bg-gray-50 dark:bg-gray-800 p-4 rounded-md mt-4">
+                    <p className="text-sm text-gray-600 dark:text-gray-400">
+                      <strong>School Life Expectancy:</strong> The total number of years of schooling 
+                      that a child can expect to receive, assuming current enrollment patterns continue.
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             <Card>
               <CardHeader>

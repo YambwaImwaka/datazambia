@@ -7,6 +7,7 @@ import FinanceOverview from '@/components/finance/FinanceOverview';
 import EconomyDashboard from '@/components/economy/EconomyDashboard';
 import HealthDashboard from '@/components/health/HealthDashboard';
 import SocialData from '@/pages/explore/SocialData';
+import Education from '@/pages/explore/Education';
 import { ArrowUpRight } from 'lucide-react';
 import PageLayout from '@/components/layout/PageLayout';
 
@@ -41,13 +42,7 @@ const Explore = () => {
     } else if (currentCategory === "social") {
       return <SocialData />;
     } else if (currentCategory === "education") {
-      return <div className="container mx-auto py-8 px-4">
-        <h1 className="text-3xl font-bold mb-6">Education Metrics Dashboard</h1>
-        <p className="text-gray-600 dark:text-gray-300 mb-8">Comprehensive education statistics and insights across Zambia.</p>
-        <div className="p-8 bg-white dark:bg-gray-800 rounded-lg shadow-md text-center">
-          <p className="text-lg">Education metrics dashboard is coming soon.</p>
-        </div>
-      </div>;
+      return <Education />;
     } else {
       // Default case - show the province cards without the map
       return (
