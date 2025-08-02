@@ -170,13 +170,6 @@ const Education: React.FC = () => {
       </Helmet>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Zambia Education Statistics</h1>
-          <p className="text-gray-600 dark:text-gray-300 max-w-3xl">
-            Comprehensive data on literacy rates, school enrollments, educational
-            infrastructure, and gender parity across Zambia's education sector.
-          </p>
-        </div>
 
         {/* Main Navigation */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-8">
