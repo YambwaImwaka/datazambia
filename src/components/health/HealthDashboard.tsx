@@ -18,6 +18,7 @@ import LifeExpectancyTrends from "@/components/visualizations/LifeExpectancyTren
 import PopulationPyramid from "@/components/visualizations/PopulationPyramid";
 import ChildMortalityTrends from "@/components/visualizations/ChildMortalityTrends";
 import PopulationForecast from "@/components/visualizations/PopulationForecast";
+import CovidDashboard from "@/components/health/CovidDashboard";
 
 // Real health data for Zambia
 const healthData = {
@@ -195,8 +196,9 @@ const HealthDashboard = () => {
 
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <div className="overflow-x-auto">
-              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-10 min-w-max mb-8">
+              <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 md:grid-cols-6 lg:grid-cols-11 min-w-max mb-8">
                 <TabsTrigger value="overview" className="text-xs sm:text-sm">Overview</TabsTrigger>
+                <TabsTrigger value="covid" className="text-xs sm:text-sm">COVID-19</TabsTrigger>
                 <TabsTrigger value="diseases" className="text-xs sm:text-sm">Diseases</TabsTrigger>
                 <TabsTrigger value="hiv" className="text-xs sm:text-sm">HIV Trends</TabsTrigger>
                 <TabsTrigger value="mortality" className="text-xs sm:text-sm">Child Mortality</TabsTrigger>
@@ -268,6 +270,10 @@ const HealthDashboard = () => {
                   </CardContent>
                 </Card>
               </div>
+            </TabsContent>
+
+            <TabsContent value="covid" className="space-y-6">
+              <CovidDashboard />
             </TabsContent>
 
             <TabsContent value="diseases" className="space-y-6">
