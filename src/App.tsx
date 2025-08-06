@@ -21,6 +21,7 @@ import Finance from '@/pages/Finance';
 import ProvincesList from '@/pages/ProvincesList';
 import ProvinceProfile from '@/pages/ProvinceProfile';
 import AITools from '@/pages/AITools';
+import Government from '@/pages/Government';
 import NotFound from '@/pages/NotFound';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { AnalyticsProvider } from '@/components/analytics/AnalyticsProvider';
