@@ -1,4 +1,5 @@
-// Zambia Provinces Data with enhanced information
+// Comprehensive Zambia Data Platform - Primary Source
+// Updated with official government data and enhanced information
 export const provinces = [
   {
     id: "lusaka",

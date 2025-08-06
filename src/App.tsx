@@ -50,10 +50,12 @@ function App() {
                   <Route path="/finance" element={<Finance />} />
                   <Route path="/cdf" element={<CDF />} />
                   <Route path="/provinces" element={<ProvincesList />} />
-                  <Route path="/province/:id" element={<ProvinceProfile />} />
-                  <Route path="/ai-tools" element={<AITools />} />
-                  <Route path="/explore" element={<Explore />} />
-                  <Route path="/explore/:categoryId" element={<Explore />} />
+          <Route path="/province/:id" element={<ProvinceProfile />} />
+          <Route path="/province/:id/:district" element={<ProvinceProfile />} />
+          <Route path="/ai-tools" element={<AITools />} />
+          <Route path="/government" element={<Government />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/explore/:categoryId" element={<Explore />} />
                   
                   {/* Auth routes - public but redirect if already authenticated */}
                   <Route 
