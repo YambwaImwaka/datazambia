@@ -83,6 +83,10 @@ const Header = () => {
               <Link to="/explore/social" onClick={() => handleNavClick('explore_social')}>
                 <DropdownMenuItem className="cursor-pointer">Social Development</DropdownMenuItem>
               </Link>
+              <DropdownMenuSeparator />
+              <Link to="/government" onClick={() => handleNavClick('explore_government')}>
+                <DropdownMenuItem className="cursor-pointer">Government Structure</DropdownMenuItem>
+              </Link>
             </DropdownMenuContent>
           </DropdownMenu>
 

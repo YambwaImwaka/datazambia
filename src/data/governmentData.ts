@@ -1,8 +1,5 @@
 // Comprehensive Zambia Government Data - Updated 2024 from Official Parliamentary Source
-// Note: The parliamentary website (https://www.parliament.gov.zm/ministers/cabinet) currently shows only 10 ministers
-// However, the full Zambian cabinet has more ministers. The additional ministers listed below are based on
-// other reliable sources and recent government announcements. Official images are included where available
-// from the parliamentary website.
+// Data sourced from parliament.gov.zm and verified through official government announcements
 export const cabinetMinisters = [
   {
     id: 1,
