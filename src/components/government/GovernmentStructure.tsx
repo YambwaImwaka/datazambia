@@ -331,7 +331,7 @@ export const GovernmentStructure = () => {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Other Parties</span>
-                    <span className="font-bold text-gray-600">{governmentStatistics.parliament.otherSeats}</span>
+                    <span className="font-bold text-gray-600">{governmentStatistics.parliament.independentSeats + governmentStatistics.parliament.pnupSeats + governmentStatistics.parliament.nominatedSeats + governmentStatistics.parliament.nazSeats + governmentStatistics.parliament.ncpSeats}</span>
                   </div>
                 </div>
               </CardContent>
@@ -352,7 +352,7 @@ export const GovernmentStructure = () => {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Deputy Speaker</span>
-                    <span className="font-medium">{governmentStatistics.parliament.deputySpeaker}</span>
+                    <span className="font-medium">{governmentStatistics.parliament.firstDeputySpeaker}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Leader of Opposition</span>
@@ -364,7 +364,7 @@ export const GovernmentStructure = () => {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Opposition Chief Whip</span>
-                    <span className="font-medium">{governmentStatistics.parliament.oppositionChiefWhip}</span>
+                    <span className="font-medium">Robert Chabinga</span>
                   </div>
                 </div>
               </CardContent>
@@ -388,7 +388,7 @@ export const GovernmentStructure = () => {
                   <div className="flex items-center justify-between">
                     <span className="text-sm">Opposition</span>
                     <Badge variant="secondary" className="bg-red-600">
-                      {governmentStatistics.parliament.pfSeats + governmentStatistics.parliament.otherSeats} seats
+                      {governmentStatistics.parliament.pfSeats + governmentStatistics.parliament.independentSeats + governmentStatistics.parliament.pnupSeats + governmentStatistics.parliament.nominatedSeats + governmentStatistics.parliament.nazSeats + governmentStatistics.parliament.ncpSeats} seats
                     </Badge>
                   </div>
                 </div>

@@ -1,5 +1,10 @@
 // Comprehensive Zambia Government Data - Updated 2024 from Official Parliamentary Source
 // Data sourced from parliament.gov.zm and verified through official government announcements
+import { MP, membersOfParliament, parliamentComposition } from './membersOfParliament';
+
+export type { MP };
+export { membersOfParliament, parliamentComposition };
+
 export const cabinetMinisters = [
   {
     id: 1,
@@ -466,18 +471,22 @@ export const governmentStatistics = {
     }
   },
   parliament: {
-    totalSeats: 166,
-    upndSeats: 82,
-    pfSeats: 62,
-    otherSeats: 22,
+    totalSeats: 165,
+    upndSeats: 87,
+    pfSeats: 55,
+    independentSeats: 11,
+    pnupSeats: 1,
+    nominatedSeats: 8,
+    nazSeats: 2,
+    ncpSeats: 1,
     speaker: "Nelly Mutti",
-    deputySpeaker: "Moses Moyo",
-    leaderOfOpposition: "Brian Mundubile",
-    governmentChiefWhip: "Stephen Kampyongo",
-    oppositionChiefWhip: "Robert Chabinga",
+    firstDeputySpeaker: "Malungo Chisangano",
+    secondDeputySpeaker: "Moses Moyo",
+    governmentChiefWhip: "Stafford Mulusa",
+    leaderOfOpposition: "Robert Chabinga",
     lastElection: "2021-08-12",
     nextElection: "2026",
-    majorityRequired: 79
+    majorityRequired: 83
   }
 };
 
