@@ -16,6 +16,7 @@ import Signin from '@/pages/auth/SignIn';
 import Signup from '@/pages/auth/SignUp';
 import Explore from '@/pages/Explore';
 import About from '@/pages/About';
+import Government from '@/pages/Government';
 import Contact from '@/pages/Contact';
 import Finance from '@/pages/Finance';
 import ProvincesList from '@/pages/ProvincesList';

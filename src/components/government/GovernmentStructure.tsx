@@ -23,12 +23,13 @@ export const GovernmentStructure = () => {
       </div>
 
       <Tabs defaultValue="cabinet" className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="cabinet">Cabinet</TabsTrigger>
           <TabsTrigger value="statistics">Statistics</TabsTrigger>
           <TabsTrigger value="constituencies">MPs</TabsTrigger>
           <TabsTrigger value="traditional">Traditional</TabsTrigger>
           <TabsTrigger value="parties">Parties</TabsTrigger>
+          <TabsTrigger value="parliament">Parliament</TabsTrigger>
           <TabsTrigger value="judiciary">Judiciary</TabsTrigger>
         </TabsList>
 
@@ -302,6 +303,102 @@ export const GovernmentStructure = () => {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </TabsContent>
+
+        <TabsContent value="parliament" className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Building className="w-5 h-5 mr-2" />
+                  Parliament Overview
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="text-3xl font-bold text-blue-600">
+                  {governmentStatistics.parliament.totalSeats}
+                </div>
+                <p className="text-sm text-gray-600">Total Parliamentary Seats</p>
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>UPND Seats</span>
+                    <span className="font-bold text-blue-600">{governmentStatistics.parliament.upndSeats}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>PF Seats</span>
+                    <span className="font-bold text-red-600">{governmentStatistics.parliament.pfSeats}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Other Parties</span>
+                    <span className="font-bold text-gray-600">{governmentStatistics.parliament.otherSeats}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Users className="w-5 h-5 mr-2" />
+                  Leadership
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span>Speaker</span>
+                    <span className="font-medium">{governmentStatistics.parliament.speaker}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Deputy Speaker</span>
+                    <span className="font-medium">{governmentStatistics.parliament.deputySpeaker}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Leader of Opposition</span>
+                    <span className="font-medium">{governmentStatistics.parliament.leaderOfOpposition}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Government Chief Whip</span>
+                    <span className="font-medium">{governmentStatistics.parliament.governmentChiefWhip}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Opposition Chief Whip</span>
+                    <span className="font-medium">{governmentStatistics.parliament.oppositionChiefWhip}</span>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Vote className="w-5 h-5 mr-2" />
+                  Seating Arrangement
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Government Majority</span>
+                    <Badge variant="default" className="bg-blue-600">
+                      {governmentStatistics.parliament.upndSeats} seats
+                    </Badge>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm">Opposition</span>
+                    <Badge variant="secondary" className="bg-red-600">
+                      {governmentStatistics.parliament.pfSeats + governmentStatistics.parliament.otherSeats} seats
+                    </Badge>
+                  </div>
+                </div>
+                <div className="mt-4 p-3 bg-gray-50 rounded">
+                  <p className="text-sm font-medium">Majority Required</p>
+                  <p className="text-lg font-bold text-green-600">79 seats</p>
+                  <p className="text-xs text-gray-600">(50% + 1 of 156 total seats)</p>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </TabsContent>
 
