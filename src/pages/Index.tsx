@@ -72,12 +72,6 @@ const Index: React.FC = () => {
       description: 'Finance and business news.'
     },
     {
-      name: 'Supabase',
-      url: 'https://supabase.com/',
-      icon: <Database className="h-8 w-8 text-green-500" />,
-      description: 'User data, analytics, and storage.'
-    },
-    {
       name: 'Curated/Static Files',
       url: '#',
       icon: <FileText className="h-8 w-8 text-gray-500" />,
