@@ -23,14 +23,17 @@ export const GovernmentStructure = () => {
       </div>
 
       <Tabs defaultValue="cabinet" className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
-          <TabsTrigger value="cabinet">Cabinet</TabsTrigger>
-          <TabsTrigger value="statistics">Statistics</TabsTrigger>
-          <TabsTrigger value="constituencies">MPs</TabsTrigger>
-          <TabsTrigger value="traditional">Traditional</TabsTrigger>
-          <TabsTrigger value="parties">Parties</TabsTrigger>
-          <TabsTrigger value="parliament">Parliament</TabsTrigger>
-          <TabsTrigger value="judiciary">Judiciary</TabsTrigger>
+        <TabsList
+          className="w-full min-w-0 overflow-x-auto flex md:grid md:grid-cols-7 gap-1 md:gap-0 no-scrollbar pl-4 pr-2 scroll-snap-x"
+          style={{ WebkitOverflowScrolling: 'touch', scrollSnapType: 'x mandatory' }}
+        >
+          <TabsTrigger value="cabinet" className="min-w-[110px] justify-center text-xs md:text-base scroll-snap-align">Cabinet</TabsTrigger>
+          <TabsTrigger value="statistics" className="min-w-[110px] justify-center text-xs md:text-base scroll-snap-align">Statistics</TabsTrigger>
+          <TabsTrigger value="constituencies" className="min-w-[110px] justify-center text-xs md:text-base scroll-snap-align">MPs</TabsTrigger>
+          <TabsTrigger value="traditional" className="min-w-[130px] justify-center text-xs md:text-base scroll-snap-align">Traditional</TabsTrigger>
+          <TabsTrigger value="parties" className="min-w-[110px] justify-center text-xs md:text-base scroll-snap-align">Parties</TabsTrigger>
+          <TabsTrigger value="parliament" className="min-w-[130px] justify-center text-xs md:text-base scroll-snap-align">Parliament</TabsTrigger>
+          <TabsTrigger value="judiciary" className="min-w-[120px] justify-center text-xs md:text-base scroll-snap-align">Judiciary</TabsTrigger>
         </TabsList>
 
         <TabsContent value="cabinet" className="space-y-6">
@@ -240,7 +243,7 @@ export const GovernmentStructure = () => {
                 <CardContent className="space-y-3">
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
-                      <p className="font-medium text-gray-600">People</p>
+                      <p className="font-medium text-gray-600">Ethnic Group</p>
                       <p>{leader.people}</p>
                     </div>
                     <div>
