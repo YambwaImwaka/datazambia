@@ -10,6 +10,7 @@ import SocialData from '@/pages/explore/SocialData';
 import Education from '@/pages/explore/Education';
 import { ArrowUpRight } from 'lucide-react';
 import PageLayout from '@/components/layout/PageLayout';
+import { GovernmentStructure } from '@/components/government/GovernmentStructure';
 
 const Explore = () => {
   const { categoryId } = useParams<{ categoryId?: string }>();
@@ -43,6 +44,8 @@ const Explore = () => {
       return <SocialData />;
     } else if (currentCategory === "education") {
       return <Education />;
+    } else if (currentCategory === "government") {
+      return <GovernmentStructure />;
     } else {
       // Default case - show the province cards without the map
       return (

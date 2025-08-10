@@ -64,7 +64,7 @@ const Header = () => {
                 Explore <ChevronDown className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuContent align="end" className="w-56">
               <Link to="/explore" onClick={() => handleNavClick('explore_all')}>
                 <DropdownMenuItem className="cursor-pointer">All Data</DropdownMenuItem>
               </Link>
@@ -84,8 +84,8 @@ const Header = () => {
                 <DropdownMenuItem className="cursor-pointer">Social Development</DropdownMenuItem>
               </Link>
               <DropdownMenuSeparator />
-              <Link to="/government" onClick={() => handleNavClick('explore_government')}>
-                <DropdownMenuItem className="cursor-pointer">Government Structure</DropdownMenuItem>
+              <Link to="/explore/government" onClick={() => handleNavClick('explore_government')}>
+                <DropdownMenuItem className="cursor-pointer">Government</DropdownMenuItem>
               </Link>
             </DropdownMenuContent>
           </DropdownMenu>

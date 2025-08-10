@@ -31,6 +31,7 @@ import {
   Sprout,
   DollarSign,
   Sparkles,
+  Building,
   X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -124,7 +125,8 @@ const MobileNav = ({ isOpen, setIsOpen }: MobileNavProps) => {
                       { to: "/explore/education", icon: BookOpen, label: "Education", color: "text-purple-600 dark:text-purple-300" },
                       { to: "/explore/health", icon: Activity, label: "Health", color: "text-red-600 dark:text-red-300" },
                       { to: "/explore/economy", icon: DollarSign, label: "Economy", color: "text-green-600 dark:text-green-300" },
-                      { to: "/explore/agriculture", icon: Sprout, label: "Agriculture", color: "text-amber-600 dark:text-amber-300" }
+                      { to: "/explore/agriculture", icon: Sprout, label: "Agriculture", color: "text-amber-600 dark:text-amber-300" },
+                      { to: "/explore/government", icon: Building, label: "Government", color: "text-indigo-600 dark:text-indigo-300" }
                     ].map((item) => (
                       <SheetClose key={item.to} asChild>
                         <Link to={item.to} className="flex items-center px-12 py-3 text-gray-600 dark:text-gray-300 hover:bg-white/70 dark:hover:bg-gray-700/50 transition-all duration-200 group">

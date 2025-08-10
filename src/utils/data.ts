@@ -523,7 +523,8 @@ export const dataCategories = [
   { id: "agriculture", name: "Agriculture", description: "Agricultural production and farming statistics" },
   { id: "economy", name: "Economy", description: "Economic indicators and business metrics" },
   { id: "finance", name: "Finance", description: "Financial data including exchange rates and market indicators" },
-  { id: "social", name: "Social Development", description: "Civil society organizations and social development indicators" }
+  { id: "social", name: "Social Development", description: "Civil society organizations and social development indicators" },
+  { id: "government", name: "Government", description: "Government structure, cabinet, parliament, and traditional leadership" }
 ];
 
 // Time periods for filtering
