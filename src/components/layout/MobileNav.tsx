@@ -53,7 +53,7 @@ const MobileNav = ({ isOpen, setIsOpen }: MobileNavProps) => {
 
   return (
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
-      <SheetContent side="left" className="w-full sm:w-[380px] p-0 bg-gradient-to-br from-white via-gray-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900">
+      <SheetContent side="left" className="w-full sm:w-[420px] p-0 bg-gradient-to-br from-white via-gray-50 to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900 flex h-dvh max-h-dvh overflow-hidden flex-col">
         {/* Modern Header with Logo */}
         <SheetHeader className="relative p-6 bg-gradient-to-r from-zambia-600 via-zambia-700 to-zambia-800 text-white overflow-hidden">
           <div className="absolute inset-0 bg-black/10"></div>
@@ -89,13 +89,13 @@ const MobileNav = ({ isOpen, setIsOpen }: MobileNavProps) => {
         </SheetHeader>
 
         {/* Navigation Content */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto" style={{ WebkitOverflowScrolling: 'touch' }}>
           <div className="py-6 space-y-1">
             {/* Home Link */}
             <SheetClose asChild>
-              <Link to="/" className="flex items-center px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-zambia-50 hover:to-blue-50 dark:hover:from-zambia-900/20 dark:hover:to-blue-900/20 transition-all duration-200 group">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-zambia-100 to-blue-100 dark:from-zambia-800 dark:to-blue-800 flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-200">
-                  <Home className="h-5 w-5 text-zambia-600 dark:text-zambia-300" />
+              <Link to="/" className="group flex items-center gap-3 px-5 py-3 mx-4 my-1 rounded-lg text-foreground hover:bg-muted/70 dark:hover:bg-muted/20 transition">
+                <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center">
+                  <Home className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <span className="font-medium">Home</span>
               </Link>
@@ -110,10 +110,10 @@ const MobileNav = ({ isOpen, setIsOpen }: MobileNavProps) => {
               className="border-none"
             >
               <AccordionItem value="explore" className="border-none">
-                <AccordionTrigger className="px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-zambia-50 hover:to-blue-50 dark:hover:from-zambia-900/20 dark:hover:to-blue-900/20 hover:no-underline rounded-none transition-all duration-200 group">
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-green-100 to-emerald-100 dark:from-green-800 dark:to-emerald-800 flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-200">
-                      <Database className="h-5 w-5 text-green-600 dark:text-green-300" />
+                <AccordionTrigger className="px-5 py-3 mx-4 my-1 rounded-lg text-foreground hover:bg-muted/70 dark:hover:bg-muted/20 hover:no-underline transition group">
+                  <div className="flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center">
+                      <Database className="h-5 w-5 text-muted-foreground" />
                     </div>
                     <span className="font-medium">Explore Data</span>
                   </div>
@@ -129,8 +129,8 @@ const MobileNav = ({ isOpen, setIsOpen }: MobileNavProps) => {
                       { to: "/explore/government", icon: Building, label: "Government", color: "text-indigo-600 dark:text-indigo-300" }
                     ].map((item) => (
                       <SheetClose key={item.to} asChild>
-                        <Link to={item.to} className="flex items-center px-12 py-3 text-gray-600 dark:text-gray-300 hover:bg-white/70 dark:hover:bg-gray-700/50 transition-all duration-200 group">
-                          <div className="w-8 h-8 rounded-lg bg-white/80 dark:bg-gray-700 flex items-center justify-center mr-3 group-hover:scale-110 transition-transform duration-200">
+                        <Link to={item.to} className="group flex items-center gap-3 px-5 py-3 mx-4 my-1 rounded-lg text-foreground hover:bg-muted/70 dark:hover:bg-muted/20 transition">
+                          <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center">
                             <item.icon className={`h-4 w-4 ${item.color}`} />
                           </div>
                           <span className="text-sm font-medium">{item.label}</span>
@@ -151,8 +151,8 @@ const MobileNav = ({ isOpen, setIsOpen }: MobileNavProps) => {
               { to: "/about", icon: Info, label: "About", bgColor: "from-gray-100 to-slate-100 dark:from-gray-800 dark:to-slate-800", iconColor: "text-gray-600 dark:text-gray-300" }
             ].map((item) => (
               <SheetClose key={item.to} asChild>
-                <Link to={item.to} className="flex items-center px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-zambia-50 hover:to-blue-50 dark:hover:from-zambia-900/20 dark:hover:to-blue-900/20 transition-all duration-200 group">
-                  <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${item.bgColor} flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-200`}>
+                <Link to={item.to} className="group flex items-center gap-3 px-5 py-3 mx-4 my-1 rounded-lg text-foreground hover:bg-muted/70 dark:hover:bg-muted/20 transition">
+                  <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center">
                     <item.icon className={`h-5 w-5 ${item.iconColor}`} />
                   </div>
                   <span className="font-medium">{item.label}</span>
@@ -171,8 +171,8 @@ const MobileNav = ({ isOpen, setIsOpen }: MobileNavProps) => {
                   { to: "/favorites", icon: Star, label: "Favorites", bgColor: "from-yellow-100 to-amber-100 dark:from-yellow-800 dark:to-amber-800", iconColor: "text-yellow-600 dark:text-yellow-300" }
                 ].map((item) => (
                   <SheetClose key={item.to} asChild>
-                    <Link to={item.to} className="flex items-center px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-zambia-50 hover:to-blue-50 dark:hover:from-zambia-900/20 dark:hover:to-blue-900/20 transition-all duration-200 group">
-                      <div className={`w-10 h-10 rounded-xl bg-gradient-to-r ${item.bgColor} flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-200`}>
+                    <Link to={item.to} className="group flex items-center gap-3 px-5 py-3 mx-4 my-1 rounded-lg text-foreground hover:bg-muted/70 dark:hover:bg-muted/20 transition">
+                      <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center">
                         <item.icon className={`h-5 w-5 ${item.iconColor}`} />
                       </div>
                       <span className="font-medium">{item.label}</span>
@@ -184,9 +184,9 @@ const MobileNav = ({ isOpen, setIsOpen }: MobileNavProps) => {
                   <>
                     <Separator className="my-4 mx-6" />
                     <SheetClose asChild>
-                      <Link to="/admin/dashboard" className="flex items-center px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 dark:hover:from-red-900/20 dark:hover:to-pink-900/20 transition-all duration-200 group">
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-red-100 to-pink-100 dark:from-red-800 dark:to-pink-800 flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-200">
-                          <Settings className="h-5 w-5 text-red-600 dark:text-red-300" />
+                      <Link to="/admin/dashboard" className="group flex items-center gap-3 px-5 py-3 mx-4 my-1 rounded-lg text-foreground hover:bg-muted/70 dark:hover:bg-muted/20 transition">
+                        <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center">
+                          <Settings className="h-5 w-5 text-muted-foreground" />
                         </div>
                         <span className="font-medium">Admin Dashboard</span>
                       </Link>
@@ -198,20 +198,20 @@ const MobileNav = ({ isOpen, setIsOpen }: MobileNavProps) => {
                 
                 <Button 
                   variant="ghost" 
-                  className="flex items-center w-full justify-start px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-red-50 hover:to-pink-50 dark:hover:from-red-900/20 dark:hover:to-pink-900/20 font-normal h-auto rounded-none transition-all duration-200 group"
+                  className="group flex items-center w-full justify-start px-5 py-3 mx-4 my-1 rounded-lg text-foreground hover:bg-muted/70 dark:hover:bg-muted/20 font-normal h-auto transition"
                   onClick={handleLogout}
                 >
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-red-100 to-pink-100 dark:from-red-800 dark:to-pink-800 flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-200">
-                    <LogOut className="h-5 w-5 text-red-600 dark:text-red-300" />
+                  <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center">
+                    <LogOut className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <span className="font-medium">Log Out</span>
                 </Button>
               </>
             ) : (
               <SheetClose asChild>
-                <Link to="/auth/signin" className="flex items-center px-6 py-3 text-gray-700 dark:text-gray-200 hover:bg-gradient-to-r hover:from-zambia-50 hover:to-blue-50 dark:hover:from-zambia-900/20 dark:hover:to-blue-900/20 transition-all duration-200 group">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-r from-zambia-100 to-blue-100 dark:from-zambia-800 dark:to-blue-800 flex items-center justify-center mr-4 group-hover:scale-110 transition-transform duration-200">
-                    <LogIn className="h-5 w-5 text-zambia-600 dark:text-zambia-300" />
+                <Link to="/auth/signin" className="group flex items-center gap-3 px-5 py-3 mx-4 my-1 rounded-lg text-foreground hover:bg-muted/70 dark:hover:bg-muted/20 transition">
+                  <div className="w-9 h-9 rounded-md bg-muted flex items-center justify-center">
+                    <LogIn className="h-5 w-5 text-muted-foreground" />
                   </div>
                   <span className="font-medium">Sign In</span>
                 </Link>
