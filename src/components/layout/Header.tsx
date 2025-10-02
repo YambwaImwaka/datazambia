@@ -98,6 +98,13 @@ const Header = () => {
             <Button variant="ghost" className="hover:bg-zambia-50 dark:hover:bg-zambia-900/20">Finance</Button>
           </Link>
 
+          <Link to="/insights" onClick={() => handleNavClick('insights')}>
+            <Button variant="ghost" className="flex items-center gap-1 hover:bg-zambia-50 dark:hover:bg-zambia-900/20">
+              <BarChart3 className="h-4 w-4" />
+              Insights
+            </Button>
+          </Link>
+
           <Link to="/cdf" onClick={() => handleNavClick('cdf')}>
             <Button variant="ghost" className="flex items-center gap-1 hover:bg-zambia-50 dark:hover:bg-zambia-900/20">
               <Database className="h-4 w-4" />

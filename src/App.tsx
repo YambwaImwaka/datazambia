@@ -29,6 +29,7 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ConsentBanner from '@/components/gdpr/ConsentBanner';
 import CDF from './pages/CDF';
+import ComprehensiveInsights from './pages/ComprehensiveInsights';
 import { MaintenanceMode } from '@/components/MaintenanceMode';
 
 const queryClient = new QueryClient();
@@ -57,6 +58,7 @@ function App() {
           <Route path="/government" element={<Government />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/explore/:categoryId" element={<Explore />} />
+          <Route path="/insights" element={<ComprehensiveInsights />} />
                   
                   {/* Auth routes - public but redirect if already authenticated */}
                   <Route 
