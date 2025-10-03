@@ -1,17 +1,17 @@
 
 import React, { useState, useEffect } from 'react';
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LineChart } from "@/components/charts/LineChart";
 import { BarChart } from "@/components/charts/BarChart";
 import { DataCard } from "@/components/ui/DataCard";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
-import { TrendingUp, DollarSign, BarChart3, ArrowUpRight, ArrowDownRight, Download } from "lucide-react";
+import { TrendingUp, DollarSign, BarChart3, Mountain, Gem, Users } from "lucide-react";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { Button } from "@/components/ui/button";
 import DataExport from "@/components/ui/DataExport";
 import { useQuery } from "@tanstack/react-query";
 import { fetchEconomyData } from "@/services/economic/EconomyDataService";
+import { fetchMiningResourcesData } from "@/services/mining/MiningResourcesService";
 
 const EconomyDashboard = () => {
   const [activeTab, setActiveTab] = useState("gdp");
@@ -21,7 +21,14 @@ const EconomyDashboard = () => {
   const { data: economyData, isLoading } = useQuery({
     queryKey: ['economyData'],
     queryFn: fetchEconomyData,
-    staleTime: 1000 * 60 * 60 * 24, // 24 hours
+    staleTime: 1000 * 60 * 60 * 24,
+  });
+
+  // Fetch mining data
+  const { data: miningData, isLoading: isMiningLoading } = useQuery({
+    queryKey: ['miningData'],
+    queryFn: fetchMiningResourcesData,
+    staleTime: 1000 * 60 * 60 * 24,
   });
   
   // Prepare datasets for various visualizations
@@ -94,9 +101,10 @@ const EconomyDashboard = () => {
 
       <Tabs defaultValue="gdp" className="mb-8" onValueChange={setActiveTab}>
         <div className="overflow-x-auto">
-          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-3 min-w-max mb-8">
+          <TabsList className="grid w-full grid-cols-1 sm:grid-cols-4 min-w-max mb-8">
             <TabsTrigger value="gdp" className="text-xs sm:text-sm">GDP & Growth</TabsTrigger>
             <TabsTrigger value="sectors" className="text-xs sm:text-sm">Economic Sectors</TabsTrigger>
+            <TabsTrigger value="mining" className="text-xs sm:text-sm">Mining & Resources</TabsTrigger>
             <TabsTrigger value="employment" className="text-xs sm:text-sm">Employment</TabsTrigger>
           </TabsList>
         </div>
@@ -211,6 +219,128 @@ const EconomyDashboard = () => {
               </div>
             )}
           </Card>
+        </TabsContent>
+
+        <TabsContent value="mining" className="space-y-6">
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold mb-2">Mining & Natural Resources</h2>
+            <p className="text-muted-foreground">
+              Monitor copper, cobalt, emerald production, GDP contribution, mining jobs, and environmental impacts
+            </p>
+          </div>
+
+          {isMiningLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              {Array(4).fill(0).map((_, i) => (
+                <Card key={i}><CardContent className="p-6 animate-pulse"><div className="h-20 bg-gray-200 dark:bg-gray-700 rounded" /></CardContent></Card>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">Copper Production</CardTitle>
+                    <Mountain className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{miningData?.keyMetrics.copperProduction}k</div>
+                    <p className="text-xs text-muted-foreground">metric tons per year</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">Mining GDP Share</CardTitle>
+                    <DollarSign className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{miningData?.keyMetrics.gdpContribution}%</div>
+                    <p className="text-xs text-muted-foreground">of national GDP</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">Mining Jobs</CardTitle>
+                    <Users className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">{miningData?.keyMetrics.miningJobs}k</div>
+                    <p className="text-xs text-muted-foreground">direct employment</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between pb-2">
+                    <CardTitle className="text-sm font-medium">Emerald Exports</CardTitle>
+                    <Gem className="h-4 w-4 text-muted-foreground" />
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-2xl font-bold">${miningData?.keyMetrics.emeraldExports}M</div>
+                    <p className="text-xs text-muted-foreground">annual revenue</p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Mineral Production Trends</CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-[350px]">
+                    <LineChart
+                      data={miningData?.productionTrends || []}
+                      lines={[
+                        { dataKey: 'copper', name: 'Copper (kt)', color: '#f59e0b' },
+                        { dataKey: 'cobalt', name: 'Cobalt (kt)', color: '#3b82f6' }
+                      ]}
+                      xAxisKey="year"
+                    />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Mining Revenue by Resource</CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-[350px]">
+                    <BarChart
+                      data={miningData?.revenueByResource || []}
+                      bars={[{ dataKey: 'revenue', name: 'Revenue (Million USD)', color: '#10b981' }]}
+                      xAxisKey="resource"
+                    />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Mining Employment Trends</CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-[350px]">
+                    <LineChart
+                      data={miningData?.employmentTrends || []}
+                      lines={[{ dataKey: 'jobs', name: 'Jobs (thousands)', color: '#8b5cf6' }]}
+                      xAxisKey="year"
+                    />
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Environmental Impact Score</CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-[350px]">
+                    <LineChart
+                      data={miningData?.environmentalImpact || []}
+                      lines={[{ dataKey: 'score', name: 'Impact Score', color: '#ef4444' }]}
+                      xAxisKey="year"
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+            </>
+          )}
         </TabsContent>
         
         <TabsContent value="employment" className="space-y-6">

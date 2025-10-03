@@ -83,6 +83,9 @@ const Header = () => {
               <Link to="/explore/social" onClick={() => handleNavClick('explore_social')}>
                 <DropdownMenuItem className="cursor-pointer">Social Development</DropdownMenuItem>
               </Link>
+              <Link to="/explore/environment" onClick={() => handleNavClick('explore_environment')}>
+                <DropdownMenuItem className="cursor-pointer">Environment & Climate</DropdownMenuItem>
+              </Link>
               <DropdownMenuSeparator />
               <Link to="/explore/government" onClick={() => handleNavClick('explore_government')}>
                 <DropdownMenuItem className="cursor-pointer">Government</DropdownMenuItem>
@@ -96,13 +99,6 @@ const Header = () => {
           
           <Link to="/finance" onClick={() => handleNavClick('finance')}>
             <Button variant="ghost" className="hover:bg-zambia-50 dark:hover:bg-zambia-900/20">Finance</Button>
-          </Link>
-
-          <Link to="/insights" onClick={() => handleNavClick('insights')}>
-            <Button variant="ghost" className="flex items-center gap-1 hover:bg-zambia-50 dark:hover:bg-zambia-900/20">
-              <BarChart3 className="h-4 w-4" />
-              Insights
-            </Button>
           </Link>
 
           <Link to="/cdf" onClick={() => handleNavClick('cdf')}>

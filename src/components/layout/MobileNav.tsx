@@ -126,6 +126,7 @@ const MobileNav = ({ isOpen, setIsOpen }: MobileNavProps) => {
                       { to: "/explore/health", icon: Activity, label: "Health", color: "text-red-600 dark:text-red-300" },
                       { to: "/explore/economy", icon: DollarSign, label: "Economy", color: "text-green-600 dark:text-green-300" },
                       { to: "/explore/agriculture", icon: Sprout, label: "Agriculture", color: "text-amber-600 dark:text-amber-300" },
+                      { to: "/explore/environment", icon: Sprout, label: "Environment", color: "text-teal-600 dark:text-teal-300" },
                       { to: "/explore/government", icon: Building, label: "Government", color: "text-indigo-600 dark:text-indigo-300" }
                     ].map((item) => (
                       <SheetClose key={item.to} asChild>
@@ -146,7 +147,6 @@ const MobileNav = ({ isOpen, setIsOpen }: MobileNavProps) => {
             {[
               { to: "/provinces", icon: Map, label: "Provinces", bgColor: "from-orange-100 to-red-100 dark:from-orange-800 dark:to-red-800", iconColor: "text-orange-600 dark:text-orange-300" },
               { to: "/finance", icon: DollarSign, label: "Finance", bgColor: "from-green-100 to-emerald-100 dark:from-green-800 dark:to-emerald-800", iconColor: "text-green-600 dark:text-green-300" },
-              { to: "/insights", icon: BarChart4, label: "Insights", bgColor: "from-indigo-100 to-blue-100 dark:from-indigo-800 dark:to-blue-800", iconColor: "text-indigo-600 dark:text-indigo-300" },
               { to: "/cdf", icon: Database, label: "CDF", bgColor: "from-blue-100 to-cyan-100 dark:from-blue-800 dark:to-cyan-800", iconColor: "text-blue-600 dark:text-blue-300" },
               { to: "/ai-tools", icon: Sparkles, label: "AI Tools", bgColor: "from-purple-100 to-pink-100 dark:from-purple-800 dark:to-pink-800", iconColor: "text-purple-600 dark:text-purple-300" },
               { to: "/about", icon: Info, label: "About", bgColor: "from-gray-100 to-slate-100 dark:from-gray-800 dark:to-slate-800", iconColor: "text-gray-600 dark:text-gray-300" }

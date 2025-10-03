@@ -177,3 +177,42 @@ export const getCopperProductionGrowth = (): number => {
   const previous = miningData.production[2].copper;
   return ((latest - previous) / previous) * 100;
 };
+
+export async function fetchMiningResourcesData() {
+  return {
+    keyMetrics: {
+      copperProduction: 830,
+      gdpContribution: 12.5,
+      miningJobs: 85,
+      emeraldExports: 45
+    },
+    productionTrends: [
+      { year: '2019', copper: 800, cobalt: 12 },
+      { year: '2020', copper: 810, cobalt: 13 },
+      { year: '2021', copper: 820, cobalt: 14 },
+      { year: '2022', copper: 825, cobalt: 15 },
+      { year: '2023', copper: 830, cobalt: 16 }
+    ],
+    revenueByResource: [
+      { resource: 'Copper', revenue: 6500 },
+      { resource: 'Cobalt', revenue: 1200 },
+      { resource: 'Emeralds', revenue: 45 },
+      { resource: 'Gold', revenue: 150 },
+      { resource: 'Other', revenue: 300 }
+    ],
+    employmentTrends: [
+      { year: '2019', jobs: 75 },
+      { year: '2020', jobs: 78 },
+      { year: '2021', jobs: 80 },
+      { year: '2022', jobs: 83 },
+      { year: '2023', jobs: 85 }
+    ],
+    environmentalImpact: [
+      { year: '2019', score: 6.2 },
+      { year: '2020', score: 5.8 },
+      { year: '2021', score: 5.5 },
+      { year: '2022', score: 5.2 },
+      { year: '2023', score: 4.9 }
+    ]
+  };
+}

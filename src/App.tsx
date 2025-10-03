@@ -19,6 +19,10 @@ import About from '@/pages/About';
 import Government from '@/pages/Government';
 import Contact from '@/pages/Contact';
 import Finance from '@/pages/Finance';
+import Education from '@/pages/explore/Education';
+import HealthPage from '@/pages/health/COVID';
+import SocialData from '@/pages/explore/SocialData';
+import EnvironmentPage from '@/pages/explore/Environment';
 import ProvincesList from '@/pages/ProvincesList';
 import ProvinceProfile from '@/pages/ProvinceProfile';
 import AITools from '@/pages/AITools';
@@ -29,7 +33,6 @@ import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ConsentBanner from '@/components/gdpr/ConsentBanner';
 import CDF from './pages/CDF';
-import ComprehensiveInsights from './pages/ComprehensiveInsights';
 import { MaintenanceMode } from '@/components/MaintenanceMode';
 
 const queryClient = new QueryClient();
@@ -58,7 +61,11 @@ function App() {
           <Route path="/government" element={<Government />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/explore/:categoryId" element={<Explore />} />
-          <Route path="/insights" element={<ComprehensiveInsights />} />
+          <Route path="/explore/education" element={<Education />} />
+          <Route path="/explore/health" element={<HealthPage />} />
+          <Route path="/explore/social" element={<SocialData />} />
+          <Route path="/explore/environment" element={<EnvironmentPage />} />
+          <Route path="/explore/government" element={<Government />} />
                   
                   {/* Auth routes - public but redirect if already authenticated */}
                   <Route 
